@@ -357,7 +357,7 @@ var render = function() {
       _c("div", { staticClass: "mt-5" }, [
         _c(
           "div",
-          { staticClass: "rounded bg-gray-800 relative" },
+          { staticClass: "rounded-full shadow-lg bg-gray-800 relative" },
           [
             _vm._m(0),
             _vm._v(" "),
@@ -509,7 +509,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("section", { staticClass: "mt-9" }, [
       _c("h1", { staticClass: "mb-6 font-bold uppercase tracking-wide" }, [
-        _vm._v("2. Add Colors")
+        _vm._v("2. Set your colors")
       ]),
       _vm._v(" "),
       _c("p", { staticClass: "mt-6" }, [_vm._v("Coming soon...")]),

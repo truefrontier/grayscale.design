@@ -2070,6 +2070,25 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'DefaultLayout'
 });
@@ -4690,7 +4709,43 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "DefaultLayout leading-6 container mx-auto text-gray-900" },
-    [_vm._m(0), _vm._v(" "), _vm._t("default")],
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _vm._t("default"),
+      _vm._v(" "),
+      _c("footer", { staticClass: "mt-10 py-7" }, [
+        _vm._v("\n    A brain-child project from\n    "),
+        _c(
+          "a",
+          {
+            staticClass:
+              "border-b border-gray-500 inline-block hover:opacity-50",
+            attrs: { href: "https://brandnamemaker.com" }
+          },
+          [_vm._v("Brandname Maker")]
+        ),
+        _vm._v("\n    &\n    "),
+        _c(
+          "a",
+          {
+            staticClass:
+              "border-b border-gray-500 inline-block hover:opacity-50",
+            attrs: { href: "https://truefrontierapps.com" }
+          },
+          [_vm._v("True Frontier")]
+        ),
+        _vm._v(
+          ". ©\n    " +
+            _vm._s(
+              new Date().getFullYear() === 2020
+                ? 2020
+                : "2020-" + new Date().getFullYear()
+            ) +
+            ". All rights reserved.\n  "
+        )
+      ])
+    ],
     2
   )
 }

@@ -30,7 +30,7 @@
       </div>
       <p>Drag the sliders below to set your luminosity scale.</p>
       <div class="mt-5">
-        <div class="rounded bg-gray-800 relative">
+        <div class="rounded-full shadow-lg bg-gray-800 relative">
           <div class="h-half-9 divide-x divide-gray-600 flex justify-between">
             <div class="flex-grow"></div>
             <div class="flex-grow"></div>
@@ -107,7 +107,7 @@
       </p>
     </section>
     <section class="mt-9">
-      <h1 class="mb-6 font-bold uppercase tracking-wide">2. Add Colors</h1>
+      <h1 class="mb-6 font-bold uppercase tracking-wide">2. Set your colors</h1>
       <p class="mt-6">Coming soon...</p>
       <p class="mt-7 opacity-50">
         When you add a color, it will create a swatch for each position from
