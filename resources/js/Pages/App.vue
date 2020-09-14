@@ -154,7 +154,18 @@ export default {
     },
   },
 
-  watch: {},
+  watch: {
+    autoDistribute(val) {
+      if (val) {
+        this.adjustLums(
+          this.lums[0],
+          this.lums[this.lumsCount - 1].lum,
+          this.lums[0].lum,
+          0,
+        );
+      }
+    },
+  },
 
   methods: {
     lumToGrayscaleRGB(lum) {
