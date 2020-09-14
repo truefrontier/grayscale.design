@@ -3,9 +3,11 @@ module.exports = {
     removeDeprecatedGapUtilities: true,
   },
   purge: [
+    './resources/**/*.vue',
     './resources/**/*.js',
     './resources/**/*.html',
     './resources/**/*.php',
+    './content/**/*.md',
   ],
   theme: {
     extend: {

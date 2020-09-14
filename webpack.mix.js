@@ -32,7 +32,19 @@ mix.postCss('resources/css/tailwind.css', 'public/css', [
 
 if (mix.inProduction()) {
   mix.version();
-  mix.purgeCss({ enabled: true });
+  mix.purgeCss({
+    // enabled: true,
+    defaultExtractor: function (content) {
+      return content.match(/[\w-/:]+(?<!:)/g) || [];
+    },
+    content: [
+      './public/**/*.vue',
+      './public/**/*.js',
+      './public/**/*.php',
+      './public/**/*.html',
+      './content/**/*.md',
+    ],
+  });
 } else {
   mix.browserSync({
     proxy: 'grayscale.test',

@@ -97,11 +97,12 @@
       </div>
       <p class="mt-7 opacity-50">
         This scale will be consistent throughout each color in your project's
-        palette. For example, a blue-500 will match a red-500 in visual
-        lightness/darkness... or any-other-color-500. This is the beauty of
+        palette. For example, a blue-500 will match a red-500 in luminance (or
+        visual lightness/darkness)... or any-other-color-500. In the same way, a
+        red-300 would match a yellow-300 or gray-300. This is the beauty of
         <strong>grayscale design</strong>. Making all your colors with a scale
-        of equal luminance allows you to design a site in grayscale and add
-        color of the same luminance later.
+        of equal luminance allows you to design a website first in grayscale,
+        and then, you can add color later without losing any contrast.
         <!-- To get you started, we've setup 9 steps in your scale, light to
         dark.  -->
       </p>
@@ -225,4 +226,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./App.scss" scoped></style>
+<!-- <style lang="scss" src="./App.scss" scoped></style> -->
