@@ -2,9 +2,20 @@ module.exports = {
   future: {
     removeDeprecatedGapUtilities: true,
   },
-  purge: ['./resources/**/*.js', './resources/**/*.html', './resources/**/*.php'],
+  purge: [
+    './resources/**/*.js',
+    './resources/**/*.html',
+    './resources/**/*.php',
+  ],
   theme: {
-    extend: {},
+    extend: {
+      inset: {
+        '1/2': '50%',
+      },
+      variants: {
+        zIndex: ['responsive', 'hover', 'focus'],
+      },
+    },
     breakpointHelper: {
       selector: 'html.local body',
     },
@@ -13,5 +24,8 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [require('tailwindcss-breakpoint-helper'), require('tailwindcss-golden-ratio')],
+  plugins: [
+    require('tailwindcss-breakpoint-helper'),
+    require('tailwindcss-golden-ratio'),
+  ],
 };

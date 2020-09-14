@@ -35,7 +35,7 @@ if (mix.inProduction()) {
   mix.purgeCss({ enabled: true });
 } else {
   mix.browserSync({
-    proxy: 'truefrontierapps.test',
+    proxy: 'grayscale.test',
     notify: false,
     files: [
       './resources/**/*.js',

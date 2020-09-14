@@ -1,3 +1,5 @@
+// require('../vendor/fontawesome/js/fontawesome.js');
+// require('../vendor/fontawesome/js/solid.js');
 import { InertiaApp } from '@inertiajs/inertia-vue';
 import Vue from 'vue';
 import route from 'ziggy';
@@ -24,11 +26,15 @@ new Vue({
         resolveComponent: async (name) => {
           const Statamic = window.Statamic || {};
 
-          const LayoutComponent = await import(`./Layouts/${Statamic.layoutName}`)
+          const LayoutComponent = await import(
+            `./Layouts/${Statamic.layoutName}`
+          )
             .then((module) => module.default)
             .catch(() => DefaultLayout);
 
-          const TemplateComponent = await import(`./Templates/${Statamic.templateName}`)
+          const TemplateComponent = await import(
+            `./Templates/${Statamic.templateName}`
+          )
             .then((module) => module.default)
             .catch(() => DefaultTemplate);
 

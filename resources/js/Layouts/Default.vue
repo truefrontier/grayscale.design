@@ -1,5 +1,5 @@
 <template>
-  <div class="DefaultLayout">
+  <div class="DefaultLayout leading-6">
     <slot></slot>
   </div>
 </template>

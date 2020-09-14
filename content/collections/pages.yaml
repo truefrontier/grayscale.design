@@ -4,3 +4,10 @@ layout: layout
 revisions: false
 route: '{parent_uri}/{slug}'
 sort_dir: asc
+structure:
+  root: true
+  tree:
+    -
+      entry: ff60e2ef-e6f7-4918-901b-017fb765bbfd
+    -
+      entry: 587b090e-915c-4ef7-87ad-de4d9966d396

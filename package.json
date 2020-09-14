@@ -34,6 +34,9 @@
     },
     "dependencies": {
         "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+        "@fortawesome/fontawesome-svg-core": "^1.2.30",
+        "@fortawesome/free-regular-svg-icons": "^5.14.0",
+        "@fortawesome/vue-fontawesome": "^2.0.0",
         "@inertiajs/inertia": "^0.2.1",
         "@inertiajs/inertia-vue": "^0.2.0"
     }
