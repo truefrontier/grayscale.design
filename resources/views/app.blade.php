@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>App</title>
+        <title>grayscale design | Luminance-based color palette generator for Tailwind CSS</title>
         <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
     </head>
     <body>
