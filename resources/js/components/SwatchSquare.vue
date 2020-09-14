@@ -25,7 +25,7 @@ export default {
 
   methods: {
     getBgColor(swatch) {
-      return swatch.bg;
+      return `rgb(${swatch.rgb.join(',')})`;
     },
   },
 };

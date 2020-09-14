@@ -113,15 +113,15 @@ export default {
   data() {
     return {
       lums: {
-        0: { lum: 3, bg: `rgb(${this.lumToGrayscaleRGB(3).join(',')})` },
-        1: { lum: 8, bg: `rgb(${this.lumToGrayscaleRGB(8).join(',')})` },
-        2: { lum: 18, bg: `rgb(${this.lumToGrayscaleRGB(18).join(',')})` },
-        3: { lum: 33, bg: `rgb(${this.lumToGrayscaleRGB(33).join(',')})` },
-        4: { lum: 50, bg: `rgb(${this.lumToGrayscaleRGB(50).join(',')})` },
-        5: { lum: 67, bg: `rgb(${this.lumToGrayscaleRGB(67).join(',')})` },
-        6: { lum: 82, bg: `rgb(${this.lumToGrayscaleRGB(82).join(',')})` },
-        7: { lum: 92, bg: `rgb(${this.lumToGrayscaleRGB(92).join(',')})` },
-        8: { lum: 98, bg: `rgb(${this.lumToGrayscaleRGB(98).join(',')})` },
+        0: { lum: 3, rgb: this.lumToGrayscaleRGB(3) },
+        1: { lum: 8, rgb: this.lumToGrayscaleRGB(8) },
+        2: { lum: 18, rgb: this.lumToGrayscaleRGB(18) },
+        3: { lum: 33, rgb: this.lumToGrayscaleRGB(33) },
+        4: { lum: 50, rgb: this.lumToGrayscaleRGB(50) },
+        5: { lum: 67, rgb: this.lumToGrayscaleRGB(67) },
+        6: { lum: 82, rgb: this.lumToGrayscaleRGB(82) },
+        7: { lum: 92, rgb: this.lumToGrayscaleRGB(92) },
+        8: { lum: 98, rgb: this.lumToGrayscaleRGB(98) },
       },
       isDragging: null,
       lastPos: null,
@@ -178,7 +178,7 @@ export default {
       let pos = parseFloat((elX / parentWidth) * 100);
       if ($event.screenX) {
         this.lums[index].lum = pos;
-        this.lums[index].bg = `rgb(${this.lumToGrayscaleRGB(pos).join(',')})`;
+        this.lums[index].rgb = this.lumToGrayscaleRGB(pos);
         clearTimeout(this.adjustLumsTimeout);
         this.adjustLumsTimeout = setTimeout(
           () =>
@@ -206,15 +206,11 @@ export default {
           if (ndx < curIndex) {
             let dist = (curPos - startPos) / curIndex;
             this.lums[ndx].lum = ndx * dist + this.lums[0].lum;
-            this.lums[ndx].bg = `rgb(${this.lumToGrayscaleRGB(
-              this.lums[ndx].lum,
-            ).join(',')})`;
+            this.lums[ndx].rgb = this.lumToGrayscaleRGB(this.lums[ndx].lum);
           } else if (curIndex < ndx) {
             let dist = (endPos - curPos) / (this.lumsCount - curIndex - 1);
             this.lums[ndx].lum = (ndx - curIndex) * dist + curPos;
-            this.lums[ndx].bg = `rgb(${this.lumToGrayscaleRGB(
-              this.lums[ndx].lum,
-            ).join(',')})`;
+            this.lums[ndx].rgb = this.lumToGrayscaleRGB(this.lums[ndx].lum);
           }
         });
 
