@@ -1,5 +1,5 @@
 <template>
-  <div class="App container mx-auto mt-8">
+  <div class="App">
     <h1 class="font-bold uppercase tracking-wide">Set Your Luminosity Scale</h1>
     <p class="mt-6">
       This scale will be consistent throughout each color in your project's

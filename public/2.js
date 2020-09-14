@@ -294,7 +294,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "App container mx-auto mt-8" }, [
+  return _c("div", { staticClass: "App" }, [
     _c("h1", { staticClass: "font-bold uppercase tracking-wide" }, [
       _vm._v("Set Your Luminosity Scale")
     ]),
