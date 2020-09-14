@@ -127,6 +127,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 var BLANK_IMG = new Image();
 BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -138,25 +141,25 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
           lum: 3
         },
         1: {
-          lum: 14.75
+          lum: 10
         },
         2: {
-          lum: 26.5
+          lum: 20
         },
         3: {
-          lum: 38.25
+          lum: 35
         },
         4: {
           lum: 50
         },
         5: {
-          lum: 62.25
+          lum: 65
         },
         6: {
-          lum: 74.5
+          lum: 82
         },
         7: {
-          lum: 86.75
+          lum: 92
         },
         8: {
           lum: 99
@@ -165,7 +168,7 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       isDragging: null,
       lastPos: null,
       adjustLumsTimeout: 0,
-      autoDistribute: true
+      autoDistribute: false
     };
   },
   computed: {
@@ -425,6 +428,21 @@ var render = function() {
                     "\n            " +
                       _vm._s(parseInt(index, 10) + 1) +
                       "00\n          "
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "font-mono opacity-25 text-xs text-center leading-5"
+                },
+                [
+                  _vm._v(
+                    "\n            " +
+                      _vm._s(swatch.lum.toFixed(1)) +
+                      "%\n          "
                   )
                 ]
               )

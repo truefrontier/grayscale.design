@@ -89,6 +89,9 @@
             <div class="font-mono opacity-50 text-sm text-center">
               {{ parseInt(index, 10) + 1 }}00
             </div>
+            <div class="font-mono opacity-25 text-xs text-center leading-5">
+              {{ swatch.lum.toFixed(1) }}%
+            </div>
           </div>
         </div>
       </div>
@@ -128,19 +131,19 @@ export default {
     return {
       lums: {
         0: { lum: 3 },
-        1: { lum: 14.75 },
-        2: { lum: 26.5 },
-        3: { lum: 38.25 },
+        1: { lum: 10 },
+        2: { lum: 20 },
+        3: { lum: 35 },
         4: { lum: 50 },
-        5: { lum: 62.25 },
-        6: { lum: 74.5 },
-        7: { lum: 86.75 },
+        5: { lum: 65 },
+        6: { lum: 82 },
+        7: { lum: 92 },
         8: { lum: 99 },
       },
       isDragging: null,
       lastPos: null,
       adjustLumsTimeout: 0,
-      autoDistribute: true,
+      autoDistribute: false,
     };
   },
 
