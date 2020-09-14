@@ -1,6 +1,9 @@
 <template>
   <div class="App">
-    <section class="mt-6">
+    <h1 class="text-4xl leading-7 text-gray-500">
+      Luminance-Based Color Palette Generator
+    </h1>
+    <section class="mt-7">
       <h1 class="mb-6 font-bold uppercase tracking-wide">
         1. Set Your Luminosity Scale
       </h1>

@@ -1,8 +1,11 @@
 <template>
   <div class="DefaultLayout leading-6 container mx-auto px-6 text-gray-900">
-    <h1 class="text-4xl font-bold leading-10">
-      grayscale <span class="text-gray-500">design</span>
-    </h1>
+    <inertia-link
+      href="/"
+      class="text-4xl text-gray-900 leading-7 whitespace-no-wrap font-bold inline-block my-8 tracking-tight"
+    >
+      <strong>grayscale <span class="text-gray-500">design</span></strong>
+    </inertia-link>
     <slot></slot>
     <footer class="mt-10 py-7">
       A brain-child project from
