@@ -1,105 +1,118 @@
 <template>
   <div class="App">
-    <h1 class="font-bold uppercase tracking-wide">Set Your Luminosity Scale</h1>
-    <p class="mt-6">
-      This scale will be consistent throughout each color in your project's
-      palette. To get you started, we've setup 9 steps in your scale, light to
-      dark. Making all your colors with a scale of equal luminance allows you to
-      design a site in grayscale and add color of the same luminance later.
-    </p>
-    <div class="mt-8">
-      <div class="flex items-center justify-between">
-        <div>
-          <div class="font-mono opacity-50 mt-3">100</div>
-          <div class="w-9 h-9 bg-gray-100 rounded shadow-inner"></div>
-        </div>
-        <div>
-          <div class="font-mono opacity-50 mt-3">200</div>
-          <div class="w-9 h-9 bg-gray-200 rounded shadow-inner"></div>
-        </div>
-        <div>
-          <div class="font-mono opacity-50 mt-3">300</div>
-          <div class="w-9 h-9 bg-gray-300 rounded shadow-inner"></div>
-        </div>
-        <div>
-          <div class="font-mono opacity-50 mt-3">400</div>
-          <div class="w-9 h-9 bg-gray-400 rounded shadow-inner"></div>
-        </div>
-        <div>
-          <div class="font-mono opacity-50 mt-3">500</div>
-          <div class="w-9 h-9 bg-gray-500 rounded shadow-inner"></div>
-        </div>
-        <div>
-          <div class="font-mono opacity-50 mt-3">600</div>
-          <div
-            class="w-9 h-9 bg-gray-600 rounded shadow-inner text-white"
-          ></div>
-        </div>
-        <div>
-          <div class="font-mono opacity-50 mt-3">700</div>
-          <div
-            class="w-9 h-9 bg-gray-700 rounded shadow-inner text-white"
-          ></div>
-        </div>
-        <div>
-          <div class="font-mono opacity-50 mt-3">800</div>
-          <div
-            class="w-9 h-9 bg-gray-800 rounded shadow-inner text-white"
-          ></div>
-        </div>
-        <div>
-          <div class="font-mono opacity-50 mt-3">900</div>
-          <div
-            class="w-9 h-9 bg-gray-900 rounded shadow-inner text-white"
-          ></div>
-        </div>
-      </div>
-    </div>
-    <div class="mt-7">
-      <div class="rounded bg-gray-800 h-8 relative">
-        <div class="h-8 divide-x divide-gray-600 flex justify-between">
-          <div class="flex-grow"></div>
-          <div class="flex-grow"></div>
-          <div class="flex-grow"></div>
-          <div class="flex-grow"></div>
-          <div class="flex-grow"></div>
-          <div class="flex-grow"></div>
-          <div class="flex-grow"></div>
-          <div class="flex-grow"></div>
-          <div class="flex-grow"></div>
-          <div class="flex-grow"></div>
-        </div>
-        <div
-          class="border-t border-gray-600 absolute inset-x-0 top-1/2 -mt-px"
-        ></div>
-        <div
-          class="absolute bottom-0 left-0 uppercase font-bold tracking-wide text-sm text-gray-600 leading-5 p-2"
-        >
-          White
-        </div>
-        <div
-          class="absolute bottom-0 right-0 uppercase font-bold tracking-wide text-sm text-gray-600 leading-5 p-2"
-        >
-          Black
-        </div>
-        <div
-          v-for="(swatch, index) in lums"
-          :key="index"
-          draggable
-          @dragstart="onDragStart($event, index)"
-          @drag="onDrag($event, index)"
-          @dragend="onDragEnd($event, index)"
+    <section class="mt-6">
+      <h1 class="mb-6 font-bold uppercase tracking-wide">
+        1. Set Your Luminosity Scale
+      </h1>
+      <div class="float-right flex divide-x">
+        <button
+          @click="autoDistribute = true"
           :class="[
-            'absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-pointer w-half-7 h-half-7 shadow-inner rounded-full border-1 border-white',
-            isDragging === index ? '' : 'transition-all duration-200',
+            'px-4 focus:outline-none focus:shadow-outline',
+            autoDistribute
+              ? 'font-bold text-gray-700'
+              : 'text-gray-600 hover:underline',
           ]"
-          :style="{
-            left: `${swatch.lum}%`,
-            backgroundColor: `rgb(${swatch.rgb},${swatch.rgb},${swatch.rgb})`,
-          }"
-        ></div>
+        >
+          auto
+        </button>
+        <button
+          @click="autoDistribute = false"
+          :class="[
+            'px-4 focus:outline-none focus:shadow-outline',
+            !autoDistribute
+              ? 'font-bold text-gray-700'
+              : 'text-gray-600 hover:underline',
+          ]"
+        >
+          manual
+        </button>
       </div>
-    </div>
+      <p>Drag the sliders below to set your luminosity scale.</p>
+      <div class="mt-5">
+        <div class="rounded bg-gray-800 relative">
+          <div class="h-half-9 divide-x divide-gray-600 flex justify-between">
+            <div class="flex-grow"></div>
+            <div class="flex-grow"></div>
+            <div class="flex-grow"></div>
+            <div class="flex-grow"></div>
+            <div class="flex-grow"></div>
+            <div class="flex-grow"></div>
+            <div class="flex-grow"></div>
+            <div class="flex-grow"></div>
+            <div class="flex-grow"></div>
+            <div class="flex-grow"></div>
+          </div>
+          <div
+            class="border-t border-gray-600 absolute inset-x-0 top-1/2 -mt-px"
+          ></div>
+          <div
+            v-for="(swatch, index) in lums"
+            :key="index"
+            draggable
+            @dragstart="onDragStart($event, index)"
+            @drag="onDrag($event, index)"
+            @dragend="onDragEnd($event, index)"
+            :class="[
+              'absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-pointer w-half-7 h-half-7 shadow-inner rounded-full border-1 border-white',
+              isDragging === index
+                ? 'shadow-outline'
+                : 'transition-all duration-200',
+            ]"
+            :style="{
+              left: `${swatch.lum}%`,
+              backgroundColor: `rgb(${lumToGrayscaleRGB(swatch.lum).join(
+                ',',
+              )})`,
+            }"
+          ></div>
+        </div>
+      </div>
+      <div class="mt-8">
+        <div class="flex items-center justify-between">
+          <div v-for="(swatch, index) in lums" class="w-full">
+            <div
+              :class="[
+                'w-full h-9 shadow-inner',
+                index == 0
+                  ? 'rounded-l-lg'
+                  : index == lumsCount - 1
+                  ? 'rounded-r-lg'
+                  : '',
+              ]"
+              :style="{
+                backgroundColor: `rgb(${lumToGrayscaleRGB(swatch.lum).join(
+                  ',',
+                )})`,
+              }"
+            ></div>
+            <div class="font-mono opacity-50 text-sm text-center">
+              {{ parseInt(index, 10) + 1 }}00
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="mt-7 opacity-50">
+        This scale will be consistent throughout each color in your project's
+        palette. For example, a blue-500 will match a red-500 in visual
+        lightness/darkness... or any-other-color-500. This is the beauty of
+        <strong>grayscale design</strong>. Making all your colors with a scale
+        of equal luminance allows you to design a site in grayscale and add
+        color of the same luminance later.
+        <!-- To get you started, we've setup 9 steps in your scale, light to
+        dark.  -->
+      </p>
+    </section>
+    <section class="mt-9">
+      <h1 class="mb-6 font-bold uppercase tracking-wide">2. Add Colors</h1>
+      <p class="mt-6">Coming soon...</p>
+      <p class="mt-7 opacity-50">
+        When you add a color, it will create a swatch for each position from
+        your luminosity scale that you set above in step one.
+        <strong>Remember,</strong> to keep your entire color set consistent,
+        changing your luminosity scale will adjust all the colors accordingly.
+      </p>
+    </section>
   </div>
 </template>
 
@@ -114,19 +127,20 @@ export default {
   data() {
     return {
       lums: {
-        0: { rgb: 200, lum: 3 },
-        1: { rgb: 180, lum: 14.75 },
-        2: { rgb: 160, lum: 26.5 },
-        3: { rgb: 140, lum: 38.25 },
-        4: { rgb: 120, lum: 50 },
-        5: { rgb: 100, lum: 62.25 },
-        6: { rgb: 80, lum: 74.5 },
-        7: { rgb: 60, lum: 86.75 },
-        8: { rgb: 50, lum: 99 },
+        0: { lum: 3 },
+        1: { lum: 14.75 },
+        2: { lum: 26.5 },
+        3: { lum: 38.25 },
+        4: { lum: 50 },
+        5: { lum: 62.25 },
+        6: { lum: 74.5 },
+        7: { lum: 86.75 },
+        8: { lum: 99 },
       },
       isDragging: null,
       lastPos: null,
       adjustLumsTimeout: 0,
+      autoDistribute: true,
     };
   },
 
@@ -139,6 +153,11 @@ export default {
   watch: {},
 
   methods: {
+    lumToGrayscaleRGB(lum) {
+      let val = Math.round((255 * (100 - lum)) / 100);
+      return [val, val, val];
+    },
+
     onDragStart($event, index) {
       this.isDragging = index;
       $event.dataTransfer.setDragImage(BLANK_IMG, 0, 0);
@@ -179,6 +198,7 @@ export default {
     },
 
     adjustLums(startPos, endPos, curPos, curIndex) {
+      if (!this.autoDistribute) return;
       if (curPos !== this.lastPos) {
         let lumIndices = Object.keys(this.lums);
         lumIndices.pop();

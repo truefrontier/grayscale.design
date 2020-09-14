@@ -4689,7 +4689,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "DefaultLayout leading-6 container mx-auto text-gray-800" },
+    { staticClass: "DefaultLayout leading-6 container mx-auto text-gray-900" },
     [_vm._m(0), _vm._v(" "), _vm._t("default")],
     2
   )
@@ -4699,7 +4699,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("h1", { staticClass: "text-3xl font-bold leading-9" }, [
+    return _c("h1", { staticClass: "text-4xl font-bold leading-10" }, [
       _vm._v("\n    grayscale "),
       _c("span", { staticClass: "text-gray-500" }, [_vm._v("design")])
     ])
