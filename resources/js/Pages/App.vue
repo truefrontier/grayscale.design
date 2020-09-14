@@ -71,33 +71,7 @@
           ></div>
         </div>
       </div>
-      <div class="mt-8">
-        <div class="flex items-center justify-between">
-          <div v-for="(swatch, index) in lums" class="w-full">
-            <div
-              :class="[
-                'w-full h-9 shadow-inner',
-                index == 0
-                  ? 'rounded-l-lg'
-                  : index == lumsCount - 1
-                  ? 'rounded-r-lg'
-                  : '',
-              ]"
-              :style="{
-                backgroundColor: `rgb(${lumToGrayscaleRGB(swatch.lum).join(
-                  ',',
-                )})`,
-              }"
-            ></div>
-            <div class="font-mono opacity-50 text-sm text-center">
-              {{ parseInt(index, 10) + 1 }}00
-            </div>
-            <div class="font-mono opacity-25 text-xs text-center leading-5">
-              {{ swatch.lum.toFixed(1) }}%
-            </div>
-          </div>
-        </div>
-      </div>
+      <palette-row class="mt-8" :swatches="lums"></palette-row>
       <p class="mt-7 opacity-50">
         This scale will be consistent throughout each color in your project's
         palette. For example, a blue-500 will match a red-500 in luminance (or
@@ -124,6 +98,7 @@
 </template>
 
 <script>
+import PaletteRow from '../components/PaletteRow';
 var BLANK_IMG = new Image();
 BLANK_IMG.src =
   'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
@@ -131,18 +106,22 @@ BLANK_IMG.src =
 export default {
   name: 'App',
 
+  components: {
+    PaletteRow,
+  },
+
   data() {
     return {
       lums: {
-        0: { lum: 3 },
-        1: { lum: 8 },
-        2: { lum: 18 },
-        3: { lum: 33 },
-        4: { lum: 50 },
-        5: { lum: 67 },
-        6: { lum: 82 },
-        7: { lum: 92 },
-        8: { lum: 98 },
+        0: { lum: 3, bg: `rgb(${this.lumToGrayscaleRGB(3).join(',')})` },
+        1: { lum: 8, bg: `rgb(${this.lumToGrayscaleRGB(8).join(',')})` },
+        2: { lum: 18, bg: `rgb(${this.lumToGrayscaleRGB(18).join(',')})` },
+        3: { lum: 33, bg: `rgb(${this.lumToGrayscaleRGB(33).join(',')})` },
+        4: { lum: 50, bg: `rgb(${this.lumToGrayscaleRGB(50).join(',')})` },
+        5: { lum: 67, bg: `rgb(${this.lumToGrayscaleRGB(67).join(',')})` },
+        6: { lum: 82, bg: `rgb(${this.lumToGrayscaleRGB(82).join(',')})` },
+        7: { lum: 92, bg: `rgb(${this.lumToGrayscaleRGB(92).join(',')})` },
+        8: { lum: 98, bg: `rgb(${this.lumToGrayscaleRGB(98).join(',')})` },
       },
       isDragging: null,
       lastPos: null,
@@ -199,6 +178,7 @@ export default {
       let pos = parseFloat((elX / parentWidth) * 100);
       if ($event.screenX) {
         this.lums[index].lum = pos;
+        this.lums[index].bg = `rgb(${this.lumToGrayscaleRGB(pos).join(',')})`;
         clearTimeout(this.adjustLumsTimeout);
         this.adjustLumsTimeout = setTimeout(
           () =>
@@ -226,9 +206,15 @@ export default {
           if (ndx < curIndex) {
             let dist = (curPos - startPos) / curIndex;
             this.lums[ndx].lum = ndx * dist + this.lums[0].lum;
+            this.lums[ndx].bg = `rgb(${this.lumToGrayscaleRGB(
+              this.lums[ndx].lum,
+            ).join(',')})`;
           } else if (curIndex < ndx) {
             let dist = (endPos - curPos) / (this.lumsCount - curIndex - 1);
             this.lums[ndx].lum = (ndx - curIndex) * dist + curPos;
+            this.lums[ndx].bg = `rgb(${this.lumToGrayscaleRGB(
+              this.lums[ndx].lum,
+            ).join(',')})`;
           }
         });
 
