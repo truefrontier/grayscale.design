@@ -91,7 +91,7 @@
             v-model="palette.name"
             :ref="`paletteName${index}`"
             placeholder="Enter color label"
-            class="w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
+            class="inline-block align-middle w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
           />
           <palette-row
             class="mt-5"
@@ -106,6 +106,8 @@
 </template>
 
 <script>
+import { clone } from '../utils/object';
+import { hexToRGB, RGBtoLum, hexToHSL, HSLumToLightness, HSLtoRGB } from '../utils/color';
 import PaletteRow from '../components/PaletteRow';
 var BLANK_IMG = new Image();
 BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
@@ -223,7 +225,7 @@ export default {
     addPalette() {
       this.palettes.unshift({
         name: 'new',
-        swatches: this.lums,
+        swatches: clone(this.lums),
       });
 
       this.$nextTick(() => {

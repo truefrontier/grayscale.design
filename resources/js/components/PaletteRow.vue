@@ -3,8 +3,9 @@
     <div class="flex items-center justify-between">
       <div v-for="(swatch, index) in swatches" class="w-full">
         <swatch-square
+          :key="swatch.rgb.join(index)"
           :swatch="swatch"
-          :key="swatch.bg"
+          :index="parseInt(index, 10)"
           :is-first="index == 0"
           :is-last="index == Object.keys(swatches).length - 1"
         >
