@@ -53,3 +53,17 @@ export function lumFromRGB(r, g, b) {
   });
   return 21.26 * R + 71.52 * G + 7.22 * B;
 }
+
+export function closestLum(lums, lum) {
+  let min = 100;
+  let closest = null;
+  for (var i = lums.length - 1; i >= 0; i--) {
+    let val = Math.abs(lums[i] - lum);
+    if (val < min) {
+      min = val;
+      closest = lums[i];
+    }
+  }
+
+  return closest;
+}

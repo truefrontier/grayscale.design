@@ -48,11 +48,16 @@ export default {
 
   watch: {
     'palette.hex': {
-      handler(val) {
+      handler(val = '#000000') {
         this.palette.rgb = Color.hexToRGB(val);
         let rgb = Object.values(this.palette.rgb);
         this.palette.hsl = Color.RGBToHSL(...rgb);
         this.palette.lum = Color.lumFromRGB(...rgb);
+        let lums = Object.values(this.palette.swatches).reduce((arr, cur) => {
+          arr.push(cur.lum);
+          return arr;
+        }, []);
+        this.palette.closestLum = Color.closestLum(lums, this.palette.lum);
         this.$nextTick(this.generateSwatches);
       },
     },
