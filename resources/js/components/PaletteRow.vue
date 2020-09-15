@@ -8,10 +8,13 @@
           :is-first="index == 0"
           :is-last="index == Object.keys(swatches).length - 1"
         >
-          <div class="font-mono opacity-50 text-sm text-center">
-            {{ parseInt(index, 10) + 1 }}00
+          <div class="font-mono opacity-50 text-gray-800 text-sm text-center">
+            {{ name ? name + '-' : '' }}{{ parseInt(index, 10) + 1 }}00
           </div>
-          <div class="font-mono opacity-25 text-xs text-center leading-5">
+          <div
+            v-if="!hideLum"
+            class="font-mono opacity-50 text-gray-600 text-xs text-center leading-5"
+          >
             {{ swatch.lum.toFixed(1) }}%
           </div>
         </swatch-square>
@@ -27,6 +30,11 @@ export default {
 
   props: {
     swatches: Object,
+    hideLum: Boolean,
+    name: {
+      type: String,
+      default: '',
+    },
   },
 
   components: {

@@ -8,7 +8,7 @@
     </inertia-link>
     <slot></slot>
     <footer class="mt-10 py-7">
-      A brain-child project from
+      A design-friendly dev project from
       <a
         href="https://brandnamemaker.com"
         class="border-b border-gray-500 inline-block hover:opacity-50"
@@ -19,12 +19,8 @@
         href="https://truefrontierapps.com"
         class="border-b border-gray-500 inline-block hover:opacity-50"
         >True Frontier</a
-      >. &copy;
-      {{
-        new Date().getFullYear() === 2020
-          ? 2020
-          : `2020-${new Date().getFullYear()}`
-      }}. All rights reserved.
+      >. &copy; {{ new Date().getFullYear() === 2020 ? 2020 : `2020-${new Date().getFullYear()}` }}.
+      All rights reserved.
     </footer>
   </div>
 </template>

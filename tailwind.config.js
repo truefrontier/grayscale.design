@@ -16,6 +16,8 @@ module.exports = {
       },
       variants: {
         zIndex: ['responsive', 'hover', 'focus'],
+        borderStyle: ['responsive', 'hover', 'focus'],
+        borderWidth: ['responsive', 'hover', 'focus'],
       },
       colors: {
         blue: {
@@ -83,8 +85,5 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [
-    require('tailwindcss-breakpoint-helper'),
-    require('tailwindcss-golden-ratio'),
-  ],
+  plugins: [require('tailwindcss-breakpoint-helper'), require('tailwindcss-golden-ratio')],
 };

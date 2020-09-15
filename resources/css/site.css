@@ -1,1 +1,7 @@
-/* This is all you. */
+button,
+input,
+textarea {
+  &:focus {
+    @apply outline-none shadow-outline;
+  }
+}

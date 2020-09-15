@@ -1,20 +1,14 @@
 <template>
   <div class="App">
-    <h1 class="text-4xl leading-7 text-gray-500">
-      Luminance-Based Color Palette Generator
-    </h1>
+    <h1 class="text-4xl leading-7 text-gray-500">Luminance-Based Color Palette Generator</h1>
     <section class="mt-7">
-      <h1 class="mb-6 font-bold uppercase tracking-wide">
-        1. Set Your Luminosity Scale
-      </h1>
+      <h1 class="mb-6 font-bold uppercase tracking-wide">1. Set Your Luminosity Scale</h1>
       <div class="float-right flex divide-x">
         <button
           @click="autoDistribute = true"
           :class="[
-            'px-4 focus:outline-none focus:shadow-outline',
-            autoDistribute
-              ? 'font-bold text-gray-700'
-              : 'text-gray-600 hover:underline',
+            'px-4',
+            autoDistribute ? 'font-bold text-gray-700' : 'text-gray-600 hover:underline',
           ]"
         >
           auto
@@ -22,10 +16,8 @@
         <button
           @click="autoDistribute = false"
           :class="[
-            'px-4 focus:outline-none focus:shadow-outline',
-            !autoDistribute
-              ? 'font-bold text-gray-700'
-              : 'text-gray-600 hover:underline',
+            'px-4',
+            !autoDistribute ? 'font-bold text-gray-700' : 'text-gray-600 hover:underline',
           ]"
         >
           manual
@@ -46,9 +38,7 @@
             <div class="flex-grow"></div>
             <div class="flex-grow"></div>
           </div>
-          <div
-            class="border-t border-gray-600 absolute inset-x-0 top-1/2 -mt-px"
-          ></div>
+          <div class="border-t border-gray-600 absolute inset-x-0 top-1/2 -mt-px"></div>
           <div
             v-for="(swatch, index) in lums"
             :key="index"
@@ -58,41 +48,59 @@
             @dragend="onDragEnd($event, index)"
             :class="[
               'absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-pointer w-half-7 h-half-7 shadow-inner rounded-full border-1 border-white',
-              isDragging === index
-                ? 'shadow-outline'
-                : 'transition-all duration-200',
+              isDragging === index ? 'shadow-outline' : 'transition-all duration-200',
             ]"
             :style="{
               left: `${swatch.lum}%`,
-              backgroundColor: `rgb(${lumToGrayscaleRGB(swatch.lum).join(
-                ',',
-              )})`,
+              backgroundColor: `rgb(${lumToGrayscaleRGB(swatch.lum).join(',')})`,
             }"
           ></div>
         </div>
       </div>
       <palette-row class="mt-8" :swatches="lums"></palette-row>
       <p class="mt-7 opacity-50">
-        This scale will be consistent throughout each color in your project's
-        palette. For example, a blue-500 will match a red-500 in luminance (or
-        visual lightness/darkness)... or any-other-color-500. In the same way, a
-        red-300 would match a yellow-300 or gray-300. This is the beauty of
-        <strong>grayscale design</strong>. Making all your colors with a scale
-        of equal luminance allows you to design a website first in grayscale,
-        and then, you can add color later without losing any contrast.
+        This scale will be consistent throughout each color in your project's palette. For example,
+        a blue-500 will match a red-500 in luminance (or visual lightness/darkness)... or
+        any-other-color-500. In the same way, a red-300 would match a yellow-300 or gray-300. This
+        is the beauty of
+        <strong>grayscale design</strong>. Making all your colors with a scale of equal luminance
+        allows you to design a website first in grayscale, and then, you can add color later without
+        losing any contrast.
         <!-- To get you started, we've setup 9 steps in your scale, light to
         dark.  -->
       </p>
     </section>
     <section class="mt-9">
       <h1 class="mb-6 font-bold uppercase tracking-wide">2. Set your colors</h1>
-      <p class="mt-6">Coming soon...</p>
-      <p class="mt-7 opacity-50">
-        When you add a color, it will create a swatch for each position from
-        your luminosity scale that you set above in step one.
-        <strong>Remember,</strong> to keep your entire color set consistent,
-        changing your luminosity scale will adjust all the colors accordingly.
+      <p class="mt-6 opacity-50">
+        When you add a color, it will create a swatch for each position from your luminosity scale
+        that you set above in step one.
+        <strong>Remember,</strong> to keep your entire color set consistent, changing your
+        luminosity scale will adjust all the colors accordingly.
       </p>
+      <button
+        @click="addPalette"
+        class="mt-7 border-1 border-gray-700 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-700 hover:text-white uppercase text-sm font-bold tracking-wide"
+      >
+        Add A Color
+      </button>
+      <div class="mt-8">
+        <div v-for="(palette, index) in palettes" :key="index">
+          <input
+            type="text"
+            v-model="palette.name"
+            :ref="`paletteName${index}`"
+            placeholder="Enter color label"
+            class="w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
+          />
+          <palette-row
+            class="mt-5"
+            :swatches="palette.swatches"
+            :name="palette.name"
+            hide-lum
+          ></palette-row>
+        </div>
+      </div>
     </section>
   </div>
 </template>
@@ -100,8 +108,7 @@
 <script>
 import PaletteRow from '../components/PaletteRow';
 var BLANK_IMG = new Image();
-BLANK_IMG.src =
-  'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
 
 export default {
   name: 'App',
@@ -127,6 +134,7 @@ export default {
       lastPos: null,
       adjustLumsTimeout: 0,
       autoDistribute: false,
+      palettes: [],
     };
   },
 
@@ -139,12 +147,7 @@ export default {
   watch: {
     autoDistribute(val) {
       if (val) {
-        this.adjustLums(
-          this.lums[0],
-          this.lums[this.lumsCount - 1].lum,
-          this.lums[0].lum,
-          0,
-        );
+        this.adjustLums(this.lums[0], this.lums[this.lumsCount - 1].lum, this.lums[0].lum, 0);
       }
     },
   },
@@ -184,9 +187,7 @@ export default {
           () =>
             this.adjustLums(
               index === 0 ? pos : this.lums[0].lum,
-              index === this.lumsCount - 1
-                ? pos
-                : this.lums[this.lumsCount - 1].lum,
+              index === this.lumsCount - 1 ? pos : this.lums[this.lumsCount - 1].lum,
               pos,
               index,
             ),
@@ -217,6 +218,20 @@ export default {
         // Prevent this from running unnecessarily
         this.lastPos = curPos;
       }
+    },
+
+    addPalette() {
+      this.palettes.unshift({
+        name: 'new',
+        swatches: this.lums,
+      });
+
+      this.$nextTick(() => {
+        setTimeout(() => {
+          let [input] = this.$refs.paletteName0 || [];
+          if (input) input.focus();
+        }, 10);
+      });
     },
   },
 };
