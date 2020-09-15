@@ -51,7 +51,7 @@
               isDragging === index ? 'shadow-outline' : 'transition-all duration-200',
             ]"
             :style="{
-              left: `${swatch.lum}%`,
+              left: `${100 - swatch.lum}%`,
               backgroundColor: `rgb(${lumToGrayscaleRGB(swatch.lum).join(',')})`,
             }"
           ></div>
@@ -120,15 +120,15 @@ export default {
   data() {
     return {
       lums: {
-        0: { lum: 3, rgb: this.lumToGrayscaleRGB(3) },
-        1: { lum: 8, rgb: this.lumToGrayscaleRGB(8) },
-        2: { lum: 18, rgb: this.lumToGrayscaleRGB(18) },
-        3: { lum: 33, rgb: this.lumToGrayscaleRGB(33) },
+        0: { lum: 98, rgb: this.lumToGrayscaleRGB(98) },
+        1: { lum: 92, rgb: this.lumToGrayscaleRGB(92) },
+        2: { lum: 82, rgb: this.lumToGrayscaleRGB(82) },
+        3: { lum: 67, rgb: this.lumToGrayscaleRGB(67) },
         4: { lum: 50, rgb: this.lumToGrayscaleRGB(50) },
-        5: { lum: 67, rgb: this.lumToGrayscaleRGB(67) },
-        6: { lum: 82, rgb: this.lumToGrayscaleRGB(82) },
-        7: { lum: 92, rgb: this.lumToGrayscaleRGB(92) },
-        8: { lum: 98, rgb: this.lumToGrayscaleRGB(98) },
+        5: { lum: 33, rgb: this.lumToGrayscaleRGB(33) },
+        6: { lum: 18, rgb: this.lumToGrayscaleRGB(18) },
+        7: { lum: 8, rgb: this.lumToGrayscaleRGB(8) },
+        8: { lum: 3, rgb: this.lumToGrayscaleRGB(3) },
       },
       isDragging: null,
       lastPos: null,
@@ -154,7 +154,7 @@ export default {
 
   methods: {
     lumToGrayscaleRGB(lum) {
-      let val = Math.round((255 * (100 - lum)) / 100);
+      let val = Math.round((255 * lum) / 100);
       return [val, val, val];
     },
 
@@ -180,15 +180,15 @@ export default {
       }
       let pos = parseFloat((elX / parentWidth) * 100);
       if ($event.screenX) {
-        this.lums[index].lum = pos;
-        this.lums[index].rgb = this.lumToGrayscaleRGB(pos);
+        this.lums[index].lum = 100 - pos;
+        this.lums[index].rgb = this.lumToGrayscaleRGB(100 - pos);
         clearTimeout(this.adjustLumsTimeout);
         this.adjustLumsTimeout = setTimeout(
           () =>
             this.adjustLums(
               index === 0 ? pos : this.lums[0].lum,
               index === this.lumsCount - 1 ? pos : this.lums[this.lumsCount - 1].lum,
-              pos,
+              100 - pos,
               index,
             ),
           20,
