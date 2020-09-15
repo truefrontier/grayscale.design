@@ -57,7 +57,7 @@
           ></div>
         </div>
       </div>
-      <palette-row class="mt-8" :swatches="lums"></palette-row>
+      <palette-row class="mt-8" :palette="{ swatches: lums }"></palette-row>
       <p class="mt-7 opacity-50">
         This scale will be consistent throughout each color in your project's palette. For example,
         a blue-500 will match a red-500 in luminance (or visual lightness/darkness)... or
@@ -85,7 +85,14 @@
         Add A Color
       </button>
       <div class="mt-8">
-        <div v-for="(palette, index) in palettes" :key="index">
+        <div v-for="(palette, index) in palettes" :key="index" class="mt-8">
+          <input
+            type="color"
+            v-model="palette.hex"
+            :ref="`paletteHex${index}`"
+            placeholder="Enter color label"
+            class="inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4"
+          />
           <input
             type="text"
             v-model="palette.name"
@@ -93,12 +100,7 @@
             placeholder="Enter color label"
             class="inline-block align-middle w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
           />
-          <palette-row
-            class="mt-5"
-            :swatches="palette.swatches"
-            :name="palette.name"
-            hide-lum
-          ></palette-row>
+          <palette-row class="mt-5" :palette="palette" hide-lum></palette-row>
         </div>
       </div>
     </section>
@@ -107,7 +109,6 @@
 
 <script>
 import { clone } from '../utils/object';
-import { hexToRGB, RGBtoLum, hexToHSL, HSLumToLightness, HSLtoRGB } from '../utils/color';
 import PaletteRow from '../components/PaletteRow';
 var BLANK_IMG = new Image();
 BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
@@ -133,6 +134,7 @@ export default {
         8: { lum: 3, rgb: this.lumToGrayscaleRGB(3) },
       },
       isDragging: null,
+      isChoosingBase: null,
       lastPos: null,
       adjustLumsTimeout: 0,
       autoDistribute: false,
@@ -228,10 +230,12 @@ export default {
         swatches: clone(this.lums),
       });
 
+      this.isChoosingBase = 0;
+
       this.$nextTick(() => {
         setTimeout(() => {
-          let [input] = this.$refs.paletteName0 || [];
-          if (input) input.focus();
+          let [input] = this.$refs.paletteHex0 || [];
+          if (input) input.click();
         }, 10);
       });
     },

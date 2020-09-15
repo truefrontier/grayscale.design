@@ -17074,13 +17074,11 @@ __webpack_require__.r(__webpack_exports__);
 var map = {
 	"./App": [
 		"./resources/js/Pages/App.vue",
-		0,
-		2
+		0
 	],
 	"./App.vue": [
 		"./resources/js/Pages/App.vue",
-		0,
-		2
+		0
 	],
 	"./Default": [
 		"./resources/js/Pages/Default.vue"
