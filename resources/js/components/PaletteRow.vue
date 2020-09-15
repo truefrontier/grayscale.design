@@ -57,7 +57,7 @@ export default {
           arr.push(cur.lum);
           return arr;
         }, []);
-        this.palette.closestLum = Color.closestLum(lums, this.palette.lum);
+        this.palette.closest = Color.closestLum(lums, this.palette.lum);
         this.$nextTick(this.generateSwatches);
       },
     },

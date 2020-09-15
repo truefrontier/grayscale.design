@@ -56,14 +56,17 @@ export function lumFromRGB(r, g, b) {
 
 export function closestLum(lums, lum) {
   let min = 100;
-  let closest = null;
+  let cLum = null;
+  let cIndex = null;
   for (var i = lums.length - 1; i >= 0; i--) {
     let val = Math.abs(lums[i] - lum);
     if (val < min) {
       min = val;
-      closest = lums[i];
+      cLum = lums[i];
+      cIndex = i;
     }
   }
-
+  let closest = {};
+  closest[cIndex] = cLum;
   return closest;
 }

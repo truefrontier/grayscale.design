@@ -357,11 +357,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   watch: {
     'palette.hex': {
-      handler: function handler(val) {
+      handler: function handler() {
+        var val = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '#000000';
         this.palette.rgb = _utils_color__WEBPACK_IMPORTED_MODULE_0__["hexToRGB"](val);
         var rgb = Object.values(this.palette.rgb);
         this.palette.hsl = _utils_color__WEBPACK_IMPORTED_MODULE_0__["RGBToHSL"].apply(_utils_color__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(rgb));
         this.palette.lum = _utils_color__WEBPACK_IMPORTED_MODULE_0__["lumFromRGB"].apply(_utils_color__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(rgb));
+        var lums = Object.values(this.palette.swatches).reduce(function (arr, cur) {
+          arr.push(cur.lum);
+          return arr;
+        }, []);
+        this.palette.closest = _utils_color__WEBPACK_IMPORTED_MODULE_0__["closestLum"](lums, this.palette.lum);
         this.$nextTick(this.generateSwatches);
       }
     }
@@ -1040,7 +1046,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************!*\
   !*** ./resources/js/utils/color.js ***!
   \*************************************/
-/*! exports provided: hexToRGB, RGBToHSL, lumFromRGB */
+/*! exports provided: hexToRGB, RGBToHSL, lumFromRGB, closestLum */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1048,6 +1054,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hexToRGB", function() { return hexToRGB; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RGBToHSL", function() { return RGBToHSL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lumFromRGB", function() { return lumFromRGB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "closestLum", function() { return closestLum; });
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -1120,6 +1127,25 @@ function lumFromRGB(r, g, b) {
       B = _map2[2];
 
   return 21.26 * R + 71.52 * G + 7.22 * B;
+}
+function closestLum(lums, lum) {
+  var min = 100;
+  var cLum = null;
+  var cIndex = null;
+
+  for (var i = lums.length - 1; i >= 0; i--) {
+    var val = Math.abs(lums[i] - lum);
+
+    if (val < min) {
+      min = val;
+      cLum = lums[i];
+      cIndex = i;
+    }
+  }
+
+  var closest = {};
+  closest[cIndex] = cLum;
+  return closest;
 }
 
 /***/ }),
