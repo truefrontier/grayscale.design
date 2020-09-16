@@ -272,7 +272,7 @@ export default {
 
     addPalette() {
       this.palettes.unshift({
-        name: 'new',
+        name: '',
         swatches: clone(this.lums),
       });
 
