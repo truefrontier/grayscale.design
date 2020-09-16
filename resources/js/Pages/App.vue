@@ -22,6 +22,39 @@
         >
           manual
         </button>
+        <div class="relative">
+          <button
+            @click="
+              autoDistribute = false;
+              showPresets = !showPresets;
+            "
+            class="px-4 text-gray-600 hover:underline"
+          >
+            presets<i class="ml-2 fa fa-caret-down"></i>
+          </button>
+          <div
+            v-if="showPresets"
+            class="absolute right-0 mr-4 top-100 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
+          >
+            <a
+              :class="[
+                'block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
+                {
+                  'bg-gray-400 bg-opacity-75':
+                    JSON.stringify(preset.values) == JSON.stringify(lumsValues),
+                },
+              ]"
+              v-for="(preset, key) in presets"
+              :href="`#${key}`"
+              :key="key"
+              @click="
+                setLums(preset.values);
+                showPresets = false;
+              "
+              >{{ preset.label }}</a
+            >
+          </div>
+        </div>
       </div>
       <p>Drag the sliders below to set your luminosity scale.</p>
       <div class="mt-5">
@@ -176,17 +209,12 @@ export default {
 
   data() {
     return {
-      lums: {
-        0: { lum: 98, rgb: this.lumToGrayscaleRGB(98) },
-        1: { lum: 92, rgb: this.lumToGrayscaleRGB(92) },
-        2: { lum: 82, rgb: this.lumToGrayscaleRGB(82) },
-        3: { lum: 67, rgb: this.lumToGrayscaleRGB(67) },
-        4: { lum: 50, rgb: this.lumToGrayscaleRGB(50) },
-        5: { lum: 33, rgb: this.lumToGrayscaleRGB(33) },
-        6: { lum: 18, rgb: this.lumToGrayscaleRGB(18) },
-        7: { lum: 8, rgb: this.lumToGrayscaleRGB(8) },
-        8: { lum: 3, rgb: this.lumToGrayscaleRGB(3) },
+      presets: {
+        bell: { label: 'Bell Curve', values: [98, 92, 82, 67, 50, 33, 18, 8, 2] },
+        linear: { label: 'Linear', values: [98, 86, 74, 62, 50, 38, 26, 14, 2] },
+        dark: { label: 'The Darkside', values: [90, 81, 66, 43, 22, 14, 6.5, 2, 0.8] },
       },
+      lums: { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {} },
       isDragging: null,
       isChoosingBase: null,
       lastPos: null,
@@ -195,10 +223,18 @@ export default {
       palettes: [],
       dragTimeout: 0,
       showFilters: false,
+      showPresets: false,
     };
   },
 
   computed: {
+    lumsValues() {
+      return Object.keys(this.lums).reduce((arr, index) => {
+        arr.push(this.lums[index].lum);
+        return arr;
+      }, []);
+    },
+
     lumsCount() {
       return Object.keys(this.lums).length;
     },
@@ -243,7 +279,21 @@ export default {
     },
   },
 
+  created() {
+    this.setLums(this.presets.bell.values);
+  },
+
   methods: {
+    setLums(values) {
+      this.lums = Object.keys(this.lums).reduce((obj, index) => {
+        obj[index] = {
+          lum: values[index],
+          rgb: this.lumToGrayscaleRGB(values[index]),
+        };
+        return obj;
+      }, {});
+    },
+
     lumToGrayscaleRGB(lum) {
       let val = Math.round((255 * lum) / 100);
       return [val, val, val];
