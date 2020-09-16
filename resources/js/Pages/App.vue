@@ -100,7 +100,7 @@
             placeholder="Enter color label"
             class="inline-block align-middle w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
           />
-          <palette-row class="mt-5" :palette="palette" hide-lum></palette-row>
+          <palette-row class="mt-5" :palette="palette"></palette-row>
         </div>
       </div>
     </section>
@@ -139,6 +139,7 @@ export default {
       adjustLumsTimeout: 0,
       autoDistribute: false,
       palettes: [],
+      dragTimeout: 0,
     };
   },
 
@@ -153,6 +154,19 @@ export default {
       if (val) {
         this.adjustLums(this.lums[0], this.lums[this.lumsCount - 1].lum, this.lums[0].lum, 0);
       }
+    },
+
+    lums: {
+      deep: true,
+      handler(val) {
+        // Update palette swatch lums
+        this.palettes = this.palettes.map((palette) => {
+          Object.keys(palette.swatches).forEach((i) => {
+            palette.swatches[i].lum = val[i].lum;
+          });
+          return palette;
+        });
+      },
     },
   },
 

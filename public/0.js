@@ -186,7 +186,8 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       lastPos: null,
       adjustLumsTimeout: 0,
       autoDistribute: false,
-      palettes: []
+      palettes: [],
+      dragTimeout: 0
     };
   },
   computed: {
@@ -198,6 +199,18 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
     autoDistribute: function autoDistribute(val) {
       if (val) {
         this.adjustLums(this.lums[0], this.lums[this.lumsCount - 1].lum, this.lums[0].lum, 0);
+      }
+    },
+    lums: {
+      deep: true,
+      handler: function handler(val) {
+        // Update palette swatch lums
+        this.palettes = this.palettes.map(function (palette) {
+          Object.keys(palette.swatches).forEach(function (i) {
+            palette.swatches[i].lum = val[i].lum;
+          });
+          return palette;
+        });
       }
     }
   },
@@ -298,8 +311,16 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _utils_color__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/color */ "./resources/js/utils/color.js");
-/* harmony import */ var _SwatchSquare__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./SwatchSquare */ "./resources/js/components/SwatchSquare.vue");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _utils_color__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/color */ "./resources/js/utils/color.js");
+/* harmony import */ var _SwatchSquare__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./SwatchSquare */ "./resources/js/components/SwatchSquare.vue");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -352,35 +373,101 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       "default": ''
     }
   },
+  data: function data() {
+    return {
+      paletteClone: {},
+      generateTimeout: 0
+    };
+  },
   components: {
-    SwatchSquare: _SwatchSquare__WEBPACK_IMPORTED_MODULE_1__["default"]
+    SwatchSquare: _SwatchSquare__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   watch: {
+    palette: {
+      deep: true,
+      handler: function handler(val) {
+        this.paletteClone = Object.assign({}, this.paletteClone, val);
+      }
+    },
     'palette.hex': {
       handler: function handler() {
         var val = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '#000000';
-        this.palette.rgb = _utils_color__WEBPACK_IMPORTED_MODULE_0__["hexToRGB"](val);
-        var rgb = Object.values(this.palette.rgb);
-        this.palette.hsl = _utils_color__WEBPACK_IMPORTED_MODULE_0__["RGBToHSL"].apply(_utils_color__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(rgb));
-        this.palette.lum = _utils_color__WEBPACK_IMPORTED_MODULE_0__["lumFromRGB"].apply(_utils_color__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(rgb));
-        var lums = Object.values(this.palette.swatches).reduce(function (arr, cur) {
-          arr.push(cur.lum);
-          return arr;
-        }, []);
-        this.palette.closest = _utils_color__WEBPACK_IMPORTED_MODULE_0__["closestLum"](lums, this.palette.lum);
+        this.paletteClone = Object.assign({}, this.paletteClone, this.palette, {
+          hex: val
+        });
+        this.paletteClone.rgb = _utils_color__WEBPACK_IMPORTED_MODULE_1__["hexToRGB"](val);
+        var rgb = Object.values(this.paletteClone.rgb);
+        this.paletteClone.hsl = _utils_color__WEBPACK_IMPORTED_MODULE_1__["RGBToHSL"].apply(_utils_color__WEBPACK_IMPORTED_MODULE_1__, _toConsumableArray(rgb));
+        this.paletteClone.lum = _utils_color__WEBPACK_IMPORTED_MODULE_1__["lumFromRGB"].apply(_utils_color__WEBPACK_IMPORTED_MODULE_1__, _toConsumableArray(rgb));
+        this.paletteClone.closest = _utils_color__WEBPACK_IMPORTED_MODULE_1__["closestLum"](this.lums, this.paletteClone.lum);
+        this.$nextTick(this.generateSwatches);
+      }
+    },
+    lums: {
+      deep: true,
+      handler: function handler() {
         this.$nextTick(this.generateSwatches);
       }
     }
   },
   computed: {
     swatches: function swatches() {
-      if (!this.palette) return {};
-      return this.palette.swatches || {};
+      return this.paletteClone && this.paletteClone.swatches || this.palette && this.palette.swatches || {};
+    },
+    lums: function lums() {
+      return Object.values(this.palette.swatches).reduce(function (arr, cur) {
+        arr.push(cur.lum);
+        return arr;
+      }, []);
     }
   },
   methods: {
     generateSwatches: function generateSwatches() {
-      console.log('%c this.palette -->', 'color:#F80', this.palette);
+      var _this = this;
+
+      if (!this.paletteClone.hsl) return;
+
+      var run = function run() {
+        var baseHSL = _this.paletteClone.hsl;
+        Object.keys(_this.paletteClone.swatches).forEach( /*#__PURE__*/function () {
+          var _ref = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(i) {
+            var swatch, newL, newRGB;
+            return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    swatch = _this.paletteClone.swatches[i];
+                    _context.next = 3;
+                    return _utils_color__WEBPACK_IMPORTED_MODULE_1__["lightnessFromHSLum"](baseHSL.h, baseHSL.s, swatch.lum);
+
+                  case 3:
+                    newL = _context.sent;
+                    newRGB = _utils_color__WEBPACK_IMPORTED_MODULE_1__["HSLtoRGB"](baseHSL.h, baseHSL.s, newL);
+                    _this.paletteClone.swatches[i].rgb = Object.values(newRGB).map(function (c) {
+                      return c * 1;
+                    });
+                    _this.paletteClone.swatches[i].lum = _utils_color__WEBPACK_IMPORTED_MODULE_1__["lumFromRGB"].apply(_utils_color__WEBPACK_IMPORTED_MODULE_1__, _toConsumableArray(_this.paletteClone.swatches[i].rgb));
+
+                  case 7:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, _callee);
+          }));
+
+          return function (_x) {
+            return _ref.apply(this, arguments);
+          };
+        }());
+      };
+
+      if (window.requestAnimationFrame) {
+        window.requestAnimationFrame(run);
+      } else {
+        clearTimeout(this.generateTimeout);
+        this.generateTimeout = setTimeout(run, 50);
+      }
     }
   }
 });
@@ -631,7 +718,7 @@ var render = function() {
               _vm._v(" "),
               _c("palette-row", {
                 staticClass: "mt-5",
-                attrs: { palette: palette, "hide-lum": "" }
+                attrs: { palette: palette }
               })
             ],
             1
@@ -735,7 +822,7 @@ var render = function() {
             _c(
               "swatch-square",
               {
-                key: swatch.rgb.join(index),
+                key: index,
                 attrs: {
                   swatch: swatch,
                   index: parseInt(index, 10),
@@ -770,7 +857,7 @@ var render = function() {
                       [
                         _vm._v(
                           "\n          " +
-                            _vm._s(swatch.lum.toFixed(1)) +
+                            _vm._s(swatch.lum ? swatch.lum.toFixed(1) : "--") +
                             "%\n        "
                         )
                       ]
@@ -1046,7 +1133,7 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************!*\
   !*** ./resources/js/utils/color.js ***!
   \*************************************/
-/*! exports provided: hexToRGB, RGBToHSL, lumFromRGB, closestLum */
+/*! exports provided: hexToRGB, RGBToHSL, lumFromRGB, closestLum, lightnessFromHSLum, HSLtoRGB */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1055,6 +1142,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RGBToHSL", function() { return RGBToHSL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lumFromRGB", function() { return lumFromRGB; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "closestLum", function() { return closestLum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lightnessFromHSLum", function() { return lightnessFromHSLum; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HSLtoRGB", function() { return HSLtoRGB; });
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -1082,9 +1179,6 @@ function hexToRGB(hex) {
     b = "0x".concat(hex[5]).concat(hex[6]);
   }
 
-  r *= 1;
-  g *= 1;
-  b *= 1;
   return {
     r: r,
     g: g,
@@ -1146,6 +1240,76 @@ function closestLum(lums, lum) {
   var closest = {};
   closest[cIndex] = cLum;
   return closest;
+}
+function lightnessFromHSLum(h, s, lum) {
+  var lowestDiff = 100;
+  var newL = 100; // ballpark
+
+  for (var l = 100; l >= 0; l--) {
+    var curLum = lumFromRGB.apply(void 0, _toConsumableArray(Object.values(HSLtoRGB(h, s, l))));
+    var diff = Math.abs(lum - curLum);
+
+    if (diff < lowestDiff) {
+      newL = l;
+      lowestDiff = diff;
+    }
+  } // fine-tune
+
+
+  for (var l = newL + 5; l >= newL - 5; l -= 0.01) {
+    var _curLum = lumFromRGB.apply(void 0, _toConsumableArray(Object.values(HSLtoRGB(h, s, l))));
+
+    var _diff = Math.abs(lum - _curLum);
+
+    if (_diff < lowestDiff) {
+      newL = l;
+      lowestDiff = _diff;
+    }
+  }
+
+  return newL;
+}
+function HSLtoRGB(h, s, l) {
+  s /= 100;
+  l /= 100;
+  var c = (1 - Math.abs(2 * l - 1)) * s;
+  var x = c * (1 - Math.abs(h / 60 % 2 - 1));
+  var m = l - c / 2;
+  var r = 0;
+  var g = 0;
+  var b = 0;
+
+  if (h >= 0 && h < 60) {
+    r = c;
+    g = x;
+    b = 0;
+  } else if (h >= 60 && h < 120) {
+    r = x;
+    g = c;
+    b = 0;
+  } else if (h >= 120 && h < 180) {
+    r = 0;
+    g = c;
+    b = x;
+  } else if (h >= 180 && h < 240) {
+    r = 0;
+    g = x;
+    b = c;
+  } else if (h >= 240 && h < 300) {
+    r = x;
+    g = 0;
+    b = c;
+  } else if (h >= 300 && h < 360) {
+    r = c;
+    g = 0;
+    b = x;
+  }
+
+  return {
+    r: (r + m) * 255,
+    g: (g + m) * 255,
+    b: (b + m) * 255
+  };
 }
 
 /***/ }),

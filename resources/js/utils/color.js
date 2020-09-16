@@ -11,9 +11,6 @@ export function hexToRGB(hex) {
     g = `0x${hex[3]}${hex[4]}`;
     b = `0x${hex[5]}${hex[6]}`;
   }
-  r *= 1;
-  g *= 1;
-  b *= 1;
   return { r, g, b };
 }
 
@@ -69,4 +66,75 @@ export function closestLum(lums, lum) {
   let closest = {};
   closest[cIndex] = cLum;
   return closest;
+}
+
+export function lightnessFromHSLum(h, s, lum) {
+  let lowestDiff = 100;
+  let newL = 100;
+
+  // ballpark
+  for (var l = 100; l >= 0; l--) {
+    let curLum = lumFromRGB(...Object.values(HSLtoRGB(h, s, l)));
+    let diff = Math.abs(lum - curLum);
+    if (diff < lowestDiff) {
+      newL = l;
+      lowestDiff = diff;
+    }
+  }
+
+  // fine-tune
+  for (var l = newL + 5; l >= newL - 5; l -= 0.01) {
+    let curLum = lumFromRGB(...Object.values(HSLtoRGB(h, s, l)));
+    let diff = Math.abs(lum - curLum);
+    if (diff < lowestDiff) {
+      newL = l;
+      lowestDiff = diff;
+    }
+  }
+
+  return newL;
+}
+
+export function HSLtoRGB(h, s, l) {
+  s /= 100;
+  l /= 100;
+
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let r = 0;
+  let g = 0;
+  let b = 0;
+
+  if (h >= 0 && h < 60) {
+    r = c;
+    g = x;
+    b = 0;
+  } else if (h >= 60 && h < 120) {
+    r = x;
+    g = c;
+    b = 0;
+  } else if (h >= 120 && h < 180) {
+    r = 0;
+    g = c;
+    b = x;
+  } else if (h >= 180 && h < 240) {
+    r = 0;
+    g = x;
+    b = c;
+  } else if (h >= 240 && h < 300) {
+    r = x;
+    g = 0;
+    b = c;
+  } else if (h >= 300 && h < 360) {
+    r = c;
+    g = 0;
+    b = x;
+  }
+
+  return {
+    r: (r + m) * 255,
+    g: (g + m) * 255,
+    b: (b + m) * 255,
+  };
 }

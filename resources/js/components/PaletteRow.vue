@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
       <div v-for="(swatch, index) in swatches" class="w-full">
         <swatch-square
-          :key="swatch.rgb.join(index)"
+          :key="index"
           :swatch="swatch"
           :index="parseInt(index, 10)"
           :is-first="index == 0"
@@ -18,7 +18,7 @@
             v-if="!hideLum"
             class="font-mono opacity-50 text-gray-600 text-xs text-center leading-5"
           >
-            {{ swatch.lum.toFixed(1) }}%
+            {{ swatch.lum ? swatch.lum.toFixed(1) : '--' }}%
           </div>
         </swatch-square>
       </div>
@@ -42,22 +42,40 @@ export default {
     },
   },
 
+  data() {
+    return {
+      paletteClone: {},
+      generateTimeout: 0,
+    };
+  },
+
   components: {
     SwatchSquare,
   },
 
   watch: {
+    palette: {
+      deep: true,
+      handler(val) {
+        this.paletteClone = Object.assign({}, this.paletteClone, val);
+      },
+    },
+
     'palette.hex': {
       handler(val = '#000000') {
-        this.palette.rgb = Color.hexToRGB(val);
-        let rgb = Object.values(this.palette.rgb);
-        this.palette.hsl = Color.RGBToHSL(...rgb);
-        this.palette.lum = Color.lumFromRGB(...rgb);
-        let lums = Object.values(this.palette.swatches).reduce((arr, cur) => {
-          arr.push(cur.lum);
-          return arr;
-        }, []);
-        this.palette.closest = Color.closestLum(lums, this.palette.lum);
+        this.paletteClone = Object.assign({}, this.paletteClone, this.palette, { hex: val });
+        this.paletteClone.rgb = Color.hexToRGB(val);
+        let rgb = Object.values(this.paletteClone.rgb);
+        this.paletteClone.hsl = Color.RGBToHSL(...rgb);
+        this.paletteClone.lum = Color.lumFromRGB(...rgb);
+        this.paletteClone.closest = Color.closestLum(this.lums, this.paletteClone.lum);
+        this.$nextTick(this.generateSwatches);
+      },
+    },
+
+    lums: {
+      deep: true,
+      handler() {
         this.$nextTick(this.generateSwatches);
       },
     },
@@ -65,14 +83,44 @@ export default {
 
   computed: {
     swatches() {
-      if (!this.palette) return {};
-      return this.palette.swatches || {};
+      return (
+        (this.paletteClone && this.paletteClone.swatches) ||
+        (this.palette && this.palette.swatches) ||
+        {}
+      );
+    },
+
+    lums() {
+      return Object.values(this.palette.swatches).reduce((arr, cur) => {
+        arr.push(cur.lum);
+        return arr;
+      }, []);
     },
   },
 
   methods: {
     generateSwatches() {
-      console.log('%c this.palette -->', 'color:#F80', this.palette);
+      if (!this.paletteClone.hsl) return;
+
+      const run = () => {
+        const baseHSL = this.paletteClone.hsl;
+        Object.keys(this.paletteClone.swatches).forEach(async (i) => {
+          let swatch = this.paletteClone.swatches[i];
+          let newL = await Color.lightnessFromHSLum(baseHSL.h, baseHSL.s, swatch.lum);
+          let newRGB = Color.HSLtoRGB(baseHSL.h, baseHSL.s, newL);
+          this.paletteClone.swatches[i].rgb = Object.values(newRGB).map((c) => c * 1);
+          this.paletteClone.swatches[i].lum = Color.lumFromRGB(
+            ...this.paletteClone.swatches[i].rgb,
+          );
+        });
+      };
+
+      if (window.requestAnimationFrame) {
+        window.requestAnimationFrame(run);
+      } else {
+        clearTimeout(this.generateTimeout);
+        this.generateTimeout = setTimeout(run, 50);
+      }
     },
   },
 };
