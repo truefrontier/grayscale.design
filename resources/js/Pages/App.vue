@@ -47,7 +47,7 @@
               v-for="(preset, key) in presets"
               :href="`#${key}`"
               :key="key"
-              @click="
+              @click.prevent="
                 setLums(preset.values);
                 showPresets = false;
               "
@@ -224,6 +224,8 @@ export default {
       dragTimeout: 0,
       showFilters: false,
       showPresets: false,
+      paletteCacheBustTimeout: 0,
+      updateSwatchTimeout: 0,
     };
   },
 
@@ -268,13 +270,10 @@ export default {
     lums: {
       deep: true,
       handler(val) {
-        // Update palette swatch lums
-        this.palettes = this.palettes.map((palette) => {
-          Object.keys(palette.swatches).forEach((i) => {
-            palette.swatches[i].lum = val[i].lum;
-          });
-          return palette;
-        });
+        clearTimeout(this.updateSwatchTimeout);
+        this.updateSwatchTimeout = setTimeout(() => {
+          this.updateSwatchLums(val);
+        }, 250);
       },
     },
   },
@@ -284,6 +283,25 @@ export default {
   },
 
   methods: {
+    updateSwatchLums(lums) {
+      lums = lums || this.lums;
+      // Update palette swatch lums
+      this.palettes = this.palettes.map((palette) => {
+        Object.keys(palette.swatches).forEach((i) => {
+          palette.swatches[i].lum = lums[i].lum;
+        });
+        return palette;
+      });
+
+      clearTimeout(this.paletteCacheBustTimeout);
+      this.paletteCacheBustTimeout = setTimeout(() => {
+        this.palettes.reverse();
+        this.$nextTick(() => {
+          this.palettes.reverse();
+        });
+      }, 100);
+    },
+
     setLums(values) {
       this.lums = Object.keys(this.lums).reduce((obj, index) => {
         obj[index] = {
