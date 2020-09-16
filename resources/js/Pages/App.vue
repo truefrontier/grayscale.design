@@ -90,7 +90,6 @@
             type="color"
             v-model="palette.hex"
             :ref="`paletteHex${index}`"
-            placeholder="Enter color label"
             class="inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4"
           />
           <input
