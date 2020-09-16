@@ -104,10 +104,25 @@
         </div>
       </div>
     </section>
+    <section class="mt-9">
+      <h1 class="mb-6 font-bold uppercase tracking-wide">3. Export Colors for Tailwind CSS</h1>
+      <p class="mt-6">
+        <a
+          href="https://tailwindcss.com/docs/customizing-colors"
+          target="_blank"
+          rel="noopener"
+          class="border-b border-gray-500 inline-block hover:opacity-50"
+          >Customize your Tailwind CSS colors</a
+        >
+        with these generated colors:
+      </p>
+      <pre class="mt-6 bg-gray-300 rounded-lg p-6 text-gray-800">{{ tailwindConfig }}</pre>
+    </section>
   </div>
 </template>
 
 <script>
+import * as Color from '../utils/color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
 var BLANK_IMG = new Image();
@@ -146,6 +161,22 @@ export default {
   computed: {
     lumsCount() {
       return Object.keys(this.lums).length;
+    },
+
+    tailwindConfig() {
+      let colors = {};
+      colors.gray = Object.keys(this.lums).reduce((obj, index) => {
+        obj[`${index}00`] = Color.RGBToHex(...this.lums[index].rgb);
+        return obj;
+      }, {});
+
+      this.palettes.forEach((palette) => {
+        colors[palette.name] = Object.keys(palette.swatches).reduce((obj, index) => {
+          obj[`${index}00`] = Color.RGBToHex(...palette.swatches[index].rgb.map(Math.round));
+          return obj;
+        }, {});
+      });
+      return JSON.stringify(colors, null, '  ');
     },
   },
 

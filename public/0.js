@@ -9,20 +9,29 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _utils_object__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/object */ "./resources/js/utils/object.js");
-/* harmony import */ var _components_PaletteRow__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/PaletteRow */ "./resources/js/components/PaletteRow.vue");
+/* harmony import */ var _utils_color__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/color */ "./resources/js/utils/color.js");
+/* harmony import */ var _utils_object__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/object */ "./resources/js/utils/object.js");
+/* harmony import */ var _components_PaletteRow__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/PaletteRow */ "./resources/js/components/PaletteRow.vue");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 //
 //
 //
@@ -132,6 +141,21 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 var BLANK_IMG = new Image();
@@ -139,7 +163,7 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'App',
   components: {
-    PaletteRow: _components_PaletteRow__WEBPACK_IMPORTED_MODULE_1__["default"]
+    PaletteRow: _components_PaletteRow__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
@@ -193,6 +217,22 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
   computed: {
     lumsCount: function lumsCount() {
       return Object.keys(this.lums).length;
+    },
+    tailwindConfig: function tailwindConfig() {
+      var _this = this;
+
+      var colors = {};
+      colors.gray = Object.keys(this.lums).reduce(function (obj, index) {
+        obj["".concat(index, "00")] = _utils_color__WEBPACK_IMPORTED_MODULE_0__["RGBToHex"].apply(_utils_color__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(_this.lums[index].rgb));
+        return obj;
+      }, {});
+      this.palettes.forEach(function (palette) {
+        colors[palette.name] = Object.keys(palette.swatches).reduce(function (obj, index) {
+          obj["".concat(index, "00")] = _utils_color__WEBPACK_IMPORTED_MODULE_0__["RGBToHex"].apply(_utils_color__WEBPACK_IMPORTED_MODULE_0__, _toConsumableArray(palette.swatches[index].rgb.map(Math.round)));
+          return obj;
+        }, {});
+      });
+      return JSON.stringify(colors, null, '  ');
     }
   },
   watch: {
@@ -228,7 +268,7 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       this.lastPos = null;
     },
     onDrag: function onDrag($event, index) {
-      var _this = this;
+      var _this2 = this;
 
       index = parseInt(index, 10);
       var el = $event.target;
@@ -248,12 +288,12 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
         this.lums[index].rgb = this.lumToGrayscaleRGB(100 - pos);
         clearTimeout(this.adjustLumsTimeout);
         this.adjustLumsTimeout = setTimeout(function () {
-          return _this.adjustLums(index === 0 ? pos : _this.lums[0].lum, index === _this.lumsCount - 1 ? pos : _this.lums[_this.lumsCount - 1].lum, 100 - pos, index);
+          return _this2.adjustLums(index === 0 ? pos : _this2.lums[0].lum, index === _this2.lumsCount - 1 ? pos : _this2.lums[_this2.lumsCount - 1].lum, 100 - pos, index);
         }, 20);
       }
     },
     adjustLums: function adjustLums(startPos, endPos, curPos, curIndex) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.autoDistribute) return;
 
@@ -266,13 +306,13 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
 
           if (ndx < curIndex) {
             var dist = (curPos - startPos) / curIndex;
-            _this2.lums[ndx].lum = ndx * dist + _this2.lums[0].lum;
-            _this2.lums[ndx].rgb = _this2.lumToGrayscaleRGB(_this2.lums[ndx].lum);
+            _this3.lums[ndx].lum = ndx * dist + _this3.lums[0].lum;
+            _this3.lums[ndx].rgb = _this3.lumToGrayscaleRGB(_this3.lums[ndx].lum);
           } else if (curIndex < ndx) {
-            var _dist = (endPos - curPos) / (_this2.lumsCount - curIndex - 1);
+            var _dist = (endPos - curPos) / (_this3.lumsCount - curIndex - 1);
 
-            _this2.lums[ndx].lum = (ndx - curIndex) * _dist + curPos;
-            _this2.lums[ndx].rgb = _this2.lumToGrayscaleRGB(_this2.lums[ndx].lum);
+            _this3.lums[ndx].lum = (ndx - curIndex) * _dist + curPos;
+            _this3.lums[ndx].rgb = _this3.lumToGrayscaleRGB(_this3.lums[ndx].lum);
           }
         }); // Prevent this from running unnecessarily
 
@@ -280,16 +320,16 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       }
     },
     addPalette: function addPalette() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.palettes.unshift({
         name: 'new',
-        swatches: Object(_utils_object__WEBPACK_IMPORTED_MODULE_0__["clone"])(this.lums)
+        swatches: Object(_utils_object__WEBPACK_IMPORTED_MODULE_1__["clone"])(this.lums)
       });
       this.isChoosingBase = 0;
       this.$nextTick(function () {
         setTimeout(function () {
-          var _ref = _this3.$refs.paletteHex0 || [],
+          var _ref = _this4.$refs.paletteHex0 || [],
               _ref2 = _slicedToArray(_ref, 1),
               input = _ref2[0];
 
@@ -726,6 +766,20 @@ var render = function() {
         }),
         0
       )
+    ]),
+    _vm._v(" "),
+    _c("section", { staticClass: "mt-9" }, [
+      _c("h1", { staticClass: "mb-6 font-bold uppercase tracking-wide" }, [
+        _vm._v("3. Export Colors for Tailwind CSS")
+      ]),
+      _vm._v(" "),
+      _vm._m(3),
+      _vm._v(" "),
+      _c(
+        "pre",
+        { staticClass: "mt-6 bg-gray-300 rounded-lg p-6 text-gray-800" },
+        [_vm._v(_vm._s(_vm.tailwindConfig))]
+      )
     ])
   ])
 }
@@ -786,6 +840,26 @@ var staticRenderFns = [
       _vm._v(
         " to keep your entire color set consistent, changing your\n      luminosity scale will adjust all the colors accordingly.\n    "
       )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", { staticClass: "mt-6" }, [
+      _c(
+        "a",
+        {
+          staticClass: "border-b border-gray-500 inline-block hover:opacity-50",
+          attrs: {
+            href: "https://tailwindcss.com/docs/customizing-colors",
+            target: "_blank",
+            rel: "noopener"
+          }
+        },
+        [_vm._v("Customize your Tailwind CSS colors")]
+      ),
+      _vm._v("\n      with these generated colors:\n    ")
     ])
   }
 ]
@@ -1133,12 +1207,13 @@ __webpack_require__.r(__webpack_exports__);
 /*!*************************************!*\
   !*** ./resources/js/utils/color.js ***!
   \*************************************/
-/*! exports provided: hexToRGB, RGBToHSL, lumFromRGB, closestLum, lightnessFromHSLum, HSLtoRGB */
+/*! exports provided: hexToRGB, RGBToHex, RGBToHSL, lumFromRGB, closestLum, lightnessFromHSLum, HSLtoRGB */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "hexToRGB", function() { return hexToRGB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RGBToHex", function() { return RGBToHex; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RGBToHSL", function() { return RGBToHSL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "lumFromRGB", function() { return lumFromRGB; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "closestLum", function() { return closestLum; });
@@ -1184,6 +1259,15 @@ function hexToRGB(hex) {
     g: g,
     b: b
   };
+}
+
+function componentToHex(c) {
+  var hex = c.toString(16);
+  return hex.length == 1 ? '0' + hex : hex;
+}
+
+function RGBToHex(r, g, b) {
+  return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
 }
 function RGBToHSL(r, g, b) {
   r /= 255;
