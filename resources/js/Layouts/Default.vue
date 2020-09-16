@@ -23,7 +23,7 @@
       {{ new Date().getFullYear() === 2020 ? 2020 : `2020-${new Date().getFullYear()}` }}. All
       rights reserved.
       <p class="mt-3 text-sm opacity-75">
-        📣 With help from
+        <i class="fa fa-bullhorn" data-fa-transform="flip-h rotate-30"></i> With help from
         <a
           class="border-b border-gray-500 inline-block hover:opacity-75"
           href="https://www.simeongriggs.dev/"
