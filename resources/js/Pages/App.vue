@@ -195,7 +195,7 @@ export default {
       autoDistribute: false,
       palettes: [],
       dragTimeout: 0,
-      showFilters: true,
+      showFilters: false,
     };
   },
 
@@ -242,10 +242,6 @@ export default {
         });
       },
     },
-  },
-
-  created() {
-    this.addPalette();
   },
 
   methods: {
