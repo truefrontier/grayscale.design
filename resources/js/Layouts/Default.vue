@@ -19,8 +19,9 @@
         href="https://truefrontierapps.com"
         class="border-b border-gray-500 inline-block hover:opacity-50"
         >True Frontier</a
-      >. &copy; {{ new Date().getFullYear() === 2020 ? 2020 : `2020-${new Date().getFullYear()}` }}.
-      All rights reserved.
+      >. &copy; Copyright
+      {{ new Date().getFullYear() === 2020 ? 2020 : `2020-${new Date().getFullYear()}` }}. All
+      rights reserved.
       <p class="mt-3 text-sm opacity-75">
         📣 With help from
         <a
