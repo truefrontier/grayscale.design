@@ -136,7 +136,7 @@
             <div class="h-8 leading-8">
               <input
                 type="color"
-                :value="palette.hex"
+                :value="getPickerHex(palette.hex)"
                 @input="palette.hex = $event.target.value"
                 :ref="`palettePicker${index}`"
                 class="leading-6 inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4"
@@ -292,6 +292,14 @@ export default {
   },
 
   methods: {
+    getPickerHex(hex) {
+      if (hex.length === 4) {
+        return hex + hex.replace('#', '');
+      }
+
+      return hex;
+    },
+
     updateSwatchLums(lums) {
       lums = lums || this.lums;
       // Update palette swatch lums
