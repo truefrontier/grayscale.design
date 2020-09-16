@@ -8,8 +8,8 @@
         <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
         <script src="https://kit.fontawesome.com/41590b8d21.js" crossorigin="anonymous"></script>
         <!-- Fathom - beautiful, simple website analytics -->
-        <script src="https://cdn.usefathom.com/script.js" site="QBCMJQGI" defer></script>
-        <!-- / Fathom -->
+<script src="https://cdn.usefathom.com/script.js" spa="auto" site="QBCMJQGI" defer></script>
+<!-- / Fathom -->
     </head>
     <body>
         @inertia
