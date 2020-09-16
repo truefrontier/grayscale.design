@@ -159,7 +159,11 @@
 
             <div v-if="showFilters" class="flex md:mr-8 space-x-5">
               <div class="text-center leading-5 mt-4 w-1/2 md:min-w-10 lg:min-w-11">
-                <label class="block font-mono text-xs opacity-50 uppercase">Hue</label>
+                <label class="block font-mono text-xs opacity-50 uppercase"
+                  >Hue ({{
+                    palette.filters.hue > 0 ? `+${palette.filters.hue}` : palette.filters.hue
+                  }}°)</label
+                >
                 <input
                   type="range"
                   min="-50"
@@ -169,7 +173,9 @@
                 />
               </div>
               <div class="text-center leading-5 mt-4 w-1/2 md:min-w-10 lg:min-w-11">
-                <label class="block font-mono text-xs opacity-50 uppercase">Saturation</label>
+                <label class="block font-mono text-xs opacity-50 uppercase"
+                  >Saturation ({{ palette.filters.sat }}%)</label
+                >
                 <input
                   type="range"
                   min="-30"
