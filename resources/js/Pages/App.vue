@@ -136,9 +136,17 @@
             <div class="h-8 leading-8">
               <input
                 type="color"
+                :value="palette.hex"
+                @input="palette.hex = $event.target.value"
+                :ref="`palettePicker${index}`"
+                class="leading-6 inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4"
+              />
+              <input
+                type="text"
                 v-model="palette.hex"
                 :ref="`paletteHex${index}`"
-                class="leading-6 inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4"
+                placeholder="#000000"
+                class="leading-6 inline-block align-middle w-9 mr-5 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
               />
               <input
                 type="text"
@@ -226,6 +234,7 @@ export default {
       showPresets: false,
       paletteCacheBustTimeout: 0,
       updateSwatchTimeout: 0,
+      console: window.console,
     };
   },
 
@@ -383,6 +392,7 @@ export default {
       this.palettes.unshift({
         name: '',
         swatches: clone(this.lums),
+        hex: '#000000',
         filters: {
           hue: 0,
           sat: 0,
@@ -393,7 +403,7 @@ export default {
 
       this.$nextTick(() => {
         setTimeout(() => {
-          let [input] = this.$refs.paletteHex0 || [];
+          let [input] = this.$refs.palettePicker0 || [];
           if (input) input.click();
         }, 10);
       });

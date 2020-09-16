@@ -75,15 +75,17 @@ export default {
       },
     },
 
+    'palette.picker': {
+      handler(val = '#000000') {
+        this.palette.hex = val;
+        this.updateBase(val);
+      },
+    },
+
     'palette.hex': {
       handler(val = '#000000') {
-        this.paletteClone = Object.assign({}, this.paletteClone, this.palette, { hex: val });
-        this.paletteClone.rgb = Color.hexToRGB(val);
-        let rgb = Object.values(this.paletteClone.rgb);
-        this.paletteClone.hsl = Color.RGBToHSL(...rgb);
-        this.paletteClone.lum = Color.lumFromRGB(...rgb);
-        this.paletteClone.closest = Color.closestLum(this.lums, this.paletteClone.lum);
-        this.$nextTick(this.generateSwatches);
+        this.palette.picker = val;
+        this.updateBase(val);
       },
     },
 
@@ -113,6 +115,19 @@ export default {
   },
 
   methods: {
+    updateBase(hex) {
+      this.paletteClone = Object.assign({}, this.paletteClone, this.palette, {
+        hex: hex,
+        picker: hex,
+      });
+      this.paletteClone.rgb = Color.hexToRGB(hex);
+      let rgb = Object.values(this.paletteClone.rgb);
+      this.paletteClone.hsl = Color.RGBToHSL(...rgb);
+      this.paletteClone.lum = Color.lumFromRGB(...rgb);
+      this.paletteClone.closest = Color.closestLum(this.lums, this.paletteClone.lum);
+      this.$nextTick(this.generateSwatches);
+    },
+
     generateSwatches() {
       if (!this.paletteClone.hsl) return;
 
