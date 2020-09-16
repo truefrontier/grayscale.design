@@ -93,54 +93,53 @@
       </button>
       <div class="mt-8">
         <div v-for="(palette, index) in palettes" :key="index" class="mt-8">
-          <div class="flex justify-between items-center">
-            <div>
+          <div class="min-h-8 md:flex justify-between items-center relative">
+            <button
+              @click="showFilters = !showFilters"
+              class="absolute right-0 top-0 text-center w-7 h-8 text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900"
+            >
+              <i class="fa fa-sliders-h"></i>
+            </button>
+            <div class="h-8 leading-8">
               <input
                 type="color"
                 v-model="palette.hex"
                 :ref="`paletteHex${index}`"
-                class="inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4"
+                class="leading-6 inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4"
               />
               <input
                 type="text"
                 v-model="palette.name"
                 :ref="`paletteName${index}`"
                 placeholder="Enter color label"
-                class="inline-block align-middle w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
+                class="leading-6 inline-block align-middle w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
               />
             </div>
-            <div>
-              <div v-if="showFilters" class="inline-block align-middle space-x-5">
-                <div class="inline-block text-center leading-5 mt-4">
-                  <label class="block font-mono text-xs opacity-50 uppercase">Hue</label>
-                  <input
-                    type="range"
-                    min="-30"
-                    v-model="palette.filters.hue"
-                    max="30"
-                    class="p-half-4"
-                  />
-                </div>
-                <div class="inline-block text-center leading-5 mt-4">
-                  <label class="block font-mono text-xs opacity-50 uppercase">Saturation</label>
-                  <input
-                    type="range"
-                    min="-30"
-                    v-model="palette.filters.sat"
-                    max="30"
-                    class="p-half-4"
-                  />
-                </div>
+
+            <div v-if="showFilters" class="flex md:mr-8 space-x-5">
+              <div class="text-center leading-5 mt-4 w-1/2 md:min-w-10 lg:min-w-11">
+                <label class="block font-mono text-xs opacity-50 uppercase">Hue</label>
+                <input
+                  type="range"
+                  min="-50"
+                  v-model="palette.filters.hue"
+                  max="50"
+                  class="p-half-4 w-full"
+                />
               </div>
-              <button
-                @click="showFilters = !showFilters"
-                class="ml-5 inline-block align-middle text-xl text-blue-600 p-5 hover:opacity-75 focus:text-blue-900"
-              >
-                <i class="fa fa-sliders-h"></i>
-              </button>
+              <div class="text-center leading-5 mt-4 w-1/2 md:min-w-10 lg:min-w-11">
+                <label class="block font-mono text-xs opacity-50 uppercase">Saturation</label>
+                <input
+                  type="range"
+                  min="-30"
+                  v-model="palette.filters.sat"
+                  max="30"
+                  class="p-half-4 w-full"
+                />
+              </div>
             </div>
           </div>
-          <palette-row class="mt-5" :palette="palette"></palette-row>
+          <palette-row class="mt-4" :palette="palette"></palette-row>
         </div>
       </div>
     </section>
