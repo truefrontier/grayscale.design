@@ -7,7 +7,7 @@
       <strong>grayscale <span class="text-gray-500">design</span></strong>
     </inertia-link>
     <slot></slot>
-    <footer class="mt-10 py-7">
+    <footer class="mt-8 py-7 text-gray-800">
       A design-friendly dev project from
       <a
         href="https://brandnamemaker.com"
@@ -21,6 +21,24 @@
         >True Frontier</a
       >. &copy; {{ new Date().getFullYear() === 2020 ? 2020 : `2020-${new Date().getFullYear()}` }}.
       All rights reserved.
+      <p class="mt-3 text-sm opacity-75">
+        📣 With help from
+        <a
+          class="border-b border-gray-500 inline-block hover:opacity-75"
+          href="https://www.simeongriggs.dev/"
+          target="_blank"
+          rel="noopener"
+          >simeonGriggs</a
+        >
+        and his
+        <a
+          class="border-b border-gray-500 inline-block hover:opacity-75"
+          href="https://tailwind.simeongriggs.dev/"
+          target="_blank"
+          rel="noopener"
+          >TailwindCSS Palette Generator</a
+        >.
+      </p>
     </footer>
   </div>
 </template>
