@@ -212,7 +212,7 @@ export default {
       presets: {
         bell: { label: 'Bell Curve', values: [98, 92, 82, 67, 50, 33, 18, 8, 2] },
         linear: { label: 'Linear', values: [98, 86, 74, 62, 50, 38, 26, 14, 2] },
-        dark: { label: 'The Darkside', values: [90, 81, 66, 43, 22, 14, 6.5, 2, 0.8] },
+        dark: { label: 'The Darkside', values: [90, 81, 66, 43, 22, 10, 4, 0.8, 0.1] },
       },
       lums: { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {} },
       isDragging: null,
