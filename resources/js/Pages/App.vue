@@ -176,7 +176,9 @@ export default {
           return obj;
         }, {});
       });
-      return JSON.stringify(colors, null, '  ');
+      let config = JSON.stringify(colors, null, '  ');
+      localStorage.setItem(new Date(), config);
+      return config;
     },
   },
 
