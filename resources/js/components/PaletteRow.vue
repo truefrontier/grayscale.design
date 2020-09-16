@@ -61,6 +61,20 @@ export default {
       },
     },
 
+    'palette.filters.hue': {
+      handler(val) {
+        this.paletteClone.filters.hue = val;
+        this.$nextTick(this.generateSwatches);
+      },
+    },
+
+    'palette.filters.sat': {
+      handler(val) {
+        this.paletteClone.filters.sat = val;
+        this.$nextTick(this.generateSwatches);
+      },
+    },
+
     'palette.hex': {
       handler(val = '#000000') {
         this.paletteClone = Object.assign({}, this.paletteClone, this.palette, { hex: val });
@@ -104,10 +118,16 @@ export default {
 
       const run = () => {
         const baseHSL = this.paletteClone.hsl;
+        const [closestIndex] = Object.keys(this.paletteClone.closest) || [];
         Object.keys(this.paletteClone.swatches).forEach(async (i) => {
           let swatch = this.paletteClone.swatches[i];
-          let newL = await Color.lightnessFromHSLum(baseHSL.h, baseHSL.s, swatch.lum);
-          let newRGB = Color.HSLtoRGB(baseHSL.h, baseHSL.s, newL);
+          let diffIndex = Math.abs(closestIndex - i);
+          let newH = baseHSL.h + parseFloat(this.paletteClone.filters.hue) * diffIndex;
+          if (newH < 0) newH = 360 - newH;
+          if (newH > 360) newH = newH - 360;
+          let newS = baseHSL.s + parseFloat(this.paletteClone.filters.sat) * diffIndex;
+          let newL = await Color.lightnessFromHSLum(newH, newS, swatch.lum);
+          let newRGB = Color.HSLtoRGB(newH, newS, newL);
           this.paletteClone.swatches[i].rgb = Object.values(newRGB).map((c) => c * 1);
           this.paletteClone.swatches[i].lum = Color.lumFromRGB(
             ...this.paletteClone.swatches[i].rgb,

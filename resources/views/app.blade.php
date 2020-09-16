@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>grayscale design | Luminance-based color palette generator for Tailwind CSS</title>
         <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
+        <script src="https://kit.fontawesome.com/41590b8d21.js" crossorigin="anonymous"></script>
     </head>
     <body>
         @inertia
