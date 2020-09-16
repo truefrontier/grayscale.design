@@ -295,8 +295,8 @@ export default {
     },
 
     lumToGrayscaleRGB(lum) {
-      let val = Math.round((255 * lum) / 100);
-      return [val, val, val];
+      let newL = Color.lightnessFromHSLum(0, 0, lum);
+      return Object.values(Color.HSLtoRGB(0, 0, newL)).map(Math.round);
     },
 
     onDragStart($event, index) {
