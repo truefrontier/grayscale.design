@@ -201,7 +201,7 @@
                   "
                   class="block py-half-4 px-5 whitespace-no-wrap text-red-800 hover:bg-gray-400 hover:bg-opacity-75"
                 >
-                  <i class="far fa-fw fa-times mr-4"></i>Delete
+                  <i class="far fa-fw fa-times mr-4"></i>Remove
                 </a>
               </div>
             </div>
