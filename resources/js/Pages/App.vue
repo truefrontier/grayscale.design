@@ -34,7 +34,7 @@
           </button>
           <div
             v-if="showPresets"
-            class="absolute right-0 mr-4 top-100 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
+            class="absolute right-0 top-100 mr-4 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
           >
             <a
               :class="[
@@ -156,8 +156,8 @@
       </p>
       <p class="mt-6 opacity-50">
         If your base color has <strong>high saturation</strong>, try using the
-        <i class="fa fa-sliders-h text-blue-700 inline-block align-middle mx-2"></i>
-        to adjust hues towards the extremes of your palette. Or, if your base color has
+        <i class="far fa-ellipsis-h text-blue-700 inline-block align-middle mx-2"></i> menu to "Show
+        Filters" and adjust hues towards the extremes of your palette. Or, if your base color has
         <strong>low saturation</strong> and more gray-ish, try adding more saturation for the
         extremes.
       </p>
@@ -170,12 +170,29 @@
       <div class="mt-8">
         <div v-for="(palette, index) in palettes" :key="index" class="mt-8">
           <div class="min-h-8 md:flex justify-between items-center relative">
-            <button
-              @click="showFilters = !showFilters"
-              class="absolute right-0 top-0 text-center w-7 h-8 text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900"
-            >
-              <i class="fa fa-sliders-h"></i>
-            </button>
+            <div class="absolute right-0 top-0">
+              <button
+                @click="togglePaletteMenu(index)"
+                class="text-center h-8 text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900"
+              >
+                <i class="far fa-lg fa-ellipsis-h"></i>
+              </button>
+              <div
+                v-if="shownPaletteMenus.includes(index)"
+                class="absolute right-0 top-100 mr-4 -mt-4 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
+              >
+                <a
+                  href="#"
+                  @click.prevent="
+                    showFilters = !showFilters;
+                    togglePaletteMenu(index);
+                  "
+                  class="block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75"
+                >
+                  <i class="fa fa-sliders-h mr-4"></i>{{ showFilters ? 'Hide' : 'Show' }} Filters
+                </a>
+              </div>
+            </div>
             <div class="h-8 leading-8">
               <input
                 type="color"
@@ -292,6 +309,7 @@ export default {
       uploadFilePath: '',
       grayscaleJson: {},
       paletteJson: {},
+      shownPaletteMenus: [],
     };
   },
 
@@ -393,6 +411,14 @@ export default {
   },
 
   methods: {
+    togglePaletteMenu(index) {
+      if (this.shownPaletteMenus.includes(index)) {
+        this.shownPaletteMenus.splice(index, 1);
+      } else {
+        this.shownPaletteMenus = [...new Set([...this.shownPaletteMenus, index])];
+      }
+    },
+
     getPickerHex(hex) {
       if (hex.length === 4) {
         return hex + hex.replace('#', '');
