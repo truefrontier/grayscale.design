@@ -119,7 +119,7 @@
             :class="['mt-6', { 'opacity-25': isUploading }]"
             ref="upload"
             type="file"
-            accept="image/*"
+            accept="image/x-png,image/gif,image/jpeg"
             @change="onFileUpload"
           />
           <i v-if="isUploading" class="fa fa-spinner-third fa-spin"></i>
