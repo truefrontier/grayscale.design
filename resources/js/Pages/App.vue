@@ -355,7 +355,7 @@ export default {
       all.forEach((hex, i) => {
         if (hex)
           this.palettes.push({
-            name: i,
+            name: '',
             swatches: clone(this.lums),
             hex: hex,
             filters: {
