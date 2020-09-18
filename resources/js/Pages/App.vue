@@ -328,7 +328,6 @@ export default {
 
   watch: {
     grayscaleJson(val) {
-      val.colors.reverse();
       val.colors.forEach((c, i) => {
         let r = Math.round(c.red * 255);
         let g = Math.round(c.green * 255);
