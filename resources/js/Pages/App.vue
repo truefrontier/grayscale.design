@@ -205,7 +205,7 @@
                 </a>
               </div>
             </div>
-            <div class="h-8 leading-8 mr-9">
+            <div class="h-8 leading-8 mr-8">
               <input
                 type="color"
                 :value="getPickerHex(palette.hex)"
