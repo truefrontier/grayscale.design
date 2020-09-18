@@ -6,9 +6,7 @@ import route from 'ziggy';
 import DefaultLayout from './Layouts/Default';
 import DefaultTemplate from './Templates/Default';
 import DefaultPage from './Pages/Default';
-
 // import { Ziggy } from './ziggy';
-
 // Vue.component('my-component', require('./components/MyComponent.vue'));
 
 Vue.use(InertiaApp);
@@ -26,15 +24,11 @@ new Vue({
         resolveComponent: async (name) => {
           const Statamic = window.Statamic || {};
 
-          const LayoutComponent = await import(
-            `./Layouts/${Statamic.layoutName}`
-          )
+          const LayoutComponent = await import(`./Layouts/${Statamic.layoutName}`)
             .then((module) => module.default)
             .catch(() => DefaultLayout);
 
-          const TemplateComponent = await import(
-            `./Templates/${Statamic.templateName}`
-          )
+          const TemplateComponent = await import(`./Templates/${Statamic.templateName}`)
             .then((module) => module.default)
             .catch(() => DefaultTemplate);
 
@@ -57,3 +51,10 @@ new Vue({
       },
     }),
 }).$mount(app);
+
+window.axios = require('axios');
+
+window.axios.defaults.headers.common = {
+  'X-Requested-With': 'XMLHttpRequest',
+  'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+};

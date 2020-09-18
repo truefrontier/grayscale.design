@@ -13,6 +13,8 @@
 
 use Statamic\Facades\Collection;
 
+Route::post('/palette-uploads', 'UploadController@upload');
+
 Collection::all()->each(function ($collection) {
     $collection->queryEntries()->get()->each(function ($entry) {
         $route = $entry->routeData();

@@ -102,6 +102,45 @@
         <!-- To get you started, we've setup 9 steps in your scale, light to
         dark.  -->
       </p>
+      <div class="mt-6 font-bold">
+        <span class="opacity-75">Shortcut &raquo;</span>
+        <button class="font-bold text-blue-600" @click="showUploadForm = true">
+          Upload an image
+        </button>
+      </div>
+      <div v-if="showUploadForm" class="mt-6">
+        <p class="opacity-50">
+          After uploading an image, we turn it grayscale to set your luminosity scale. After that,
+          we find the most prominant colors from your image and add them to your color palette!
+        </p>
+        <div>
+          <input
+            :disabled="isUploading"
+            :class="['mt-6', { 'opacity-25': isUploading }]"
+            ref="upload"
+            type="file"
+            accept="image/*"
+            @change="onFileUpload"
+          />
+          <i v-if="isUploading" class="fa fa-spinner-third fa-spin"></i>
+        </div>
+        <p class="text-sm opacity-50 mt-2">Max filesize: 5MB</p>
+      </div>
+      <div v-if="uploadFilePath" class="mt-6 text-center">
+        <a
+          class="block shadow hover:shadow-2xl transition-shadow duration-300"
+          :href="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
+          target="_blank"
+          rel="noopener"
+        >
+          <img
+            class="rounded-lg"
+            :src="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
+            alt=""
+          />
+        </a>
+        <p class="mt-2 text-xs opacity-50">Click image to view and print</p>
+      </div>
     </section>
     <section class="mt-9">
       <h1 class="mb-6 font-bold uppercase tracking-wide">2. Set your colors</h1>
@@ -208,6 +247,7 @@
 </template>
 
 <script>
+import { jsonToFormData } from '../utils/forms';
 import * as Color from '../utils/color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
@@ -238,9 +278,16 @@ export default {
       dragTimeout: 0,
       showFilters: false,
       showPresets: false,
+      showUploadForm: false,
       paletteCacheBustTimeout: 0,
       updateSwatchTimeout: 0,
-      console: window.console,
+      isUploading: false,
+      uploadFile: null,
+      base64File: null,
+      uploadFileUrl: '',
+      uploadFilePath: '',
+      grayscaleJson: {},
+      paletteJson: {},
     };
   },
 
@@ -276,6 +323,51 @@ export default {
   },
 
   watch: {
+    grayscaleJson(val) {
+      val.colors.reverse();
+      val.colors.forEach((c, i) => {
+        let r = Math.round(c.red * 255);
+        let g = Math.round(c.green * 255);
+        let b = Math.round(c.blue * 255);
+        let lum = Color.lumFromRGB(r, g, b);
+        this.lums[i].lum = lum;
+        this.lums[i].rgb = [r, g, b];
+      });
+    },
+
+    paletteJson(val) {
+      let dominants = ['vibrant', 'muted'].reduce((arr, color) => {
+        arr.push(val.dominant_colors[color].hex);
+        return arr;
+      }, []);
+
+      let colors = val.colors.reduce((arr, color) => {
+        arr.push(color.hex);
+        return arr;
+      }, []);
+
+      let all = [...new Set(colors.concat(dominants))].sort();
+
+      all.forEach((hex, i) => {
+        if (hex)
+          this.palettes.push({
+            name: i,
+            swatches: clone(this.lums),
+            hex: hex,
+            filters: {
+              hue: 0,
+              sat: 0,
+            },
+          });
+      });
+
+      // Force render on the palette array
+      let last = this.palettes.pop();
+      this.$nextTick(() => {
+        this.palettes.unshift(last);
+      });
+    },
+
     autoDistribute(val) {
       if (val) {
         this.adjustLums(this.lums[0], this.lums[this.lumsCount - 1].lum, this.lums[0].lum, 0);
@@ -421,6 +513,79 @@ export default {
           if (input) input.click();
         }, 10);
       });
+    },
+
+    onFileUpload() {
+      return new Promise(async (resolve, reject) => {
+        this.isUploading = true;
+        const filePicker = this.$refs.upload;
+
+        if (!filePicker || !filePicker.files || filePicker.files.length <= 0) {
+          reject('No file selected.');
+          return;
+        }
+
+        this.uploadFile = filePicker.files[0];
+        if (this.uploadFile.size > 10485760 / 2) {
+          reject('Image is too big (max. 5 Mb)');
+          return;
+        }
+
+        // this.base64File = await this.toBase64(this.uploadFile);
+
+        return resolve(this.uploadFile);
+      })
+        .then((file) => {
+          let formData = jsonToFormData({ file });
+          axios.post('/palette-uploads', formData).then(({ data }) => {
+            if (data.url) {
+              this.uploadFileUrl = data.url;
+              this.uploadFilePath = data.path;
+
+              let grayscaleUrl = `${this.uploadFileUrl}?sat=-100&colorquant=${this.lumsCount}&palette=json&colors=${this.lumsCount}`;
+              axios.get(grayscaleUrl).then(({ data }) => {
+                this.grayscaleJson = data;
+              });
+
+              let paletteUrl = `${this.uploadFileUrl}?palette=json&colors=3`;
+              axios.get(paletteUrl).then(({ data }) => {
+                this.paletteJson = data;
+              });
+            } else {
+              alert('Sorry! Please try again.');
+            }
+          });
+        })
+        .catch(alert)
+        .finally(() => {
+          this.isUploading = false;
+          if (this.$refs?.upload) {
+            this.$refs.upload.value = null;
+          }
+        });
+    },
+
+    toBase64(uploadFile) {
+      return new Promise((resolve, reject) => {
+        const fileReader = new FileReader();
+        if (fileReader && uploadFile) {
+          fileReader.readAsDataURL(uploadFile);
+          fileReader.onload = () => {
+            resolve(fileReader.result);
+          };
+
+          fileReader.onerror = (error) => {
+            reject(error);
+          };
+        } else {
+          reject('No file provided');
+        }
+      });
+    },
+
+    getUploadFileUrl(params) {
+      return this.uploadFileUrl + params;
+      // return `/uploads/${this.uploadFilePath}${params}`;
     },
   },
 };
