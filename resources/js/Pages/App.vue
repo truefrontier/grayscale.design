@@ -340,13 +340,15 @@ export default {
     tailwindConfig() {
       let colors = {};
       colors.gray = Object.keys(this.lums).reduce((obj, index) => {
-        obj[`${index}00`] = Color.RGBToHex(...this.lums[index].rgb);
+        obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(...this.lums[index].rgb);
         return obj;
       }, {});
 
       this.palettes.forEach((palette) => {
         colors[palette.name] = Object.keys(palette.swatches).reduce((obj, index) => {
-          obj[`${index}00`] = Color.RGBToHex(...palette.swatches[index].rgb.map(Math.round));
+          obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(
+            ...palette.swatches[index].rgb.map(Math.round),
+          );
           return obj;
         }, {});
       });
