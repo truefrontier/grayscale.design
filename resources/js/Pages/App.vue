@@ -178,19 +178,19 @@
                 <i class="far fa-lg fa-ellipsis-h"></i>
               </button>
               <div
-                v-if="shownPaletteMenus.includes(index)"
+                v-if="shownPaletteMenu == index"
                 class="absolute right-0 top-100 mr-4 -mt-3 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
               >
                 <a
                   href="#"
                   @click.prevent="
-                    showFilters = !showFilters;
+                    toggleFilters(index);
                     togglePaletteMenu(index);
                   "
                   class="block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75"
                 >
                   <i class="far fa-fw fa-sliders-h mr-4"></i
-                  >{{ showFilters ? 'Hide' : 'Show' }} Filters
+                  >{{ showFilters.includes(index) ? 'Hide' : 'Show' }} Filters
                 </a>
                 <hr class="my-3 border-gray-600 opacity-75" />
                 <a
@@ -229,7 +229,7 @@
               />
             </div>
 
-            <div v-if="showFilters" class="flex md:mr-8 space-x-5">
+            <div v-if="showFilters.includes(index)" class="flex md:mr-8 space-x-5">
               <div class="text-center leading-5 mt-4 w-1/2 md:min-w-10 lg:min-w-11">
                 <label class="block font-mono text-xs opacity-50 uppercase"
                   >Hue ({{
@@ -309,7 +309,7 @@ export default {
       autoDistribute: false,
       palettes: [],
       dragTimeout: 0,
-      showFilters: false,
+      showFilters: [],
       showPresets: false,
       showUploadForm: false,
       paletteCacheBustTimeout: 0,
@@ -321,7 +321,7 @@ export default {
       uploadFilePath: '',
       grayscaleJson: {},
       paletteJson: {},
-      shownPaletteMenus: [],
+      shownPaletteMenu: null,
     };
   },
 
@@ -430,10 +430,14 @@ export default {
     },
 
     togglePaletteMenu(index) {
-      if (this.shownPaletteMenus.includes(index)) {
-        this.shownPaletteMenus.splice(index, 1);
+      this.shownPaletteMenu = this.shownPaletteMenu == index ? null : index;
+    },
+
+    toggleFilters(index) {
+      if (this.showFilters.includes(index)) {
+        this.showFilters.splice(index, 1);
       } else {
-        this.shownPaletteMenus = [...new Set([...this.shownPaletteMenus, index])];
+        this.showFilters = [...new Set([...this.showFilters, index])];
       }
     },
 
