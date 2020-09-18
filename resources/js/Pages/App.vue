@@ -128,7 +128,7 @@
       </div>
       <div v-if="uploadFilePath" class="mt-6 text-center">
         <a
-          class="block shadow hover:shadow-2xl transition-shadow duration-300"
+          class="inline-block shadow hover:shadow-2xl transition-shadow duration-300"
           :href="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
           target="_blank"
           rel="noopener"
@@ -139,7 +139,11 @@
             alt=""
           />
         </a>
-        <p class="mt-2 text-xs opacity-50">Click image to view and print</p>
+        <p class="mt-2 text-xs mx-auto opacity-50 max-w-2xl">
+          Click image to view and print. This is your image using just {{ lumsCount }} shades of
+          gray (the grays used to generate your luminosity scale). Below, we added a few colors from
+          your image!
+        </p>
       </div>
     </section>
     <section class="mt-9">
