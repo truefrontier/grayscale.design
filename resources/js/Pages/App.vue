@@ -173,13 +173,13 @@
             <div class="absolute right-0 top-0">
               <button
                 @click="togglePaletteMenu(index)"
-                class="text-center h-8 text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900"
+                class="text-center h-7 my-half-6 rounded text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900"
               >
                 <i class="far fa-lg fa-ellipsis-h"></i>
               </button>
               <div
                 v-if="shownPaletteMenus.includes(index)"
-                class="absolute right-0 top-100 mr-4 -mt-4 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
+                class="absolute right-0 top-100 mr-4 -mt-3 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
               >
                 <a
                   href="#"
@@ -205,7 +205,7 @@
                 </a>
               </div>
             </div>
-            <div class="h-8 leading-8">
+            <div class="h-8 leading-8 mr-9">
               <input
                 type="color"
                 :value="getPickerHex(palette.hex)"
