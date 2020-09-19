@@ -17134,20 +17134,20 @@ var map = {
 	"./App": [
 		"./resources/js/Pages/App.vue",
 		9,
-		0,
-		2
+		2,
+		3
 	],
 	"./App.scss": [
 		"./resources/js/Pages/App.scss",
 		7,
-		0,
-		3
+		2,
+		4
 	],
 	"./App.vue": [
 		"./resources/js/Pages/App.vue",
 		9,
-		0,
-		2
+		2,
+		3
 	],
 	"./Default": [
 		"./resources/js/Pages/Default.vue",

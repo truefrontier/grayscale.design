@@ -130,12 +130,17 @@
       </div>
       <div v-if="uploadFilePath" class="mt-6 text-center">
         <a
-          class="grayscale-filter inline-block shadow hover:shadow-2xl transition-shadow duration-300"
+          class="relative inline-block shadow hover:shadow-2xl transition-shadow duration-300"
           :href="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
           target="_blank"
           rel="noopener"
         >
-          <img class="rounded-lg" :src="getUploadFileUrl(`?colorquant=${lumsCount}`)" alt="" />
+          <img class="rounded-lg" :src="base64File" alt="" />
+          <img
+            class="rounded-lg absolute inset-0 z-10 opacity-100 hover:opacity-0 transition-opacity duration-200"
+            :src="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
+            alt=""
+          />
         </a>
         <p class="mt-2 text-xs mx-auto opacity-50 max-w-2xl">
           Click image to view and print. This is your image using just {{ lumsCount }} shades of
@@ -581,7 +586,7 @@ export default {
           return;
         }
 
-        // this.base64File = await this.toBase64(this.uploadFile);
+        this.base64File = await this.toBase64(this.uploadFile);
 
         return resolve(this.uploadFile);
       })
@@ -634,8 +639,8 @@ export default {
     },
 
     getUploadFileUrl(params) {
-      return this.uploadFileUrl + params;
       // return `/uploads/${this.uploadFilePath}${params}`;
+      return this.uploadFileUrl + params;
     },
   },
 };
