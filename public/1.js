@@ -17,6 +17,9 @@ __webpack_require__.r(__webpack_exports__);
   name: 'Home',
   created: function created() {
     this.$inertia.visit('/app');
+  },
+  mounted: function mounted() {
+    this.$inertia.visit('/app');
   }
 });
 

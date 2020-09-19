@@ -9,6 +9,10 @@ export default {
   created() {
     this.$inertia.visit('/app');
   },
+
+  mounted() {
+    this.$inertia.visit('/app');
+  },
 };
 </script>
 
