@@ -892,7 +892,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.copied = true;
       setTimeout(function () {
         _this.copied = false;
-      }, 1000);
+      }, 500);
     },
     updateBase: function updateBase(hex) {
       this.paletteClone = Object.assign({}, this.paletteClone, this.palette, {

@@ -141,7 +141,7 @@ export default {
       this.copied = true;
       setTimeout(() => {
         this.copied = false;
-      }, 1000);
+      }, 500);
     },
 
     updateBase(hex) {
