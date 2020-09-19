@@ -4,7 +4,7 @@
       @click="copy(swatch.hex)"
       :data-hex="swatch.hex"
       :class="[
-        'w-full h-9 shadow-inner transition-colors duration-150 relative',
+        'w-full h-9 shadow-inner transition-colors duration-150 relative z-10',
         isFirst ? 'rounded-l-lg' : isLast ? 'rounded-r-lg' : '',
         { 'pointer-events-none': !swatch.hex },
       ]"

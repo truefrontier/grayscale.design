@@ -1,7 +1,0 @@
-.grayscale-filter {
-  filter: grayscale(1);
-  @apply transition-all duration-300;
-  &:hover {
-    filter: grayscale(0);
-  }
-}

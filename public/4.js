@@ -12,7 +12,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".grayscale-filter {\n  filter: grayscale(1);\n  transition-property: all;\n  transition-duration: 300ms;\n}\n\n.grayscale-filter:hover {\n  filter: grayscale(0);\n}", ""]);
+exports.push([module.i, "", ""]);
 
 // exports
 

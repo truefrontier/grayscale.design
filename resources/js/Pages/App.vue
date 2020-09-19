@@ -646,4 +646,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./App.scss" scoped></style>
+<!-- <style lang="scss" src="./App.scss" scoped></style> -->

@@ -2,7 +2,9 @@
   span {
     @apply hidden transition-all duration-300;
   }
-  &:hover {
+  &:hover,
+  &:focus {
+    @apply z-20;
     span {
       @apply inline-block;
     }
