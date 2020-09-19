@@ -802,6 +802,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -968,6 +970,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         clearTimeout(this.generateTimeout);
         this.generateTimeout = setTimeout(run, 50);
       }
+    },
+    isClosest: function isClosest(index) {
+      var _ref4 = Object.keys(this.paletteClone.closest || {}) || [],
+          _ref5 = _slicedToArray(_ref4, 1),
+          closestIndex = _ref5[0];
+
+      return index == closestIndex;
     }
   }
 });
@@ -1025,6 +1034,7 @@ __webpack_require__.r(__webpack_exports__);
     swatch: Object,
     isFirst: Boolean,
     isLast: Boolean,
+    isClosest: Boolean,
     copy: Function,
     copied: Boolean
   },
@@ -1816,62 +1826,55 @@ var render = function() {
       { staticClass: "flex items-center justify-between" },
       _vm._l(_vm.swatches, function(swatch, index) {
         return _c(
-          "div",
-          { staticClass: "w-full" },
+          "swatch-square",
+          {
+            key: index,
+            staticClass: "w-full",
+            attrs: {
+              copy: _vm.copy,
+              copied: _vm.copied,
+              swatch: swatch,
+              index: parseInt(index, 10),
+              "is-first": index == 0,
+              "is-last": index == Object.keys(_vm.swatches).length - 1,
+              "is-closest": _vm.isClosest(index)
+            }
+          },
           [
             _c(
-              "swatch-square",
+              "div",
               {
-                key: index,
-                attrs: {
-                  copy: _vm.copy,
-                  copied: _vm.copied,
-                  swatch: swatch,
-                  index: parseInt(index, 10),
-                  "is-first": index == 0,
-                  "is-last": index == Object.keys(_vm.swatches).length - 1
-                }
+                staticClass:
+                  "font-mono opacity-50 text-gray-800 text-sm text-center px-2 leading-5 mt-4 mb-3"
               },
               [
-                _c(
+                _c("span", { staticClass: "hidden md:inline-block" }, [
+                  _vm._v(_vm._s(_vm.palette.name ? _vm.palette.name + "-" : ""))
+                ]),
+                _vm._v(_vm._s(parseInt(index, 10) + 1) + "00\n      ")
+              ]
+            ),
+            _vm._v(" "),
+            !_vm.hideLum
+              ? _c(
                   "div",
                   {
                     staticClass:
-                      "font-mono opacity-50 text-gray-800 text-sm text-center px-2 leading-5 mt-4 mb-3"
+                      "font-mono opacity-50 text-gray-600 text-xs text-center leading-5"
                   },
                   [
                     _vm._v(
-                      "\n          " +
-                        _vm._s(_vm.palette.name ? _vm.palette.name + "-" : "") +
-                        _vm._s(parseInt(index, 10) + 1) +
-                        "00\n        "
+                      "\n        " +
+                        _vm._s(swatch.lum ? swatch.lum.toFixed(1) : "--") +
+                        "%\n      "
                     )
                   ]
-                ),
-                _vm._v(" "),
-                !_vm.hideLum
-                  ? _c(
-                      "div",
-                      {
-                        staticClass:
-                          "font-mono opacity-50 text-gray-600 text-xs text-center leading-5"
-                      },
-                      [
-                        _vm._v(
-                          "\n          " +
-                            _vm._s(swatch.lum ? swatch.lum.toFixed(1) : "--") +
-                            "%\n        "
-                        )
-                      ]
-                    )
-                  : _vm._e()
-              ]
-            )
-          ],
-          1
+                )
+              : _vm._e()
+          ]
         )
       }),
-      0
+      1
     )
   ])
 }

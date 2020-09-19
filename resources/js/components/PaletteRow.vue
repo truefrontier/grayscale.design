@@ -1,29 +1,31 @@
 <template>
   <div class="PaletteRow">
     <div class="flex items-center justify-between">
-      <div v-for="(swatch, index) in swatches" class="w-full">
-        <swatch-square
-          :key="index"
-          :copy="copy"
-          :copied="copied"
-          :swatch="swatch"
-          :index="parseInt(index, 10)"
-          :is-first="index == 0"
-          :is-last="index == Object.keys(swatches).length - 1"
+      <swatch-square
+        v-for="(swatch, index) in swatches"
+        :key="index"
+        :copy="copy"
+        :copied="copied"
+        :swatch="swatch"
+        :index="parseInt(index, 10)"
+        :is-first="index == 0"
+        :is-last="index == Object.keys(swatches).length - 1"
+        :is-closest="isClosest(index)"
+        class="w-full"
+      >
+        <div
+          class="font-mono opacity-50 text-gray-800 text-sm text-center px-2 leading-5 mt-4 mb-3"
         >
-          <div
-            class="font-mono opacity-50 text-gray-800 text-sm text-center px-2 leading-5 mt-4 mb-3"
-          >
-            {{ palette.name ? palette.name + '-' : '' }}{{ parseInt(index, 10) + 1 }}00
-          </div>
-          <div
-            v-if="!hideLum"
-            class="font-mono opacity-50 text-gray-600 text-xs text-center leading-5"
-          >
-            {{ swatch.lum ? swatch.lum.toFixed(1) : '--' }}%
-          </div>
-        </swatch-square>
-      </div>
+          <span class="hidden md:inline-block">{{ palette.name ? palette.name + '-' : '' }}</span
+          >{{ parseInt(index, 10) + 1 }}00
+        </div>
+        <div
+          v-if="!hideLum"
+          class="font-mono opacity-50 text-gray-600 text-xs text-center leading-5"
+        >
+          {{ swatch.lum ? swatch.lum.toFixed(1) : '--' }}%
+        </div>
+      </swatch-square>
     </div>
   </div>
 </template>
@@ -187,6 +189,11 @@ export default {
         clearTimeout(this.generateTimeout);
         this.generateTimeout = setTimeout(run, 50);
       }
+    },
+
+    isClosest(index) {
+      let [closestIndex] = Object.keys(this.paletteClone.closest || {}) || [];
+      return index == closestIndex;
     },
   },
 };

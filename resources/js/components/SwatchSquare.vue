@@ -42,6 +42,7 @@ export default {
     swatch: Object,
     isFirst: Boolean,
     isLast: Boolean,
+    isClosest: Boolean,
     copy: Function,
     copied: Boolean,
   },
