@@ -201,7 +201,7 @@
               </button>
               <div
                 v-if="shownPaletteMenu == index"
-                class="absolute right-0 top-100 mr-4 -mt-3 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
+                class="absolute z-40 right-0 top-100 mr-4 -mt-3 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
               >
                 <a
                   href="#"
