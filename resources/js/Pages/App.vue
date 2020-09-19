@@ -424,6 +424,7 @@ export default {
 
   created() {
     this.setLums(this.presets.bell.values);
+    this.addPalette();
   },
 
   methods: {
@@ -551,7 +552,7 @@ export default {
       this.palettes.unshift({
         name: '',
         swatches: clone(this.lums),
-        hex: '#000000',
+        hex: '#000001',
         filters: {
           hue: 0,
           sat: 0,
@@ -561,6 +562,7 @@ export default {
       this.isChoosingBase = 0;
 
       this.$nextTick(() => {
+        this.palettes[0].hex = '#000000';
         setTimeout(() => {
           let [input] = this.$refs.palettePicker0 || [];
           if (input) input.click();

@@ -4,6 +4,8 @@
       <div v-for="(swatch, index) in swatches" class="w-full">
         <swatch-square
           :key="index"
+          :copy="copy"
+          :copied="copied"
           :swatch="swatch"
           :index="parseInt(index, 10)"
           :is-first="index == 0"
@@ -46,6 +48,8 @@ export default {
     return {
       paletteClone: {},
       generateTimeout: 0,
+      copyText: '',
+      copied: false,
     };
   },
 
@@ -114,7 +118,32 @@ export default {
     },
   },
 
+  mounted() {
+    document.addEventListener('copy', this.onCopy.bind(this));
+  },
+
+  beforeDestroy() {
+    document.removeEventListener('copy', this.onCopy.bind(this), null);
+  },
+
   methods: {
+    copy(copyText) {
+      this.copyText = copyText;
+      this.$nextTick(() => {
+        document.execCommand('copy');
+      });
+    },
+
+    onCopy(e) {
+      e.preventDefault();
+      if (!this.copyText) return false;
+      e.clipboardData.setData('text/plain', this.copyText);
+      this.copied = true;
+      setTimeout(() => {
+        this.copied = false;
+      }, 500);
+    },
+
     updateBase(hex) {
       this.paletteClone = Object.assign({}, this.paletteClone, this.palette, {
         hex: hex,
@@ -143,7 +172,9 @@ export default {
           let newS = baseHSL.s + parseFloat(this.paletteClone.filters.sat) * diffIndex;
           let newL = await Color.lightnessFromHSLum(newH, newS, swatch.lum);
           let newRGB = Color.HSLtoRGB(newH, newS, newL);
-          this.paletteClone.swatches[i].rgb = Object.values(newRGB).map((c) => c * 1);
+          let rgb = Object.values(newRGB).map(Math.round);
+          this.paletteClone.swatches[i].hex = Color.RGBToHex(...rgb);
+          this.paletteClone.swatches[i].rgb = rgb;
           this.paletteClone.swatches[i].lum = Color.lumFromRGB(
             ...this.paletteClone.swatches[i].rgb,
           );

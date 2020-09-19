@@ -1,0 +1,10 @@
+.SwatchSquare > button {
+  span {
+    @apply hidden transition-all duration-300;
+  }
+  &:hover {
+    span {
+      @apply inline-block;
+    }
+  }
+}
