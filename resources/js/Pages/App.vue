@@ -2,61 +2,80 @@
   <div class="App">
     <h1 class="text-4xl leading-7 text-gray-500">Luminance-Based Color Palette Generator</h1>
     <section class="mt-8">
-      <h1 class="mb-6 font-bold uppercase tracking-wide">1. Set Your Luminosity Scale</h1>
-      <div class="float-right flex divide-x">
-        <button
-          @click="autoDistribute = true"
-          :class="[
-            'px-4',
-            autoDistribute ? 'font-bold text-gray-700' : 'text-gray-600 hover:underline',
-          ]"
-        >
-          auto
-        </button>
-        <button
-          @click="autoDistribute = false"
-          :class="[
-            'px-4',
-            !autoDistribute ? 'font-bold text-gray-700' : 'text-gray-600 hover:underline',
-          ]"
-        >
-          manual
-        </button>
-        <div class="relative">
+      <div class="sm:flex justify-between">
+        <h1 class="mb-6 mr-5 font-bold uppercase tracking-wide">1. Set Your Luminosity Scale</h1>
+        <div class="whitespace-no-wrap">
           <button
-            @click="
-              autoDistribute = false;
-              showPresets = !showPresets;
-            "
-            class="px-4 text-gray-600 hover:underline"
+            @click="setLumsCount(lumsCount - 1)"
+            class="focus:shadow-outline focus:outline-none leading-5 py-half-4 px-4 rounded bg-gray-200 text-xl text-gray-600 hover:text-gray-800"
           >
-            presets<i class="ml-2 fa fa-caret-down"></i>
+            -
           </button>
-          <div
-            v-if="showPresets"
-            class="absolute right-0 top-100 mr-4 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
+          <span class="opacity-50 mx-4">{{ lumsCount }} values</span>
+          <button
+            @click="setLumsCount(lumsCount + 1)"
+            class="focus:shadow-outline focus:outline-none leading-5 py-half-4 px-4 rounded bg-gray-200 text-xl text-gray-600 hover:text-gray-800"
           >
-            <a
-              :class="[
-                'block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
-                {
-                  'bg-gray-400 bg-opacity-75':
-                    JSON.stringify(preset.values) == JSON.stringify(lumsValues),
-                },
-              ]"
-              v-for="(preset, key) in presets"
-              :href="`#${key}`"
-              :key="key"
-              @click.prevent="
-                setLums(preset.values);
-                showPresets = false;
+            +
+          </button>
+        </div>
+      </div>
+      <div class="mt-6 md:mt-0 md:flex justify-between">
+        <p class="flex-shrink">Drag the sliders below to set your luminosity scale.</p>
+        <div class="mt-6 md:mt-0 divide-x flex-grow text-center md:text-right">
+          <button
+            @click="autoDistribute = true"
+            :class="[
+              'px-4',
+              autoDistribute ? 'font-bold text-gray-700' : 'text-gray-600 hover:underline',
+            ]"
+          >
+            auto
+          </button>
+          <button
+            @click="autoDistribute = false"
+            :class="[
+              'px-4',
+              !autoDistribute ? 'font-bold text-gray-700' : 'text-gray-600 hover:underline',
+            ]"
+          >
+            manual
+          </button>
+          <div class="inline-block relative">
+            <button
+              @click="
+                autoDistribute = false;
+                showPresets = !showPresets;
               "
-              >{{ preset.label }}</a
+              class="px-4 text-gray-600 hover:underline"
             >
+              presets<i class="ml-2 fa fa-caret-down"></i>
+            </button>
+            <div
+              v-if="showPresets"
+              class="absolute right-0 top-100 mr-4 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-40"
+            >
+              <a
+                :class="[
+                  'block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
+                  {
+                    'bg-gray-400 bg-opacity-75':
+                      JSON.stringify(preset.values) == JSON.stringify(lumsValues),
+                  },
+                ]"
+                v-for="(preset, key) in presets"
+                :href="`#${key}`"
+                :key="key"
+                @click.prevent="
+                  setLums(preset.values);
+                  showPresets = false;
+                "
+                >{{ preset.label }}</a
+              >
+            </div>
           </div>
         </div>
       </div>
-      <p>Drag the sliders below to set your luminosity scale.</p>
       <div class="mt-5 -mx-6 sm:mx-0">
         <div class="sm:rounded-full shadow-lg bg-gray-800 relative px-6">
           <div class="h-8 sm:h-half-9 divide-x divide-gray-600 flex justify-between">
@@ -636,6 +655,17 @@ export default {
           reject('No file provided');
         }
       });
+    },
+
+    setLumsCount(newCount) {
+      if (newCount < 3 || newCount > 20) return;
+      this.lums = {};
+      let i = 0;
+      while (i < newCount) {
+        let lum = 100 - (92 / (newCount - 1)) * i - 4;
+        this.lums[i] = { lum, rgb: this.lumToGrayscaleRGB(lum) };
+        i++;
+      }
     },
 
     getUploadFileUrl(params) {

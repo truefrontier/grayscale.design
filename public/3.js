@@ -325,6 +325,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -724,6 +743,20 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
         }
       });
     },
+    setLumsCount: function setLumsCount(newCount) {
+      if (newCount < 3 || newCount > 20) return;
+      this.lums = {};
+      var i = 0;
+
+      while (i < newCount) {
+        var lum = 100 - 92 / (newCount - 1) * i - 4;
+        this.lums[i] = {
+          lum: lum,
+          rgb: this.lumToGrayscaleRGB(lum)
+        };
+        i++;
+      }
+    },
     getUploadFileUrl: function getUploadFileUrl(params) {
       // return `/uploads/${this.uploadFilePath}${params}`;
       return this.uploadFileUrl + params;
@@ -1120,105 +1153,152 @@ var render = function() {
       "section",
       { staticClass: "mt-8" },
       [
-        _c("h1", { staticClass: "mb-6 font-bold uppercase tracking-wide" }, [
-          _vm._v("1. Set Your Luminosity Scale")
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "float-right flex divide-x" }, [
+        _c("div", { staticClass: "sm:flex justify-between" }, [
           _c(
-            "button",
-            {
-              class: [
-                "px-4",
-                _vm.autoDistribute
-                  ? "font-bold text-gray-700"
-                  : "text-gray-600 hover:underline"
-              ],
-              on: {
-                click: function($event) {
-                  _vm.autoDistribute = true
-                }
-              }
-            },
-            [_vm._v("\n        auto\n      ")]
+            "h1",
+            { staticClass: "mb-6 mr-5 font-bold uppercase tracking-wide" },
+            [_vm._v("1. Set Your Luminosity Scale")]
           ),
           _vm._v(" "),
-          _c(
-            "button",
-            {
-              class: [
-                "px-4",
-                !_vm.autoDistribute
-                  ? "font-bold text-gray-700"
-                  : "text-gray-600 hover:underline"
-              ],
-              on: {
-                click: function($event) {
-                  _vm.autoDistribute = false
-                }
-              }
-            },
-            [_vm._v("\n        manual\n      ")]
-          ),
-          _vm._v(" "),
-          _c("div", { staticClass: "relative" }, [
+          _c("div", { staticClass: "whitespace-no-wrap" }, [
             _c(
               "button",
               {
-                staticClass: "px-4 text-gray-600 hover:underline",
+                staticClass:
+                  "focus:shadow-outline focus:outline-none leading-5 py-half-4 px-4 rounded bg-gray-200 text-xl text-gray-600 hover:text-gray-800",
                 on: {
                   click: function($event) {
-                    _vm.autoDistribute = false
-                    _vm.showPresets = !_vm.showPresets
+                    return _vm.setLumsCount(_vm.lumsCount - 1)
                   }
                 }
               },
-              [
-                _vm._v("\n          presets"),
-                _c("i", { staticClass: "ml-2 fa fa-caret-down" })
-              ]
+              [_vm._v("\n          -\n        ")]
             ),
             _vm._v(" "),
-            _vm.showPresets
-              ? _c(
-                  "div",
-                  {
-                    staticClass:
-                      "absolute right-0 top-100 mr-4 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
-                  },
-                  _vm._l(_vm.presets, function(preset, key) {
-                    return _c(
-                      "a",
-                      {
-                        key: key,
-                        class: [
-                          "block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75",
-                          {
-                            "bg-gray-400 bg-opacity-75":
-                              JSON.stringify(preset.values) ==
-                              JSON.stringify(_vm.lumsValues)
-                          }
-                        ],
-                        attrs: { href: "#" + key },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            _vm.setLums(preset.values)
-                            _vm.showPresets = false
-                          }
-                        }
-                      },
-                      [_vm._v(_vm._s(preset.label))]
-                    )
-                  }),
-                  0
-                )
-              : _vm._e()
+            _c("span", { staticClass: "opacity-50 mx-4" }, [
+              _vm._v(_vm._s(_vm.lumsCount) + " values")
+            ]),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass:
+                  "focus:shadow-outline focus:outline-none leading-5 py-half-4 px-4 rounded bg-gray-200 text-xl text-gray-600 hover:text-gray-800",
+                on: {
+                  click: function($event) {
+                    return _vm.setLumsCount(_vm.lumsCount + 1)
+                  }
+                }
+              },
+              [_vm._v("\n          +\n        ")]
+            )
           ])
         ]),
         _vm._v(" "),
-        _c("p", [
-          _vm._v("Drag the sliders below to set your luminosity scale.")
+        _c("div", { staticClass: "mt-6 md:mt-0 md:flex justify-between" }, [
+          _c("p", { staticClass: "flex-shrink" }, [
+            _vm._v("Drag the sliders below to set your luminosity scale.")
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              staticClass:
+                "mt-6 md:mt-0 divide-x flex-grow text-center md:text-right"
+            },
+            [
+              _c(
+                "button",
+                {
+                  class: [
+                    "px-4",
+                    _vm.autoDistribute
+                      ? "font-bold text-gray-700"
+                      : "text-gray-600 hover:underline"
+                  ],
+                  on: {
+                    click: function($event) {
+                      _vm.autoDistribute = true
+                    }
+                  }
+                },
+                [_vm._v("\n          auto\n        ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  class: [
+                    "px-4",
+                    !_vm.autoDistribute
+                      ? "font-bold text-gray-700"
+                      : "text-gray-600 hover:underline"
+                  ],
+                  on: {
+                    click: function($event) {
+                      _vm.autoDistribute = false
+                    }
+                  }
+                },
+                [_vm._v("\n          manual\n        ")]
+              ),
+              _vm._v(" "),
+              _c("div", { staticClass: "inline-block relative" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "px-4 text-gray-600 hover:underline",
+                    on: {
+                      click: function($event) {
+                        _vm.autoDistribute = false
+                        _vm.showPresets = !_vm.showPresets
+                      }
+                    }
+                  },
+                  [
+                    _vm._v("\n            presets"),
+                    _c("i", { staticClass: "ml-2 fa fa-caret-down" })
+                  ]
+                ),
+                _vm._v(" "),
+                _vm.showPresets
+                  ? _c(
+                      "div",
+                      {
+                        staticClass:
+                          "absolute right-0 top-100 mr-4 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-40"
+                      },
+                      _vm._l(_vm.presets, function(preset, key) {
+                        return _c(
+                          "a",
+                          {
+                            key: key,
+                            class: [
+                              "block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75",
+                              {
+                                "bg-gray-400 bg-opacity-75":
+                                  JSON.stringify(preset.values) ==
+                                  JSON.stringify(_vm.lumsValues)
+                              }
+                            ],
+                            attrs: { href: "#" + key },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                _vm.setLums(preset.values)
+                                _vm.showPresets = false
+                              }
+                            }
+                          },
+                          [_vm._v(_vm._s(preset.label))]
+                        )
+                      }),
+                      0
+                    )
+                  : _vm._e()
+              ])
+            ]
+          )
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "mt-5 -mx-6 sm:mx-0" }, [
