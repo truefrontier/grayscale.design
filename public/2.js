@@ -478,7 +478,6 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
   },
   created: function created() {
     this.setLums(this.presets.bell.values);
-    this.addPalette();
   },
   methods: {
     removePalette: function removePalette(index) {

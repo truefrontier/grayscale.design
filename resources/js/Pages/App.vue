@@ -424,7 +424,6 @@ export default {
 
   created() {
     this.setLums(this.presets.bell.values);
-    this.addPalette();
   },
 
   methods: {
