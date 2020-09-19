@@ -43,6 +43,7 @@
           </button>
           <div class="inline-block relative">
             <button
+              v-if="lumsCount == 9"
               @click="
                 autoDistribute = false;
                 showPresets = !showPresets;
@@ -52,7 +53,7 @@
               presets<i class="ml-2 fa fa-caret-down"></i>
             </button>
             <div
-              v-if="showPresets"
+              v-if="showPresets && lumsCount == 9"
               class="absolute right-0 top-100 mr-4 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-40"
             >
               <a

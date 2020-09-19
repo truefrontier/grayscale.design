@@ -344,6 +344,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 
 
@@ -1244,24 +1245,26 @@ var render = function() {
               ),
               _vm._v(" "),
               _c("div", { staticClass: "inline-block relative" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "px-4 text-gray-600 hover:underline",
-                    on: {
-                      click: function($event) {
-                        _vm.autoDistribute = false
-                        _vm.showPresets = !_vm.showPresets
-                      }
-                    }
-                  },
-                  [
-                    _vm._v("\n            presets"),
-                    _c("i", { staticClass: "ml-2 fa fa-caret-down" })
-                  ]
-                ),
+                _vm.lumsCount == 9
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "px-4 text-gray-600 hover:underline",
+                        on: {
+                          click: function($event) {
+                            _vm.autoDistribute = false
+                            _vm.showPresets = !_vm.showPresets
+                          }
+                        }
+                      },
+                      [
+                        _vm._v("\n            presets"),
+                        _c("i", { staticClass: "ml-2 fa fa-caret-down" })
+                      ]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
-                _vm.showPresets
+                _vm.showPresets && _vm.lumsCount == 9
                   ? _c(
                       "div",
                       {
