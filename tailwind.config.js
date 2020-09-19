@@ -11,13 +11,15 @@ module.exports = {
   ],
   theme: {
     extend: {
-      inset: {
+      inset: (theme) => ({
+        ...theme('spacing'),
         '1/2': '50%',
-      },
+      }),
       variants: {
         zIndex: ['responsive', 'hover', 'focus'],
         borderStyle: ['responsive', 'hover', 'focus'],
         borderWidth: ['responsive', 'hover', 'focus'],
+        borderRadius: ['responsive'],
       },
       colors: {
         blue: {

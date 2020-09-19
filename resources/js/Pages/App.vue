@@ -1,7 +1,7 @@
 <template>
   <div class="App">
     <h1 class="text-4xl leading-7 text-gray-500">Luminance-Based Color Palette Generator</h1>
-    <section class="mt-7">
+    <section class="mt-8">
       <h1 class="mb-6 font-bold uppercase tracking-wide">1. Set Your Luminosity Scale</h1>
       <div class="float-right flex divide-x">
         <button
@@ -57,9 +57,9 @@
         </div>
       </div>
       <p>Drag the sliders below to set your luminosity scale.</p>
-      <div class="mt-5">
-        <div class="rounded-full shadow-lg bg-gray-800 relative">
-          <div class="h-half-9 divide-x divide-gray-600 flex justify-between">
+      <div class="mt-5 -mx-6 sm:mx-0">
+        <div class="sm:rounded-full shadow-lg bg-gray-800 relative px-6">
+          <div class="h-8 sm:h-half-9 divide-x divide-gray-600 flex justify-between">
             <div class="flex-grow"></div>
             <div class="flex-grow"></div>
             <div class="flex-grow"></div>
@@ -72,25 +72,27 @@
             <div class="flex-grow"></div>
           </div>
           <div class="border-t border-gray-600 absolute inset-x-0 top-1/2 -mt-px"></div>
-          <div
-            v-for="(swatch, index) in lums"
-            :key="index"
-            draggable
-            @dragstart="onDragStart($event, index)"
-            @drag="onDrag($event, index)"
-            @dragend="onDragEnd($event, index)"
-            :class="[
-              'absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-pointer w-half-7 h-half-7 shadow-inner rounded-full border-1 border-white',
-              isDragging === index ? 'shadow-outline' : 'transition-all duration-200',
-            ]"
-            :style="{
-              left: `${100 - swatch.lum}%`,
-              backgroundColor: `rgb(${lumToGrayscaleRGB(swatch.lum).join(',')})`,
-            }"
-          ></div>
+          <div class="absolute inset-y-0 left-0 right-0 mx-6 border-l border-r border-gray-600">
+            <div
+              v-for="(swatch, index) in lums"
+              :key="index"
+              draggable
+              @dragstart="onDragStart($event, index)"
+              @drag="onDrag($event, index)"
+              @dragend="onDragEnd($event, index)"
+              :class="[
+                'absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-pointer w-half-7 h-half-7 shadow-inner rounded-full border-1 border-white',
+                isDragging === index ? 'shadow-outline' : 'transition-all duration-200',
+              ]"
+              :style="{
+                left: `${100 - swatch.lum}%`,
+                backgroundColor: `rgb(${lumToGrayscaleRGB(swatch.lum).join(',')})`,
+              }"
+            ></div>
+          </div>
         </div>
       </div>
-      <palette-row class="mt-8" :palette="{ swatches: lums }"></palette-row>
+      <palette-row class="mt-7" :palette="{ swatches: lums }"></palette-row>
       <p class="mt-7 opacity-50">
         This scale will be consistent throughout each color in your project's palette. For example,
         a blue-500 will match a red-500 in luminance (or visual lightness/darkness)... or
@@ -498,7 +500,7 @@ export default {
       let el = $event.target;
       let parent = el.parentElement;
       let parentWidth = parent.clientWidth;
-      let elX = $event.pageX - parent.offsetLeft;
+      let elX = $event.pageX - parent.offsetLeft - parent.parentElement.offsetLeft;
       if (elX < 0 || elX > parentWidth) {
         $event.preventDefault();
         return false;
