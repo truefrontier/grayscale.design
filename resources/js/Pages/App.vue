@@ -130,16 +130,12 @@
       </div>
       <div v-if="uploadFilePath" class="mt-6 text-center">
         <a
-          class="inline-block shadow hover:shadow-2xl transition-shadow duration-300"
+          class="grayscale-filter inline-block shadow hover:shadow-2xl transition-shadow duration-300"
           :href="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
           target="_blank"
           rel="noopener"
         >
-          <img
-            class="rounded-lg"
-            :src="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
-            alt=""
-          />
+          <img class="rounded-lg" :src="getUploadFileUrl(`?colorquant=${lumsCount}`)" alt="" />
         </a>
         <p class="mt-2 text-xs mx-auto opacity-50 max-w-2xl">
           Click image to view and print. This is your image using just {{ lumsCount }} shades of
@@ -645,4 +641,4 @@ export default {
 };
 </script>
 
-<!-- <style lang="scss" src="./App.scss" scoped></style> -->
+<style lang="scss" src="./App.scss" scoped></style>

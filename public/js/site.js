@@ -17133,26 +17133,38 @@ __webpack_require__.r(__webpack_exports__);
 var map = {
 	"./App": [
 		"./resources/js/Pages/App.vue",
+		9,
 		0,
 		2
 	],
+	"./App.scss": [
+		"./resources/js/Pages/App.scss",
+		7,
+		0,
+		3
+	],
 	"./App.vue": [
 		"./resources/js/Pages/App.vue",
+		9,
 		0,
 		2
 	],
 	"./Default": [
-		"./resources/js/Pages/Default.vue"
+		"./resources/js/Pages/Default.vue",
+		9
 	],
 	"./Default.vue": [
-		"./resources/js/Pages/Default.vue"
+		"./resources/js/Pages/Default.vue",
+		9
 	],
 	"./Home": [
 		"./resources/js/Pages/Home.vue",
+		9,
 		1
 	],
 	"./Home.vue": [
 		"./resources/js/Pages/Home.vue",
+		9,
 		1
 	]
 };
@@ -17166,8 +17178,8 @@ function webpackAsyncContext(req) {
 	}
 
 	var ids = map[req], id = ids[0];
-	return Promise.all(ids.slice(1).map(__webpack_require__.e)).then(function() {
-		return __webpack_require__(id);
+	return Promise.all(ids.slice(2).map(__webpack_require__.e)).then(function() {
+		return __webpack_require__.t(id, ids[1])
 	});
 }
 webpackAsyncContext.keys = function webpackAsyncContextKeys() {
