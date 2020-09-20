@@ -383,35 +383,68 @@ export default {
 
   watch: {
     grayscaleJson(val) {
-      val.colors.forEach((c, i) => {
-        let r = Math.round(c.red * 255);
-        let g = Math.round(c.green * 255);
-        let b = Math.round(c.blue * 255);
-        let lum = Color.lumFromRGB(r, g, b);
-        this.lums[i].lum = lum;
-        this.lums[i].rgb = [r, g, b];
+      let hexes = [];
+      let colors = [];
+      val.colors.forEach((color) => {
+        if (!hexes.includes(color.hex)) {
+          colors.push(color);
+          hexes.push(color.hex);
+        }
       });
+
+      Object.values(val.dominant_colors).forEach((color) => {
+        if (!hexes.includes(color.hex)) {
+          colors.push(color);
+        }
+      });
+
+      colors.sort((a, b) => {
+        if (a.hex < b.hex) return 1;
+        if (a.hex > b.hex) return -1;
+        return 0;
+      });
+
+      this.lums = {};
+      let i = 0;
+      while (i < colors.length) {
+        let color = colors[i];
+        let r = Math.round(color.red * 255);
+        let g = Math.round(color.green * 255);
+        let b = Math.round(color.blue * 255);
+        let lum = Color.lumFromRGB(r, g, b);
+        this.lums[i] = { lum, rgb: [r, g, b] };
+        i++;
+      }
     },
 
     paletteJson(val) {
-      let dominants = ['vibrant', 'muted'].reduce((arr, color) => {
-        arr.push(val.dominant_colors[color].hex);
-        return arr;
-      }, []);
+      let hexes = [];
+      let colors = [];
+      val.colors.forEach((color) => {
+        if (!hexes.includes(color.hex)) {
+          colors.push(color);
+          hexes.push(color.hex);
+        }
+      });
 
-      let colors = val.colors.reduce((arr, color) => {
-        arr.push(color.hex);
-        return arr;
-      }, []);
+      Object.values(val.dominant_colors).forEach((color) => {
+        if (!hexes.includes(color.hex)) {
+          colors.push(color);
+        }
+      });
 
-      let all = [...new Set(colors.concat(dominants))].sort();
+      colors.sort((a, b) => {
+        if (a.hex < b.hex) return 1;
+        if (a.hex > b.hex) return -1;
+        return 0;
+      });
 
-      all.forEach((hex, i) => {
-        if (hex)
+      colors.forEach((color, i) => {
+        if (color.hex)
           this.palettes.push({
             name: '',
             swatches: clone(this.lums),
-            hex: hex,
+            hex: color.hex,
             filters: {
               hue: 0,
               sat: 0,
@@ -520,8 +553,11 @@ export default {
       index = parseInt(index, 10);
       let el = $event.target;
       let parent = el.parentElement;
+      if (!parent) return;
       let parentWidth = parent.clientWidth;
-      let elX = $event.pageX - parent.offsetLeft - parent.parentElement.offsetLeft;
+      let grandparent = parent.parentElement;
+      if (!grandparent) return;
+      let elX = $event.pageX - parent.offsetLeft - grandparent.offsetLeft;
       if (elX < 0 || elX > parentWidth) {
         $event.preventDefault();
         return false;
@@ -618,14 +654,17 @@ export default {
               this.uploadFilePath = data.path;
 
               let grayscaleUrl = `${this.uploadFileUrl}?sat=-100&colorquant=${this.lumsCount}&palette=json&colors=${this.lumsCount}`;
-              axios.get(grayscaleUrl).then(({ data }) => {
-                this.grayscaleJson = data;
-              });
-
-              let paletteUrl = `${this.uploadFileUrl}?palette=json&colors=3`;
-              axios.get(paletteUrl).then(({ data }) => {
-                this.paletteJson = data;
-              });
+              axios
+                .get(grayscaleUrl)
+                .then(({ data }) => {
+                  this.grayscaleJson = data;
+                })
+                .then(() => {
+                  let paletteUrl = `${this.uploadFileUrl}?palette=json&colors=3`;
+                  axios.get(paletteUrl).then(({ data }) => {
+                    this.paletteJson = data;
+                  });
+                });
             } else {
               alert('Sorry! Please try again.');
             }

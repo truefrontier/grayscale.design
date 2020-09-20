@@ -438,36 +438,66 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
   },
   watch: {
     grayscaleJson: function grayscaleJson(val) {
-      var _this3 = this;
-
-      val.colors.forEach(function (c, i) {
-        var r = Math.round(c.red * 255);
-        var g = Math.round(c.green * 255);
-        var b = Math.round(c.blue * 255);
-        var lum = _utils_color__WEBPACK_IMPORTED_MODULE_2__["lumFromRGB"](r, g, b);
-        _this3.lums[i].lum = lum;
-        _this3.lums[i].rgb = [r, g, b];
+      var hexes = [];
+      var colors = [];
+      val.colors.forEach(function (color) {
+        if (!hexes.includes(color.hex)) {
+          colors.push(color);
+          hexes.push(color.hex);
+        }
       });
+      Object.values(val.dominant_colors).forEach(function (color) {
+        if (!hexes.includes(color.hex)) {
+          colors.push(color);
+        }
+      });
+      colors.sort(function (a, b) {
+        if (a.hex < b.hex) return 1;
+        if (a.hex > b.hex) return -1;
+        return 0;
+      });
+      this.lums = {};
+      var i = 0;
+
+      while (i < colors.length) {
+        var color = colors[i];
+        var r = Math.round(color.red * 255);
+        var g = Math.round(color.green * 255);
+        var b = Math.round(color.blue * 255);
+        var lum = _utils_color__WEBPACK_IMPORTED_MODULE_2__["lumFromRGB"](r, g, b);
+        this.lums[i] = {
+          lum: lum,
+          rgb: [r, g, b]
+        };
+        i++;
+      }
     },
     paletteJson: function paletteJson(val) {
-      var _this4 = this;
+      var _this3 = this;
 
-      var dominants = ['vibrant', 'muted'].reduce(function (arr, color) {
-        arr.push(val.dominant_colors[color].hex);
-        return arr;
-      }, []);
-      var colors = val.colors.reduce(function (arr, color) {
-        arr.push(color.hex);
-        return arr;
-      }, []);
-
-      var all = _toConsumableArray(new Set(colors.concat(dominants))).sort();
-
-      all.forEach(function (hex, i) {
-        if (hex) _this4.palettes.push({
+      var hexes = [];
+      var colors = [];
+      val.colors.forEach(function (color) {
+        if (!hexes.includes(color.hex)) {
+          colors.push(color);
+          hexes.push(color.hex);
+        }
+      });
+      Object.values(val.dominant_colors).forEach(function (color) {
+        if (!hexes.includes(color.hex)) {
+          colors.push(color);
+        }
+      });
+      colors.sort(function (a, b) {
+        if (a.hex < b.hex) return 1;
+        if (a.hex > b.hex) return -1;
+        return 0;
+      });
+      colors.forEach(function (color, i) {
+        if (color.hex) _this3.palettes.push({
           name: '',
-          swatches: Object(_utils_object__WEBPACK_IMPORTED_MODULE_3__["clone"])(_this4.lums),
-          hex: hex,
+          swatches: Object(_utils_object__WEBPACK_IMPORTED_MODULE_3__["clone"])(_this3.lums),
+          hex: color.hex,
           filters: {
             hue: 0,
             sat: 0
@@ -477,7 +507,7 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
 
       var last = this.palettes.pop();
       this.$nextTick(function () {
-        _this4.palettes.unshift(last);
+        _this3.palettes.unshift(last);
       });
     },
     autoDistribute: function autoDistribute(val) {
@@ -488,11 +518,11 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
     lums: {
       deep: true,
       handler: function handler(val) {
-        var _this5 = this;
+        var _this4 = this;
 
         clearTimeout(this.updateSwatchTimeout);
         this.updateSwatchTimeout = setTimeout(function () {
-          _this5.updateSwatchLums(val);
+          _this4.updateSwatchLums(val);
         }, 250);
       }
     }
@@ -522,7 +552,7 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       return hex;
     },
     updateSwatchLums: function updateSwatchLums(lums) {
-      var _this6 = this;
+      var _this5 = this;
 
       lums = lums || this.lums; // Update palette swatch lums
 
@@ -534,20 +564,20 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       });
       clearTimeout(this.paletteCacheBustTimeout);
       this.paletteCacheBustTimeout = setTimeout(function () {
-        _this6.palettes.reverse();
+        _this5.palettes.reverse();
 
-        _this6.$nextTick(function () {
-          _this6.palettes.reverse();
+        _this5.$nextTick(function () {
+          _this5.palettes.reverse();
         });
       }, 100);
     },
     setLums: function setLums(values) {
-      var _this7 = this;
+      var _this6 = this;
 
       this.lums = Object.keys(this.lums).reduce(function (obj, index) {
         obj[index] = {
           lum: values[index],
-          rgb: _this7.lumToGrayscaleRGB(values[index])
+          rgb: _this6.lumToGrayscaleRGB(values[index])
         };
         return obj;
       }, {});
@@ -565,13 +595,16 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       this.lastPos = null;
     },
     onDrag: function onDrag($event, index) {
-      var _this8 = this;
+      var _this7 = this;
 
       index = parseInt(index, 10);
       var el = $event.target;
       var parent = el.parentElement;
+      if (!parent) return;
       var parentWidth = parent.clientWidth;
-      var elX = $event.pageX - parent.offsetLeft - parent.parentElement.offsetLeft;
+      var grandparent = parent.parentElement;
+      if (!grandparent) return;
+      var elX = $event.pageX - parent.offsetLeft - grandparent.offsetLeft;
 
       if (elX < 0 || elX > parentWidth) {
         $event.preventDefault();
@@ -585,12 +618,12 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
         this.lums[index].rgb = this.lumToGrayscaleRGB(100 - pos);
         clearTimeout(this.adjustLumsTimeout);
         this.adjustLumsTimeout = setTimeout(function () {
-          return _this8.adjustLums(index === 0 ? pos : _this8.lums[0].lum, index === _this8.lumsCount - 1 ? pos : _this8.lums[_this8.lumsCount - 1].lum, 100 - pos, index);
+          return _this7.adjustLums(index === 0 ? pos : _this7.lums[0].lum, index === _this7.lumsCount - 1 ? pos : _this7.lums[_this7.lumsCount - 1].lum, 100 - pos, index);
         }, 20);
       }
     },
     adjustLums: function adjustLums(startPos, endPos, curPos, curIndex) {
-      var _this9 = this;
+      var _this8 = this;
 
       if (!this.autoDistribute) return;
 
@@ -603,13 +636,13 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
 
           if (ndx < curIndex) {
             var dist = (curPos - startPos) / curIndex;
-            _this9.lums[ndx].lum = ndx * dist + _this9.lums[0].lum;
-            _this9.lums[ndx].rgb = _this9.lumToGrayscaleRGB(_this9.lums[ndx].lum);
+            _this8.lums[ndx].lum = ndx * dist + _this8.lums[0].lum;
+            _this8.lums[ndx].rgb = _this8.lumToGrayscaleRGB(_this8.lums[ndx].lum);
           } else if (curIndex < ndx) {
-            var _dist = (endPos - curPos) / (_this9.lumsCount - curIndex - 1);
+            var _dist = (endPos - curPos) / (_this8.lumsCount - curIndex - 1);
 
-            _this9.lums[ndx].lum = (ndx - curIndex) * _dist + curPos;
-            _this9.lums[ndx].rgb = _this9.lumToGrayscaleRGB(_this9.lums[ndx].lum);
+            _this8.lums[ndx].lum = (ndx - curIndex) * _dist + curPos;
+            _this8.lums[ndx].rgb = _this8.lumToGrayscaleRGB(_this8.lums[ndx].lum);
           }
         }); // Prevent this from running unnecessarily
 
@@ -617,7 +650,7 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       }
     },
     addPalette: function addPalette() {
-      var _this10 = this;
+      var _this9 = this;
 
       this.palettes.unshift({
         name: '',
@@ -630,9 +663,9 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       });
       this.isChoosingBase = 0;
       this.$nextTick(function () {
-        _this10.palettes[0].hex = '#000000';
+        _this9.palettes[0].hex = '#000000';
         setTimeout(function () {
-          var _ref = _this10.$refs.palettePicker0 || [],
+          var _ref = _this9.$refs.palettePicker0 || [],
               _ref2 = _slicedToArray(_ref, 1),
               input = _ref2[0];
 
@@ -641,7 +674,7 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       });
     },
     onFileUpload: function onFileUpload() {
-      var _this11 = this;
+      var _this10 = this;
 
       return new Promise( /*#__PURE__*/function () {
         var _ref3 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(resolve, reject) {
@@ -650,8 +683,8 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  _this11.isUploading = true;
-                  filePicker = _this11.$refs.upload;
+                  _this10.isUploading = true;
+                  filePicker = _this10.$refs.upload;
 
                   if (!(!filePicker || !filePicker.files || filePicker.files.length <= 0)) {
                     _context.next = 5;
@@ -662,9 +695,9 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
                   return _context.abrupt("return");
 
                 case 5:
-                  _this11.uploadFile = filePicker.files[0];
+                  _this10.uploadFile = filePicker.files[0];
 
-                  if (!(_this11.uploadFile.size > 10485760 / 2)) {
+                  if (!(_this10.uploadFile.size > 10485760 / 2)) {
                     _context.next = 9;
                     break;
                   }
@@ -674,11 +707,11 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
 
                 case 9:
                   _context.next = 11;
-                  return _this11.toBase64(_this11.uploadFile);
+                  return _this10.toBase64(_this10.uploadFile);
 
                 case 11:
-                  _this11.base64File = _context.sent;
-                  return _context.abrupt("return", resolve(_this11.uploadFile));
+                  _this10.base64File = _context.sent;
+                  return _context.abrupt("return", resolve(_this10.uploadFile));
 
                 case 13:
                 case "end":
@@ -699,29 +732,30 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
           var data = _ref4.data;
 
           if (data.url) {
-            _this11.uploadFileUrl = data.url;
-            _this11.uploadFilePath = data.path;
-            var grayscaleUrl = "".concat(_this11.uploadFileUrl, "?sat=-100&colorquant=").concat(_this11.lumsCount, "&palette=json&colors=").concat(_this11.lumsCount);
+            _this10.uploadFileUrl = data.url;
+            _this10.uploadFilePath = data.path;
+            var grayscaleUrl = "".concat(_this10.uploadFileUrl, "?sat=-100&colorquant=").concat(_this10.lumsCount, "&palette=json&colors=").concat(_this10.lumsCount);
             axios.get(grayscaleUrl).then(function (_ref5) {
               var data = _ref5.data;
-              _this11.grayscaleJson = data;
-            });
-            var paletteUrl = "".concat(_this11.uploadFileUrl, "?palette=json&colors=3");
-            axios.get(paletteUrl).then(function (_ref6) {
-              var data = _ref6.data;
-              _this11.paletteJson = data;
+              _this10.grayscaleJson = data;
+            }).then(function () {
+              var paletteUrl = "".concat(_this10.uploadFileUrl, "?palette=json&colors=3");
+              axios.get(paletteUrl).then(function (_ref6) {
+                var data = _ref6.data;
+                _this10.paletteJson = data;
+              });
             });
           } else {
             alert('Sorry! Please try again.');
           }
         });
       })["catch"](alert)["finally"](function () {
-        var _this11$$refs;
+        var _this10$$refs;
 
-        _this11.isUploading = false;
+        _this10.isUploading = false;
 
-        if ((_this11$$refs = _this11.$refs) === null || _this11$$refs === void 0 ? void 0 : _this11$$refs.upload) {
-          _this11.$refs.upload.value = null;
+        if ((_this10$$refs = _this10.$refs) === null || _this10$$refs === void 0 ? void 0 : _this10$$refs.upload) {
+          _this10.$refs.upload.value = null;
         }
       });
     },
