@@ -281,7 +281,7 @@
               </div>
             </div>
           </div>
-          <palette-row class="mt-4" :palette="palette"></palette-row>
+          <palette-row class="mt-4" :palette="palette" hide-lum></palette-row>
         </div>
       </div>
     </section>
