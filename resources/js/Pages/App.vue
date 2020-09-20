@@ -297,7 +297,16 @@
         >
         with these generated colors:
       </p>
-      <pre class="mt-6 bg-gray-300 rounded-lg p-6 text-gray-800">{{ tailwindConfig }}</pre>
+      <div class="mt-6 bg-gray-300 rounded-lg p-6 text-gray-800 overflow-auto">
+        <button
+          @click="copy(tailwindConfig)"
+          class="relative z-20 bg-gray-200 float-right rounded border-1 text-blue-600 border-blue-600 px-5 py-4 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 hover:text-white duration-300 uppercase text-sm font-bold tracking-wide"
+        >
+          <i :class="['fa fa-fw mr-3', copyText ? 'fa-check' : 'fa-clone']"></i
+          >{{ copyText ? 'Copied!' : 'Copy' }}
+        </button>
+        <pre class="relative z-10">{{ tailwindConfig }}</pre>
+      </div>
     </section>
     <section class="mt-9 text-center leading-7">
       <div class="text-3xl font-bold">Have feedback?</div>
@@ -355,6 +364,7 @@ export default {
       paletteJson: {},
       shownPaletteMenu: null,
       setFromUploadTimeout: 0,
+      copyText: '',
     };
   },
 
@@ -500,7 +510,32 @@ export default {
     this.setLums(this.presets.bell.values);
   },
 
+  mounted() {
+    document.addEventListener('copy', this.onCopy.bind(this));
+  },
+
+  beforeDestroy() {
+    document.removeEventListener('copy', this.onCopy.bind(this), null);
+  },
+
   methods: {
+    copy(copyText) {
+      this.copyText = copyText;
+      this.$nextTick(() => {
+        document.execCommand('copy');
+      });
+    },
+
+    onCopy(e) {
+      if (this.copyText) {
+        e.preventDefault();
+        e.clipboardData.setData('text/plain', this.copyText);
+        setTimeout(() => {
+          this.copyText = false;
+        }, 2000);
+      }
+    },
+
     removePalette(index) {
       this.palettes.splice(index, 1);
     },
