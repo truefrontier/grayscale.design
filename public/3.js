@@ -614,6 +614,7 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       var pos = parseFloat(elX / parentWidth * 100);
 
       if ($event.screenX) {
+        this.lums = Object(_utils_object__WEBPACK_IMPORTED_MODULE_3__["clone"])(this.lums);
         this.lums[index].lum = 100 - pos;
         this.lums[index].rgb = this.lumToGrayscaleRGB(100 - pos);
         clearTimeout(this.adjustLumsTimeout);

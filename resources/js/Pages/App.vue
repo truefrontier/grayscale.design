@@ -564,6 +564,7 @@ export default {
       }
       let pos = parseFloat((elX / parentWidth) * 100);
       if ($event.screenX) {
+        this.lums = clone(this.lums);
         this.lums[index].lum = 100 - pos;
         this.lums[index].rgb = this.lumToGrayscaleRGB(100 - pos);
         clearTimeout(this.adjustLumsTimeout);
