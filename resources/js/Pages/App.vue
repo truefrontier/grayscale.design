@@ -683,19 +683,7 @@ export default {
             if (data.url) {
               this.uploadFileUrl = data.url;
               this.uploadFilePath = data.path;
-
-              let grayscaleUrl = `${this.uploadFileUrl}?sat=-100&colorquant=${this.lumsCount}&palette=json&colors=${this.lumsCount}`;
-              axios
-                .get(grayscaleUrl)
-                .then(({ data }) => {
-                  this.grayscaleJson = data;
-                })
-                .then(() => {
-                  let paletteUrl = `${this.uploadFileUrl}?palette=json&colors=3`;
-                  axios.get(paletteUrl).then(({ data }) => {
-                    this.paletteJson = data;
-                  });
-                });
+              this.setFromUploadFile();
             } else {
               alert('Sorry! Please try again.');
             }
@@ -730,6 +718,7 @@ export default {
 
     setLumsCount(newCount) {
       if (newCount < 3 || newCount > 20) return;
+
       let lums = clone(this.lums);
       let i = 0;
       while (i < Math.max(this.lumsCount, newCount)) {
@@ -744,6 +733,25 @@ export default {
         i++;
       }
       this.lums = lums;
+
+      if (this.uploadFileUrl) {
+        this.setFromUploadFile();
+      }
+    },
+
+    setFromUploadFile() {
+      let grayscaleUrl = `${this.uploadFileUrl}?sat=-100&colorquant=${this.lumsCount}&palette=json&colors=${this.lumsCount}`;
+      axios
+        .get(grayscaleUrl)
+        .then(({ data }) => {
+          this.grayscaleJson = data;
+        })
+        .then(() => {
+          let paletteUrl = `${this.uploadFileUrl}?palette=json&colors=3`;
+          axios.get(paletteUrl).then(({ data }) => {
+            this.paletteJson = data;
+          });
+        });
     },
 
     getUploadFileUrl(params) {
