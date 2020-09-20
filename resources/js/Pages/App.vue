@@ -510,8 +510,9 @@ export default {
     },
 
     toggleFilters(index) {
-      if (this.showFilters.includes(index)) {
-        this.showFilters.splice(index, 1);
+      let filterIndex = this.showFilters.indexOf(index);
+      if (filterIndex !== -1) {
+        this.showFilters.splice(filterIndex, 1);
       } else {
         this.showFilters = [...new Set([...this.showFilters, index])];
       }
