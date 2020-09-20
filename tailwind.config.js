@@ -14,6 +14,7 @@ module.exports = {
       inset: (theme) => ({
         ...theme('spacing'),
         '1/2': '50%',
+        full: '100%',
       }),
       variants: {
         zIndex: ['responsive', 'hover', 'focus'],

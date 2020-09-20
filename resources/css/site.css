@@ -6,15 +6,27 @@ textarea {
   }
 }
 
-.SwatchSquare > button {
-  span {
-    @apply hidden transition-all duration-300;
-  }
-  &:hover,
-  &:focus {
-    @apply z-20;
+.SwatchSquare {
+  > button {
     span {
-      @apply inline-block;
+      @apply hidden transition-all duration-300;
+    }
+    &:hover,
+    &:focus {
+      @apply z-20;
+      span {
+        @apply inline-block;
+      }
+    }
+  }
+  &.is-closest {
+    > button {
+      @apply relative;
+      &:after {
+        @apply absolute inset-x-0 top-full h-half-4 mt-half-4 rounded-full;
+        content: '';
+        background: currentColor;
+      }
     }
   }
 }

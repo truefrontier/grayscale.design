@@ -1,5 +1,5 @@
 <template>
-  <div class="SwatchSquare">
+  <div :class="['SwatchSquare', { 'is-closest': isClosest }]">
     <button
       @click="copy(swatch.hex)"
       :class="[
@@ -8,6 +8,7 @@
         { 'pointer-events-none': !swatch.hex },
       ]"
       :style="{
+        color: getBgColor(swatch),
         backgroundColor: getBgColor(swatch),
         transitionDelay: `${index * 40}ms`,
       }"
