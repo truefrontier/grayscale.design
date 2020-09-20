@@ -23,7 +23,7 @@
           v-if="!hideLum"
           class="font-mono opacity-50 text-gray-600 text-xs text-center leading-5"
         >
-          {{ swatch.lum ? swatch.lum.toFixed(1) : '--' }}%
+          {{ swatch.lum ? swatch.lum.toFixed(2) : swatch.lum == 0 ? '0.00' : '--' }}%
         </div>
       </swatch-square>
     </div>
