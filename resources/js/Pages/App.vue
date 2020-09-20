@@ -401,11 +401,13 @@ export default {
         }
       });
 
-      Object.values(val.dominant_colors).forEach((color) => {
-        if (!hexes.includes(color.hex)) {
-          colors.push(color);
-        }
-      });
+      if (colors.length < this.lumsCount) {
+        Object.values(val.dominant_colors).forEach((color) => {
+          if (!hexes.includes(color.hex)) {
+            colors.push(color);
+          }
+        });
+      }
 
       colors.sort((a, b) => {
         if (a.hex < b.hex) return 1;
