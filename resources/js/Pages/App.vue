@@ -738,12 +738,12 @@ export default {
       if (this.uploadFileUrl) {
         clearTimeout(this.setFromUploadTimeout);
         this.setFromUploadTimeout = setTimeout(() => {
-          this.setFromUploadFile();
+          this.setFromUploadFile(false);
         }, 2500);
       }
     },
 
-    setFromUploadFile() {
+    setFromUploadFile(addPalette = true) {
       let grayscaleUrl = `${this.uploadFileUrl}?sat=-100&colorquant=${this.lumsCount}&palette=json&colors=${this.lumsCount}`;
       axios
         .get(grayscaleUrl)
@@ -751,10 +751,12 @@ export default {
           this.grayscaleJson = data;
         })
         .then(() => {
-          let paletteUrl = `${this.uploadFileUrl}?palette=json&colors=3`;
-          axios.get(paletteUrl).then(({ data }) => {
-            this.paletteJson = data;
-          });
+          if (addPalette) {
+            let paletteUrl = `${this.uploadFileUrl}?palette=json&colors=3`;
+            axios.get(paletteUrl).then(({ data }) => {
+              this.paletteJson = data;
+            });
+          }
         });
     },
 
