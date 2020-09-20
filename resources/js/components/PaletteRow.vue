@@ -136,12 +136,13 @@ export default {
     },
 
     onCopy(e) {
-      e.preventDefault();
-      if (!this.copyText) return false;
-      e.clipboardData.setData('text/plain', this.copyText);
-      setTimeout(() => {
-        this.copyText = false;
-      }, 500);
+      if (this.copyText) {
+        e.preventDefault();
+        e.clipboardData.setData('text/plain', this.copyText);
+        setTimeout(() => {
+          this.copyText = false;
+        }, 500);
+      }
     },
 
     updateBase(hex) {
