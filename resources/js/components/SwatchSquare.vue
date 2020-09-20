@@ -2,7 +2,6 @@
   <div class="SwatchSquare">
     <button
       @click="copy(swatch.hex)"
-      :data-hex="swatch.hex"
       :class="[
         'w-full h-9 shadow-inner transition-colors duration-150 relative z-10',
         isFirst ? 'rounded-l-lg' : isLast ? 'rounded-r-lg' : '',
@@ -23,7 +22,7 @@
         v-if="swatch.hex"
         :class="[
           'absolute text-sm text-gray-700 bg-white px-3 py-half-2 shadow rounded top-1/2 left-1/2 transform -translate-x-1/2',
-          copied ? 'translate-y-full opacity-100' : 'opacity-0 -translate-y-1/2',
+          copied === swatch.hex ? 'translate-y-full opacity-100' : 'opacity-0 -translate-y-1/2',
         ]"
       >
         {{ swatch.hex }}
@@ -44,7 +43,7 @@ export default {
     isLast: Boolean,
     isClosest: Boolean,
     copy: Function,
-    copied: Boolean,
+    copied: String,
   },
 
   methods: {
@@ -55,4 +54,4 @@ export default {
 };
 </script>
 
-<style lang="scss" src="./SwatchSquare.scss" scoped></style>
+<!-- <style lang="scss" src="./SwatchSquare.scss" scoped></style> -->

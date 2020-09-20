@@ -5,7 +5,7 @@
         v-for="(swatch, index) in swatches"
         :key="index"
         :copy="copy"
-        :copied="copied"
+        :copied="copyText"
         :swatch="swatch"
         :index="parseInt(index, 10)"
         :is-first="index == 0"
@@ -51,7 +51,6 @@ export default {
       paletteClone: {},
       generateTimeout: 0,
       copyText: '',
-      copied: false,
     };
   },
 
@@ -140,9 +139,8 @@ export default {
       e.preventDefault();
       if (!this.copyText) return false;
       e.clipboardData.setData('text/plain', this.copyText);
-      this.copied = true;
       setTimeout(() => {
-        this.copied = false;
+        this.copyText = false;
       }, 500);
     },
 

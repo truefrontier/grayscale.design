@@ -5,3 +5,16 @@ textarea {
     @apply outline-none shadow-outline;
   }
 }
+
+.SwatchSquare > button {
+  span {
+    @apply hidden transition-all duration-300;
+  }
+  &:hover,
+  &:focus {
+    @apply z-20;
+    span {
+      @apply inline-block;
+    }
+  }
+}
