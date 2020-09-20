@@ -299,6 +299,15 @@
       </p>
       <pre class="mt-6 bg-gray-300 rounded-lg p-6 text-gray-800">{{ tailwindConfig }}</pre>
     </section>
+    <section class="mt-9 text-center leading-7">
+      <div class="text-3xl font-bold">Have feedback?</div>
+      <a
+        class="inline-block mt-5 leading-6 sm:leading-7 sm:mt-4 text-xl sm:text-2xl sm:border-b-1 border-gold-300 transition-all duration-300 text-gold-600 hover:text-gold-500"
+        href="mailto:feedback@grayscale.design"
+      >
+        <i class="fa fa-send mr-4"></i>Send us an email
+      </a>
+    </section>
   </div>
 </template>
 
