@@ -736,7 +736,7 @@ export default {
       this.lums = lums;
 
       if (this.uploadFileUrl) {
-        cleatTimeout(this.setFromUploadTimeout);
+        clearTimeout(this.setFromUploadTimeout);
         this.setFromUploadTimeout = setTimeout(() => {
           this.setFromUploadFile();
         }, 2500);
