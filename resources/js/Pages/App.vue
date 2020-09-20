@@ -700,13 +700,20 @@ export default {
 
     setLumsCount(newCount) {
       if (newCount < 3 || newCount > 20) return;
-      this.lums = {};
+      let lums = clone(this.lums);
       let i = 0;
-      while (i < newCount) {
-        let lum = 100 - (92 / (newCount - 1)) * i - 4;
-        this.lums[i] = { lum, rgb: this.lumToGrayscaleRGB(lum) };
+      while (i < Math.max(this.lumsCount, newCount)) {
+        if (i < newCount) {
+          if (!lums.hasOwnProperty(i)) {
+            let lum = lums[i - 1].lum / 2;
+            lums[i] = { lum, rgb: this.lumToGrayscaleRGB(lum) };
+          }
+        } else {
+          delete lums[i];
+        }
         i++;
       }
+      this.lums = lums;
     },
 
     getUploadFileUrl(params) {
