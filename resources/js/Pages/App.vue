@@ -354,6 +354,7 @@ export default {
       grayscaleJson: {},
       paletteJson: {},
       shownPaletteMenu: null,
+      setFromUploadTimeout: 0,
     };
   },
 
@@ -735,7 +736,10 @@ export default {
       this.lums = lums;
 
       if (this.uploadFileUrl) {
-        this.setFromUploadFile();
+        cleatTimeout(this.setFromUploadTimeout);
+        this.setFromUploadTimeout = setTimeout(() => {
+          this.setFromUploadFile();
+        }, 2500);
       }
     },
 
