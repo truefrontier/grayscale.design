@@ -96,8 +96,11 @@ export default {
 
     lums: {
       deep: true,
-      handler() {
-        this.$nextTick(this.generateSwatches);
+      handler(val) {
+        this.$nextTick(() => {
+          this.generateSwatches();
+          this.paletteClone.closest = Color.closestLum(val, this.paletteClone.lum);
+        });
       },
     },
   },

@@ -378,9 +378,11 @@ export default {
 
       this.palettes.forEach((palette) => {
         colors[palette.name] = Object.keys(palette.swatches).reduce((obj, index) => {
-          obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(
-            ...palette.swatches[index].rgb.map(Math.round),
-          );
+          if (palette.swatches[index].rgb) {
+            obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(
+              ...palette.swatches[index].rgb.map(Math.round),
+            );
+          }
           return obj;
         }, {});
       });
@@ -485,6 +487,12 @@ export default {
         }, 250);
       },
     },
+
+    lumsCount(val) {
+      this.$nextTick(() => {
+        this.updateSwatchLums();
+      });
+    },
   },
 
   created() {
@@ -518,11 +526,22 @@ export default {
 
     updateSwatchLums(lums) {
       lums = lums || this.lums;
+      let lumsCount = Object.keys(lums).length;
       // Update palette swatch lums
       this.palettes = this.palettes.map((palette) => {
-        Object.keys(palette.swatches).forEach((i) => {
-          palette.swatches[i].lum = lums[i].lum;
+        let swatchKeys = Object.keys(palette.swatches);
+        swatchKeys.forEach((i) => {
+          if (i < lumsCount) {
+            palette.swatches[i].lum = lums[i].lum;
+          } else {
+            delete palette.swatches[i];
+          }
         });
+        let i = swatchKeys.length - 1;
+        while (i < lumsCount) {
+          palette.swatches[i] = { lum: lums[i].lum };
+          i++;
+        }
         return palette;
       });
 

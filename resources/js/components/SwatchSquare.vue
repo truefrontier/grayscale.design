@@ -1,5 +1,5 @@
 <template>
-  <div :class="['SwatchSquare', { 'is-closest': isClosest }]">
+  <div v-if="swatch.rgb" :class="['SwatchSquare', { 'is-closest': isClosest }]">
     <button
       @click="copy(swatch.hex)"
       :class="[
