@@ -505,13 +505,13 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
       var hexes = [];
       var colors = [];
       val.colors.forEach(function (color) {
-        if (hexes.indexOf(color.hex) !== -1) {
+        if (hexes.indexOf(color.hex) === -1) {
           colors.push(color);
           hexes.push(color.hex);
         }
       });
       Object.values(val.dominant_colors).forEach(function (color) {
-        if (hexes.indexOf(color.hex) !== -1) {
+        if (hexes.indexOf(color.hex) === -1) {
           colors.push(color);
           hexes.push(color.hex);
         }
@@ -1604,285 +1604,277 @@ var render = function() {
       _c(
         "div",
         { staticClass: "mt-8" },
-        _vm._l(
-          _vm.palettes.filter(function(p) {
-            return !!p
-          }),
-          function(palette, index) {
-            return _c(
-              "div",
-              { key: index, staticClass: "mt-8" },
-              [
-                _c(
-                  "div",
-                  {
-                    staticClass:
-                      "min-h-8 md:flex justify-between items-center relative"
-                  },
-                  [
-                    _c("div", { staticClass: "absolute right-0 top-0" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass:
-                            "text-center h-7 my-half-6 rounded text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900",
-                          on: {
-                            click: function($event) {
-                              return _vm.togglePaletteMenu(index)
-                            }
+        _vm._l(_vm.palettes, function(palette, index) {
+          return _c(
+            "div",
+            { key: index, staticClass: "mt-8" },
+            [
+              _c(
+                "div",
+                {
+                  staticClass:
+                    "min-h-8 md:flex justify-between items-center relative"
+                },
+                [
+                  _c("div", { staticClass: "absolute right-0 top-0" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass:
+                          "text-center h-7 my-half-6 rounded text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900",
+                        on: {
+                          click: function($event) {
+                            return _vm.togglePaletteMenu(index)
                           }
-                        },
-                        [_c("i", { staticClass: "far fa-lg fa-ellipsis-h" })]
-                      ),
-                      _vm._v(" "),
-                      _vm.shownPaletteMenu == index
-                        ? _c(
-                            "div",
-                            {
-                              staticClass:
-                                "absolute z-40 right-0 top-100 mr-4 -mt-3 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
-                            },
-                            [
-                              _c(
-                                "a",
-                                {
-                                  staticClass:
-                                    "block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75",
-                                  attrs: { href: "#" },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      _vm.toggleFilters(index)
-                                      _vm.togglePaletteMenu(index)
-                                    }
-                                  }
-                                },
-                                [
-                                  _c("i", {
-                                    staticClass: "far fa-fw fa-sliders-h mr-4"
-                                  }),
-                                  _vm._v(
-                                    _vm._s(
-                                      _vm.showFilters.includes(index)
-                                        ? "Hide"
-                                        : "Show"
-                                    ) + " Filters\n              "
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c("hr", {
-                                staticClass: "my-3 border-gray-600 opacity-75"
-                              }),
-                              _vm._v(" "),
-                              _c(
-                                "a",
-                                {
-                                  staticClass:
-                                    "block py-half-4 px-5 whitespace-no-wrap text-red-800 hover:bg-gray-400 hover:bg-opacity-75",
-                                  attrs: { href: "#" },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      _vm.removePalette(index)
-                                      _vm.togglePaletteMenu(index)
-                                    }
-                                  }
-                                },
-                                [
-                                  _c("i", {
-                                    staticClass: "far fa-fw fa-times mr-4"
-                                  }),
-                                  _vm._v("Remove\n              ")
-                                ]
-                              )
-                            ]
-                          )
-                        : _vm._e()
-                    ]),
+                        }
+                      },
+                      [_c("i", { staticClass: "far fa-lg fa-ellipsis-h" })]
+                    ),
                     _vm._v(" "),
-                    _c("div", { staticClass: "h-8 leading-8 mr-8" }, [
-                      _c("input", {
-                        ref: "palettePicker" + index,
-                        refInFor: true,
-                        staticClass:
-                          "leading-6 inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4",
-                        attrs: { type: "color" },
-                        domProps: { value: _vm.getPickerHex(palette.hex) },
-                        on: {
-                          input: function($event) {
-                            palette.hex = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
+                    _vm.shownPaletteMenu == index
+                      ? _c(
+                          "div",
                           {
-                            name: "model",
-                            rawName: "v-model",
-                            value: palette.hex,
-                            expression: "palette.hex"
-                          }
-                        ],
-                        ref: "paletteHex" + index,
-                        refInFor: true,
-                        staticClass:
-                          "leading-6 inline-block align-middle w-9 mr-5 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none",
-                        attrs: { type: "text", placeholder: "#000000" },
-                        domProps: { value: palette.hex },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.$set(palette, "hex", $event.target.value)
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: palette.name,
-                            expression: "palette.name"
-                          }
-                        ],
-                        ref: "paletteName" + index,
-                        refInFor: true,
-                        staticClass:
-                          "leading-6 inline-block align-middle w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none",
-                        attrs: {
-                          type: "text",
-                          placeholder: "Enter color label"
-                        },
-                        domProps: { value: palette.name },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.$set(palette, "name", $event.target.value)
-                          }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _vm.showFilters.includes(index)
-                      ? _c("div", { staticClass: "flex md:mr-8 space-x-5" }, [
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "text-center leading-5 mt-4 w-1/2 md:min-w-10 lg:min-w-11"
-                            },
-                            [
-                              _c(
-                                "label",
-                                {
-                                  staticClass:
-                                    "block font-mono text-xs opacity-50 uppercase"
-                                },
-                                [
-                                  _vm._v(
-                                    "Hue (" +
-                                      _vm._s(
-                                        palette.filters.hue > 0
-                                          ? "+" + palette.filters.hue
-                                          : palette.filters.hue
-                                      ) +
-                                      "°)"
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: palette.filters.hue,
-                                    expression: "palette.filters.hue"
-                                  }
-                                ],
-                                staticClass: "p-half-4 w-full",
-                                attrs: { type: "range", min: "-50", max: "50" },
-                                domProps: { value: palette.filters.hue },
+                            staticClass:
+                              "absolute z-40 right-0 top-100 mr-4 -mt-3 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
+                          },
+                          [
+                            _c(
+                              "a",
+                              {
+                                staticClass:
+                                  "block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75",
+                                attrs: { href: "#" },
                                 on: {
-                                  __r: function($event) {
-                                    return _vm.$set(
-                                      palette.filters,
-                                      "hue",
-                                      $event.target.value
-                                    )
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.toggleFilters(index)
+                                    _vm.togglePaletteMenu(index)
                                   }
                                 }
-                              })
-                            ]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "div",
-                            {
-                              staticClass:
-                                "text-center leading-5 mt-4 w-1/2 md:min-w-10 lg:min-w-11"
-                            },
-                            [
-                              _c(
-                                "label",
-                                {
-                                  staticClass:
-                                    "block font-mono text-xs opacity-50 uppercase"
-                                },
-                                [
-                                  _vm._v(
-                                    "Saturation (" +
-                                      _vm._s(palette.filters.sat) +
-                                      "%)"
-                                  )
-                                ]
-                              ),
-                              _vm._v(" "),
-                              _c("input", {
-                                directives: [
-                                  {
-                                    name: "model",
-                                    rawName: "v-model",
-                                    value: palette.filters.sat,
-                                    expression: "palette.filters.sat"
-                                  }
-                                ],
-                                staticClass: "p-half-4 w-full",
-                                attrs: { type: "range", min: "-30", max: "30" },
-                                domProps: { value: palette.filters.sat },
+                              },
+                              [
+                                _c("i", {
+                                  staticClass: "far fa-fw fa-sliders-h mr-4"
+                                }),
+                                _vm._v(
+                                  _vm._s(
+                                    _vm.showFilters.includes(index)
+                                      ? "Hide"
+                                      : "Show"
+                                  ) + " Filters\n              "
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("hr", {
+                              staticClass: "my-3 border-gray-600 opacity-75"
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "a",
+                              {
+                                staticClass:
+                                  "block py-half-4 px-5 whitespace-no-wrap text-red-800 hover:bg-gray-400 hover:bg-opacity-75",
+                                attrs: { href: "#" },
                                 on: {
-                                  __r: function($event) {
-                                    return _vm.$set(
-                                      palette.filters,
-                                      "sat",
-                                      $event.target.value
-                                    )
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    _vm.removePalette(index)
+                                    _vm.togglePaletteMenu(index)
                                   }
                                 }
-                              })
-                            ]
-                          )
-                        ])
+                              },
+                              [
+                                _c("i", {
+                                  staticClass: "far fa-fw fa-times mr-4"
+                                }),
+                                _vm._v("Remove\n              ")
+                              ]
+                            )
+                          ]
+                        )
                       : _vm._e()
-                  ]
-                ),
-                _vm._v(" "),
-                _c("palette-row", {
-                  staticClass: "mt-4",
-                  attrs: { palette: palette, "hide-lum": "" }
-                })
-              ],
-              1
-            )
-          }
-        ),
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "h-8 leading-8 mr-8" }, [
+                    _c("input", {
+                      ref: "palettePicker" + index,
+                      refInFor: true,
+                      staticClass:
+                        "leading-6 inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4",
+                      attrs: { type: "color" },
+                      domProps: { value: _vm.getPickerHex(palette.hex) },
+                      on: {
+                        input: function($event) {
+                          palette.hex = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: palette.hex,
+                          expression: "palette.hex"
+                        }
+                      ],
+                      ref: "paletteHex" + index,
+                      refInFor: true,
+                      staticClass:
+                        "leading-6 inline-block align-middle w-9 mr-5 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none",
+                      attrs: { type: "text", placeholder: "#000000" },
+                      domProps: { value: palette.hex },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(palette, "hex", $event.target.value)
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: palette.name,
+                          expression: "palette.name"
+                        }
+                      ],
+                      ref: "paletteName" + index,
+                      refInFor: true,
+                      staticClass:
+                        "leading-6 inline-block align-middle w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none",
+                      attrs: { type: "text", placeholder: "Enter color label" },
+                      domProps: { value: palette.name },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(palette, "name", $event.target.value)
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _vm.showFilters.includes(index)
+                    ? _c("div", { staticClass: "flex md:mr-8 space-x-5" }, [
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "text-center leading-5 mt-4 w-1/2 md:min-w-10 lg:min-w-11"
+                          },
+                          [
+                            _c(
+                              "label",
+                              {
+                                staticClass:
+                                  "block font-mono text-xs opacity-50 uppercase"
+                              },
+                              [
+                                _vm._v(
+                                  "Hue (" +
+                                    _vm._s(
+                                      palette.filters.hue > 0
+                                        ? "+" + palette.filters.hue
+                                        : palette.filters.hue
+                                    ) +
+                                    "°)"
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: palette.filters.hue,
+                                  expression: "palette.filters.hue"
+                                }
+                              ],
+                              staticClass: "p-half-4 w-full",
+                              attrs: { type: "range", min: "-50", max: "50" },
+                              domProps: { value: palette.filters.hue },
+                              on: {
+                                __r: function($event) {
+                                  return _vm.$set(
+                                    palette.filters,
+                                    "hue",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "text-center leading-5 mt-4 w-1/2 md:min-w-10 lg:min-w-11"
+                          },
+                          [
+                            _c(
+                              "label",
+                              {
+                                staticClass:
+                                  "block font-mono text-xs opacity-50 uppercase"
+                              },
+                              [
+                                _vm._v(
+                                  "Saturation (" +
+                                    _vm._s(palette.filters.sat) +
+                                    "%)"
+                                )
+                              ]
+                            ),
+                            _vm._v(" "),
+                            _c("input", {
+                              directives: [
+                                {
+                                  name: "model",
+                                  rawName: "v-model",
+                                  value: palette.filters.sat,
+                                  expression: "palette.filters.sat"
+                                }
+                              ],
+                              staticClass: "p-half-4 w-full",
+                              attrs: { type: "range", min: "-30", max: "30" },
+                              domProps: { value: palette.filters.sat },
+                              on: {
+                                __r: function($event) {
+                                  return _vm.$set(
+                                    palette.filters,
+                                    "sat",
+                                    $event.target.value
+                                  )
+                                }
+                              }
+                            })
+                          ]
+                        )
+                      ])
+                    : _vm._e()
+                ]
+              ),
+              _vm._v(" "),
+              _c("palette-row", {
+                staticClass: "mt-4",
+                attrs: { palette: palette, "hide-lum": "" }
+              })
+            ],
+            1
+          )
+        }),
         0
       )
     ]),
