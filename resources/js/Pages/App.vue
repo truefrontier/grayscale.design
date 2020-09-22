@@ -358,8 +358,10 @@ export default {
       isUploading: false,
       uploadFile: null,
       base64File: null,
-      uploadFileUrl: '',
-      uploadFilePath: '',
+      uploadFileUrl:
+        'https://grayscale.imgix.net/palettes/HDMUtXtIclMmFRa3j9D3Tp0VbSY4MnQ2eMCoeRHZ.jpeg',
+      uploadFilePath:
+        'https://grayscale.imgix.net/palettes/HDMUtXtIclMmFRa3j9D3Tp0VbSY4MnQ2eMCoeRHZ.jpeg',
       grayscaleJson: {},
       paletteJson: {},
       shownPaletteMenu: null,
@@ -481,6 +483,11 @@ export default {
       let last = this.palettes.pop();
       this.$nextTick(() => {
         this.palettes.unshift(last);
+        this.$nextTick(() => {
+          setTimeout(() => {
+            this.dedupePalettes();
+          }, 1000);
+        });
       });
     },
 
@@ -522,24 +529,56 @@ export default {
 
   methods: {
     dedupePalettes() {
-      let hexes = [];
+      let dupes = this.getDupes();
+
+      for (var i = dupes.length - 1; i >= 0; i--) {
+        this.palettes.splice(dupes[i], 1);
+      }
+    },
+
+    getDupes() {
+      let rgbs = {};
       let dupes = [];
-      this.palettes.forEach((palette, i) => {
+      this.palettes.forEach((palette, p1) => {
         let isDupe = false;
+        rgbs[p1] = [];
         Object.keys(palette.swatches).forEach((key) => {
           let swatch = palette.swatches[key];
-          if (hexes.indexOf(swatch.hex) !== -1) {
-            hexes.push(swatch.hex);
-          } else {
-            isDupe = true;
+          let [r, g, b] = swatch.rgb;
+          for (var p2 = Object.keys(rgbs).length - 1; p2 >= 0; p2--) {
+            for (var j = rgbs[p2].length - 1; j >= 0; j--) {
+              let matches = 0;
+              let [R, G, B] = rgbs[p2][j];
+              if (r - 1 <= R && r + 1 >= R) matches++;
+              if (g - 1 <= G && g + 1 >= G) matches++;
+              if (b - 1 <= B && b + 1 >= B) matches++;
+              if (matches >= 2) {
+                let hex1 = this.palettes[p1].hex;
+                let hex2 = this.palettes[p2].hex;
+                let lum1 = Color.lumFromRGB(...Object.values(Color.hexToRGB(hex1)));
+                let lum2 = Color.lumFromRGB(...Object.values(Color.hexToRGB(hex2)));
+                let closest1 = Color.closestLum(this.lumsValues, lum1);
+                let closest2 = Color.closestLum(this.lumsValues, lum2);
+                if (Object.keys(closest1).length) closest1 = Object.keys(closest1)[0];
+                if (Object.keys(closest2).length) closest2 = Object.keys(closest2)[0];
+                let diff1 = Math.abs(this.lumsCount / 2 - closest1);
+                let diff2 = Math.abs(this.lumsCount / 2 - closest2);
+                if (diff2 < diff1) {
+                  dupes.push(p1);
+                } else {
+                  dupes.push(p2);
+                }
+                isDupe = true;
+                break;
+              }
+            }
+            if (isDupe) break;
           }
+          if (!isDupe) rgbs[p1].push(swatch.rgb);
         });
-        if (isDupe) dupes.push(i);
       });
 
-      dupes.forEach((paletteIndex) => {
-        this.palettes.splice(paletteIndex, 1);
-      });
+      return dupes;
     },
 
     copy(copyText) {
