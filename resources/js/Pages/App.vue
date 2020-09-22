@@ -445,15 +445,16 @@ export default {
       let hexes = [];
       let colors = [];
       val.colors.forEach((color) => {
-        if (!hexes.includes(color.hex)) {
+        if (hexes.indexOf(color.hex) !== -1) {
           colors.push(color);
           hexes.push(color.hex);
         }
       });
 
       Object.values(val.dominant_colors).forEach((color) => {
-        if (!hexes.includes(color.hex)) {
+        if (hexes.indexOf(color.hex) !== -1) {
           colors.push(color);
+          hexes.push(color.hex);
         }
       });
 
