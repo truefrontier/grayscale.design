@@ -358,10 +358,8 @@ export default {
       isUploading: false,
       uploadFile: null,
       base64File: null,
-      uploadFileUrl:
-        'https://grayscale.imgix.net/palettes/HDMUtXtIclMmFRa3j9D3Tp0VbSY4MnQ2eMCoeRHZ.jpeg',
-      uploadFilePath:
-        'https://grayscale.imgix.net/palettes/HDMUtXtIclMmFRa3j9D3Tp0VbSY4MnQ2eMCoeRHZ.jpeg',
+      uploadFileUrl: '',
+      uploadFilePath: '',
       grayscaleJson: {},
       paletteJson: {},
       shownPaletteMenu: null,
