@@ -191,7 +191,7 @@
         Add A Color
       </button>
       <div class="mt-8">
-        <div v-for="(palette, index) in palettes" :key="index" class="mt-8">
+        <div v-for="(palette, index) in palettes.filter((p) => !!p)" :key="index" class="mt-8">
           <div class="min-h-8 md:flex justify-between items-center relative">
             <div class="absolute right-0 top-0">
               <button
