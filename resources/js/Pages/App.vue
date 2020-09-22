@@ -155,7 +155,7 @@
           target="_blank"
           rel="noopener"
         >
-          <img class="rounded-lg" :src="base64File" alt="" />
+          <img class="rounded-lg" :src="base64File || uploadFileUrl" alt="" />
           <img
             class="rounded-lg absolute inset-0 z-10 opacity-100 hover:opacity-0 transition-opacity duration-200"
             :src="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
@@ -513,6 +513,7 @@ export default {
 
   mounted() {
     document.addEventListener('copy', this.onCopy.bind(this));
+    if (this.uploadFileUrl) this.setFromUploadFile();
   },
 
   beforeDestroy() {
@@ -520,6 +521,27 @@ export default {
   },
 
   methods: {
+    dedupePalettes() {
+      let hexes = [];
+      let dupes = [];
+      this.palettes.forEach((palette, i) => {
+        let isDupe = false;
+        Object.keys(palette.swatches).forEach((key) => {
+          let swatch = palette.swatches[key];
+          if (hexes.indexOf(swatch.hex) !== -1) {
+            hexes.push(swatch.hex);
+          } else {
+            isDupe = true;
+          }
+        });
+        if (isDupe) dupes.push(i);
+      });
+
+      dupes.forEach((paletteIndex) => {
+        this.palettes.splice(paletteIndex, 1);
+      });
+    },
+
     copy(copyText) {
       this.copyText = copyText;
       this.$nextTick(() => {
