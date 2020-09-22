@@ -576,7 +576,7 @@ export default {
         });
       });
 
-      return dupes;
+      return [...new Set(dupes)].sort();
     },
 
     copy(copyText) {
