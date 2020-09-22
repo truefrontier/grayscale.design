@@ -6,14 +6,20 @@
         <h1 class="mb-6 mr-5 font-bold uppercase tracking-wide">1. Set Your Luminosity Scale</h1>
         <div class="whitespace-no-wrap">
           <button
-            @click="setLumsCount(lumsCount - 1)"
+            @click="
+              setLumsCount(lumsCount - 1);
+              hasUpdatedLumsCount = true;
+            "
             class="focus:shadow-outline focus:outline-none leading-5 py-half-4 px-4 rounded bg-gray-200 text-xl text-gray-600 hover:text-gray-800"
           >
             -
           </button>
           <span class="opacity-50 mx-4">{{ lumsCount }} values</span>
           <button
-            @click="setLumsCount(lumsCount + 1)"
+            @click="
+              setLumsCount(lumsCount + 1);
+              hasUpdatedLumsCount = true;
+            "
             class="focus:shadow-outline focus:outline-none leading-5 py-half-4 px-4 rounded bg-gray-200 text-xl text-gray-600 hover:text-gray-800"
           >
             +
@@ -364,6 +370,7 @@ export default {
       paletteJson: {},
       shownPaletteMenu: null,
       setFromUploadTimeout: 0,
+      hasUpdatedLumsCount: false,
       copyText: '',
     };
   },
@@ -428,16 +435,18 @@ export default {
         return 0;
       });
 
-      this.lums = {};
-      let i = 0;
-      while (i < colors.length) {
-        let color = colors[i];
-        let r = Math.round(color.red * 255);
-        let g = Math.round(color.green * 255);
-        let b = Math.round(color.blue * 255);
-        let lum = Color.lumFromRGB(r, g, b);
-        this.lums[i] = { lum, rgb: [r, g, b] };
-        i++;
+      if (!this.hasUpdatedLumsCount) {
+        this.lums = {};
+        let i = 0;
+        while (i < colors.length) {
+          let color = colors[i];
+          let r = Math.round(color.red * 255);
+          let g = Math.round(color.green * 255);
+          let b = Math.round(color.blue * 255);
+          let lum = Color.lumFromRGB(r, g, b);
+          this.lums[i] = { lum, rgb: [r, g, b] };
+          i++;
+        }
       }
     },
 
