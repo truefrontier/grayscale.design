@@ -540,40 +540,36 @@ export default {
       this.palettes.forEach((palette, p1) => {
         let isDupe = false;
         rgbs[p1] = [];
-        Object.keys(palette.swatches).forEach((key) => {
-          let swatch = palette.swatches[key];
-          let [r, g, b] = swatch.rgb;
-          for (var p2 = Object.keys(rgbs).length - 1; p2 >= 0; p2--) {
-            for (var j = rgbs[p2].length - 1; j >= 0; j--) {
-              let matches = 0;
-              let [R, G, B] = rgbs[p2][j];
-              if (r - 1 <= R && r + 1 >= R) matches++;
-              if (g - 1 <= G && g + 1 >= G) matches++;
-              if (b - 1 <= B && b + 1 >= B) matches++;
-              if (matches >= 2) {
-                let hex1 = this.palettes[p1].hex;
-                let hex2 = this.palettes[p2].hex;
-                let lum1 = Color.lumFromRGB(...Object.values(Color.hexToRGB(hex1)));
-                let lum2 = Color.lumFromRGB(...Object.values(Color.hexToRGB(hex2)));
-                let closest1 = Color.closestLum(this.lumsValues, lum1);
-                let closest2 = Color.closestLum(this.lumsValues, lum2);
-                if (Object.keys(closest1).length) closest1 = Object.keys(closest1)[0];
-                if (Object.keys(closest2).length) closest2 = Object.keys(closest2)[0];
-                let diff1 = Math.abs(this.lumsCount / 2 - closest1);
-                let diff2 = Math.abs(this.lumsCount / 2 - closest2);
-                if (diff2 < diff1) {
-                  dupes.push(p1);
-                } else {
-                  dupes.push(p2);
-                }
-                isDupe = true;
-                break;
+        let closestToMid = Color.closestLum(this.lumsValues, 50);
+        let midIndex = Object.keys(closestToMid)[0];
+        let swatch = palette.swatches[midIndex];
+        let [r, g, b] = swatch.rgb;
+        for (var p2 = Object.keys(rgbs).length - 1; p2 >= 0; p2--) {
+          for (var j = rgbs[p2].length - 1; j >= 0; j--) {
+            let matches = 0;
+            let [R, G, B] = rgbs[p2][j];
+            if (r - 3 <= R && r + 3 >= R) matches++;
+            if (g - 3 <= G && g + 3 >= G) matches++;
+            if (b - 3 <= B && b + 3 >= B) matches++;
+            if (matches >= 2) {
+              let hex1 = this.palettes[p1].hex;
+              let hex2 = this.palettes[p2].hex;
+              let lum1 = Color.lumFromRGB(...Object.values(Color.hexToRGB(hex1)));
+              let lum2 = Color.lumFromRGB(...Object.values(Color.hexToRGB(hex2)));
+              let diff1 = Math.abs(50 - lum1);
+              let diff2 = Math.abs(50 - lum2);
+              if (diff2 < diff1 && dupes.indexOf(p1) === -1) {
+                dupes.push(p1);
+              } else {
+                dupes.push(p2);
               }
+              isDupe = true;
+              break;
             }
-            if (isDupe) break;
           }
-          if (!isDupe) rgbs[p1].push(swatch.rgb);
-        });
+          if (isDupe) break;
+        }
+        if (!isDupe) rgbs[p1].push(swatch.rgb);
       });
 
       return [...new Set(dupes)].sort();
