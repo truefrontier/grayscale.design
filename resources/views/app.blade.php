@@ -8,11 +8,11 @@
         <title>grayscale design | Luminance-based color palette generator for Tailwind CSS</title>
         <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
         <script src="https://kit.fontawesome.com/41590b8d21.js" crossorigin="anonymous"></script>
-        @if (env('APP_ENV') === 'production')
+    @if (env('APP_ENV') === 'production')
         <!-- Fathom - beautiful, simple website analytics -->
-        <script src="https://cdn.usefathom.com/script.js" spa="auto" site="QBCMJQGI" defer></script>
+        <script src="https://angelfish.grayscale.design/script.js" site="QBCMJQGI" defer></script>
         <!-- / Fathom -->
-        @endif
+    @endif
     </head>
     <body>
         @inertia
