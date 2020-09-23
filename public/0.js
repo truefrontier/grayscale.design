@@ -451,9 +451,30 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
           }
         },
         dark: {
-          label: 'The Darkside',
+          label: 'The Dark Side',
           getValues: function getValues(lums, count) {
-            return [90, 81, 66, 43, 22, 10, 4, 0.8, 0.2];
+            var min = lums.reduce(function (num, val) {
+              return val < num ? val : num;
+            }, 100);
+            var max = lums.reduce(function (num, val) {
+              return val > num ? val : num;
+            }, 0);
+            var spread = max - min;
+            var space = spread / (count - 1);
+            var vals = [min];
+            var i = 1;
+
+            while (i < count - 1) {
+              var val = void 0;
+              val = i * space;
+              val *= Math.pow((count - 1) / count, count - i);
+              vals.push(Math.min(val + min, max));
+              i++;
+            }
+
+            vals.push(max);
+            vals.reverse();
+            return vals;
           }
         }
       },

@@ -355,7 +355,6 @@ export default {
             let half = (count - 1) / 2;
             let vals = [min];
             let i = 1;
-            // doesn't work when count = 5 and min > 80
             while (i < count - 1) {
               let val, virtualIndex;
               if (i === half) {
@@ -364,12 +363,12 @@ export default {
                 virtualIndex = half - i;
                 val = i * space;
                 val *= Math.pow((half - 1) / half, virtualIndex);
-                val = Math.max(val + min, 0);
+                val = Math.max(val + min, min);
               } else {
                 virtualIndex = i - half;
                 val = (count - 1 - i) * space;
                 val *= Math.pow((half - 1) / half, virtualIndex);
-                val = Math.min(max - val, 100);
+                val = Math.min(max - val, max);
               }
               vals.push(val);
               i++;
@@ -398,9 +397,25 @@ export default {
           },
         },
         dark: {
-          label: 'The Darkside',
+          label: 'The Dark Side',
           getValues(lums, count) {
-            return [90, 81, 66, 43, 22, 10, 4, 0.8, 0.2];
+            let min = lums.reduce((num, val) => (val < num ? val : num), 100);
+            let max = lums.reduce((num, val) => (val > num ? val : num), 0);
+            let spread = max - min;
+            let space = spread / (count - 1);
+            let vals = [min];
+            let i = 1;
+            while (i < count - 1) {
+              let val;
+              val = i * space;
+              val *= Math.pow((count - 1) / count, count - i);
+              vals.push(Math.min(val + min, max));
+              i++;
+            }
+
+            vals.push(max);
+            vals.reverse();
+            return vals;
           },
         },
       },
