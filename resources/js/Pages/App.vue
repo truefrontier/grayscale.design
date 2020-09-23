@@ -49,7 +49,6 @@
           </button>
           <div class="inline-block relative">
             <button
-              v-if="lumsCount == 9"
               @click="
                 autoDistribute = false;
                 showPresets = !showPresets;
@@ -59,7 +58,7 @@
               presets<i class="ml-2 fa fa-caret-down"></i>
             </button>
             <div
-              v-if="showPresets && lumsCount == 9"
+              v-if="showPresets"
               class="absolute right-0 top-100 mr-4 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-40"
             >
               <a
@@ -67,14 +66,15 @@
                   'block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
                   {
                     'bg-gray-400 bg-opacity-75':
-                      JSON.stringify(preset.values) == JSON.stringify(lumsValues),
+                      JSON.stringify(preset.getValues(lumsValues, lumsCount)) ==
+                      JSON.stringify(lumsValues),
                   },
                 ]"
                 v-for="(preset, key) in presets"
                 :href="`#${key}`"
                 :key="key"
                 @click.prevent="
-                  setLums(preset.values);
+                  setLums(preset.getValues(lumsValues, lumsCount));
                   showPresets = false;
                 "
                 >{{ preset.label }}</a
@@ -344,9 +344,65 @@ export default {
   data() {
     return {
       presets: {
-        bell: { label: 'Bell Curve', values: [98, 92, 82, 67, 50, 33, 18, 8, 2] },
-        linear: { label: 'Linear', values: [98, 86, 74, 62, 50, 38, 26, 14, 2] },
-        dark: { label: 'The Darkside', values: [90, 81, 66, 43, 22, 10, 4, 0.8, 0.2] },
+        bell: {
+          label: 'Bell Curve',
+          getValues(lums, count) {
+            let min = lums.reduce((num, val) => (val < num ? val : num), 100);
+            let max = lums.reduce((num, val) => (val > num ? val : num), 0);
+            let spread = max - min;
+            let space = spread / (count - 1);
+            let mid = spread / 2 + min;
+            let half = (count - 1) / 2;
+            let vals = [min];
+            let i = 1;
+            // doesn't work when count = 5 and min > 80
+            while (i < count - 1) {
+              let val, virtualIndex;
+              if (i === half) {
+                val = mid;
+              } else if (i < half) {
+                virtualIndex = half - i;
+                val = i * space;
+                val *= Math.pow((half - 1) / half, virtualIndex);
+                val = Math.max(val + min, 0);
+              } else {
+                virtualIndex = i - half;
+                val = (count - 1 - i) * space;
+                val *= Math.pow((half - 1) / half, virtualIndex);
+                val = Math.min(max - val, 100);
+              }
+              vals.push(val);
+              i++;
+            }
+            vals.push(max);
+            vals.reverse();
+            return vals;
+          },
+        },
+        linear: {
+          label: 'Linear',
+          getValues(lums, count) {
+            let min = lums.reduce((num, val) => (val < num ? val : num), 100);
+            let max = lums.reduce((num, val) => (val > num ? val : num), 0);
+            let space = (max - min) / (count - 1);
+            let vals = [min];
+            let i = 1;
+            while (i < count - 1) {
+              let val = min + i * space;
+              vals.push(val);
+              i++;
+            }
+            vals.push(max);
+            vals.reverse();
+            return vals;
+          },
+        },
+        dark: {
+          label: 'The Darkside',
+          getValues(lums, count) {
+            return [90, 81, 66, 43, 22, 10, 4, 0.8, 0.2];
+          },
+        },
       },
       lums: { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {} },
       isDragging: null,
@@ -522,7 +578,7 @@ export default {
   },
 
   created() {
-    this.setLums(this.presets.bell.values);
+    this.setLums([98, 92, 82, 67, 50, 33, 18, 8, 2]);
   },
 
   mounted() {
