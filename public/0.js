@@ -397,7 +397,7 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
             var mid = spread / 2 + min;
             var half = (count - 1) / 2;
             var vals = [min];
-            var i = 1; // doesn't work when count = 5 and min > 80
+            var i = 1;
 
             while (i < count - 1) {
               var val = void 0,
@@ -409,12 +409,12 @@ BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACA
                 virtualIndex = half - i;
                 val = i * space;
                 val *= Math.pow((half - 1) / half, virtualIndex);
-                val = Math.max(val + min, 0);
+                val = Math.max(val + min, min);
               } else {
                 virtualIndex = i - half;
                 val = (count - 1 - i) * space;
                 val *= Math.pow((half - 1) / half, virtualIndex);
-                val = Math.min(max - val, 100);
+                val = Math.min(max - val, max);
               }
 
               vals.push(val);
