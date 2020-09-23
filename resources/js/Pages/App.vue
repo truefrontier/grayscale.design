@@ -397,7 +397,7 @@ export default {
           },
         },
         dark: {
-          label: 'The Dark Side',
+          label: 'Darker Side',
           getValues(lums, count) {
             let min = lums.reduce((num, val) => (val < num ? val : num), 100);
             let max = lums.reduce((num, val) => (val > num ? val : num), 0);
@@ -406,11 +406,31 @@ export default {
             let vals = [min];
             let i = 1;
             while (i < count - 1) {
-              let val;
-              val = i * space;
-              val *= Math.pow((count - 1) / count, count - i);
+              let val = i * space;
+              val *= Math.pow((count - 1) / count, count - (i * (count + 1)) / count);
               vals.push(Math.min(val + min, max));
               i++;
+            }
+
+            vals.push(max);
+            vals.reverse();
+            return vals;
+          },
+        },
+        light: {
+          label: 'Lighter Side',
+          getValues(lums, count) {
+            let min = lums.reduce((num, val) => (val < num ? val : num), 100);
+            let max = lums.reduce((num, val) => (val > num ? val : num), 0);
+            let spread = max - min;
+            let space = spread / (count - 1);
+            let vals = [min];
+            let i = count - 2;
+            while (i > 0) {
+              let val = i * space;
+              val *= Math.pow((count - 1) / count, count - (i * (count + 1)) / count);
+              vals.push(Math.max(max - val, min));
+              i--;
             }
 
             vals.push(max);
