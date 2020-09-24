@@ -843,10 +843,10 @@ export default {
 
       this.$nextTick(() => {
         this.palettes[0].hex = '#000000';
-        setTimeout(() => {
-          let [input] = this.$refs.palettePicker0 || [];
-          if (input) input.click();
-        }, 10);
+        // setTimeout(() => {
+        //   let [input] = this.$refs.palettePicker0 || [];
+        //   if (input) input.click();
+        // }, 10);
       });
     },
 
