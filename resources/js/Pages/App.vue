@@ -1,89 +1,82 @@
 <template>
   <div class="App">
-    <h1 class="text-4xl leading-7 text-gray-500">Luminance-Based Color Palette Generator</h1>
-    <section class="mt-8">
-      <div class="sm:flex justify-between">
-        <h1 class="mb-6 mr-5 font-bold uppercase tracking-wide">1. Set Your Luminosity Scale</h1>
-        <div class="whitespace-no-wrap">
+    <section class="mt-6">
+      <h1 class="mb-6 mr-5 font-bold uppercase tracking-wide">
+        1.&nbsp;&nbsp;Set Your Luminance-Based Grayscale
+      </h1>
+      <div class="mt-6 md:mt-0 flex items-center justify-between">
+        <p class="flex-shrink">
+          Drag the sliders below or use the
+          <i class="far fa-ellipsis-h mx-2 text-blue-600"></i> menu.
+        </p>
+        <div class="relative">
           <button
-            @click="
-              setLumsCount(lumsCount - 1);
-              hasUpdatedLumsCount = true;
-            "
-            class="focus:shadow-outline focus:outline-none leading-5 py-half-4 px-4 rounded bg-gray-200 text-xl text-gray-600 hover:text-gray-800"
+            @click="showLumsMenu = !showLumsMenu"
+            class="text-center h-7 leading-7 px-4 rounded text-xl text-blue-600 hover:opacity-75 focus:text-blue-900"
           >
-            -
+            <i class="far fa-lg fa-ellipsis-h"></i>
           </button>
-          <span class="opacity-50 mx-4">{{ lumsCount }} values</span>
-          <button
-            @click="
-              setLumsCount(lumsCount + 1);
-              hasUpdatedLumsCount = true;
-            "
-            class="focus:shadow-outline focus:outline-none leading-5 py-half-4 px-4 rounded bg-gray-200 text-xl text-gray-600 hover:text-gray-800"
+          <div
+            v-if="showLumsMenu"
+            class="absolute right-0 top-100 mr-4 mt-2 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-40"
           >
-            +
-          </button>
-        </div>
-      </div>
-      <div class="mt-6 md:mt-0 md:flex justify-between">
-        <p class="flex-shrink">Drag the sliders below to set your luminosity scale.</p>
-        <div class="mt-6 md:mt-0 divide-x flex-grow text-center md:text-right">
-          <button
-            @click="autoDistribute = true"
-            :class="[
-              'px-4',
-              autoDistribute ? 'font-bold text-gray-700' : 'text-gray-600 hover:underline',
-            ]"
-          >
-            auto
-          </button>
-          <button
-            @click="autoDistribute = false"
-            :class="[
-              'px-4',
-              !autoDistribute ? 'font-bold text-gray-700' : 'text-gray-600 hover:underline',
-            ]"
-          >
-            manual
-          </button>
-          <div class="inline-block relative">
+            <div
+              class="text-sm block py-half-4 px-5 mr-5 whitespace-no-wrap text-gray-900 uppercase tracking-wide font-bold"
+            >
+              Distribute
+            </div>
+            <button
+              @click="
+                autoDistribute = true;
+                showLumsMenu = false;
+              "
+              :class="[
+                'block w-full text-left py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
+                { 'bg-gray-400 bg-opacity-75': autoDistribute },
+              ]"
+            >
+              <i class="far fa-fw fa-hand-sparkles mr-4"></i>Auto
+            </button>
             <button
               @click="
                 autoDistribute = false;
-                showPresets = !showPresets;
+                showLumsMenu = false;
               "
-              class="px-4 text-gray-600 hover:underline"
+              :class="[
+                'block w-full text-left py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
+                { 'bg-gray-400 bg-opacity-75': !autoDistribute },
+              ]"
             >
-              presets<i class="ml-2 fa fa-caret-down"></i>
+              <i class="far fa-fw fa-hand-paper mr-4"></i>Manual
             </button>
             <div
-              v-if="showPresets"
-              class="absolute right-0 top-100 mr-4 mt-2 text-right shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-40"
+              class="mt-5 text-sm block py-half-4 px-5 mr-5 whitespace-no-wrap text-gray-900 uppercase tracking-wide font-bold"
             >
-              <a
-                :class="[
-                  'block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
-                  {
-                    'bg-gray-400 bg-opacity-75':
-                      JSON.stringify(preset.getValues(lumsValues, lumsCount)) ==
-                      JSON.stringify(lumsValues),
-                  },
-                ]"
-                v-for="(preset, key) in presets"
-                :href="`#${key}`"
-                :key="key"
-                @click.prevent="
-                  setLums(preset.getValues(lumsValues, lumsCount));
-                  showPresets = false;
-                "
-                >{{ preset.label }}</a
-              >
+              Presets
             </div>
+            <a
+              :class="[
+                'block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
+                {
+                  'bg-gray-400 bg-opacity-75':
+                    JSON.stringify(preset.getValues(lumsValues, lumsCount)) ==
+                    JSON.stringify(lumsValues),
+                },
+              ]"
+              v-for="(preset, key) in presets"
+              :href="`#${key}`"
+              :key="key"
+              @click.prevent="
+                autoDistribute = false;
+                showLumsMenu = false;
+                setLums(preset.getValues(lumsValues, lumsCount));
+              "
+              ><i :class="['fa fa-fw mr-4', preset.icon]"></i>{{ preset.label }}</a
+            >
           </div>
         </div>
       </div>
-      <div class="mt-5 -mx-6 sm:mx-0">
+      <div class="mt-4 -mx-6 sm:mx-0">
         <div class="sm:rounded-full shadow-lg bg-gray-800 relative px-6">
           <div class="h-8 sm:h-half-9 divide-x divide-gray-600 flex justify-between">
             <div class="flex-grow"></div>
@@ -118,41 +111,50 @@
           </div>
         </div>
       </div>
+
       <palette-row class="mt-7" :palette="{ swatches: lums }"></palette-row>
-      <p class="mt-7 opacity-50">
-        This scale will be consistent throughout each color in your project's palette. For example,
-        a blue-500 will match a red-500 in luminance (or visual lightness/darkness)... or
-        any-other-color-500. In the same way, a red-300 would match a yellow-300 or gray-300. This
-        is the beauty of
-        <strong>grayscale design</strong>. Making all your colors with a scale of equal luminance
-        allows you to design a website first in grayscale, and then, you can add color later without
-        losing any contrast.
-        <!-- To get you started, we've setup 9 steps in your scale, light to
-        dark.  -->
-      </p>
-      <div class="mt-6 font-bold">
-        <span class="opacity-75">Shortcut &raquo;</span>
-        <button class="font-bold text-blue-600" @click="showUploadForm = true">
-          Upload an image
-        </button>
-      </div>
-      <div v-if="showUploadForm" class="mt-6">
-        <p class="opacity-50">
-          After uploading an image, we turn it grayscale to set your luminosity scale. After that,
-          we find the most prominant colors from your image and add them to your color palette!
-        </p>
+
+      <div class="text-center justify-between md:flex md:space-x-6">
         <div>
-          <input
-            :disabled="isUploading"
-            :class="['mt-6', { 'opacity-25': isUploading }]"
-            ref="upload"
-            type="file"
-            accept="image/x-png,image/gif,image/jpeg"
-            @change="onFileUpload"
-          />
-          <i v-if="isUploading" class="fa fa-spinner-third fa-spin"></i>
+          <button
+            @click="setLumsCount(lumsCount - 1)"
+            class="relative inline-block mt-7 border-1 border-gray-500 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+          >
+            <i class="far fa-lg fa-minus"></i>
+          </button>
+          <span class="px-4 opacity-50">{{ lumsCount }} values</span>
+          <button
+            @click="setLumsCount(lumsCount + 1)"
+            class="relative inline-block mt-7 border-1 border-gray-500 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+          >
+            <i class="far fa-lg fa-plus"></i>
+          </button>
         </div>
-        <p class="text-sm opacity-50 mt-2">Max filesize: 5MB</p>
+        <div class="md:text-right">
+          <label
+            for="upload"
+            :class="[
+              'relative inline-block mt-7 border-1 border-gray-500 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-600 hover:text-white uppercase text-sm font-bold tracking-wide',
+              { 'cursor-not-allowed pointer-events-none opacity-50': isUploading },
+            ]"
+          >
+            <input
+              :disabled="isUploading"
+              class="absolute inset-0 opacity-0 z-10 max-w-full"
+              name="upload"
+              id="upload"
+              ref="upload"
+              type="file"
+              accept="image/x-png,image/gif,image/jpeg"
+              @change="onFileUpload"
+            />
+            Upload an image
+          </label>
+          <p class="text-sm opacity-50 mt-3 w-double-10 max-w-full mx-auto">
+            Optionally upload image to auto-generate your grayscale and colors. Max
+            filesize:&nbsp;5MB
+          </p>
+        </div>
       </div>
       <div v-if="uploadFilePath" class="mt-6 text-center">
         <a
@@ -175,24 +177,11 @@
         </p>
       </div>
     </section>
-    <section class="mt-9">
-      <h1 class="mb-6 font-bold uppercase tracking-wide">2. Set your colors</h1>
-      <p class="mt-6 opacity-50">
-        When you add a color, it will create a swatch for each position from your luminosity scale
-        that you set above in step one.
-        <strong>Remember,</strong> to keep your entire color set consistent, changing your
-        luminosity scale will adjust all the colors accordingly.
-      </p>
-      <p class="mt-6 opacity-50">
-        If your base color has <strong>high saturation</strong>, try using the
-        <i class="far fa-ellipsis-h text-blue-700 inline-block align-middle mx-2"></i> menu to "Show
-        Filters" and adjust hues towards the extremes of your palette. Or, if your base color has
-        <strong>low saturation</strong> and more gray-ish, try adding more saturation for the
-        extremes.
-      </p>
+    <section class="mt-10">
+      <h1 class="font-bold uppercase tracking-wide">2.&nbsp;&nbsp;Set your colors</h1>
       <button
         @click="addPalette"
-        class="mt-7 border-1 border-gray-700 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-700 hover:text-white uppercase text-sm font-bold tracking-wide"
+        class="mt-6 border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
       >
         Add A Color
       </button>
@@ -247,14 +236,14 @@
                 v-model="palette.hex"
                 :ref="`paletteHex${index}`"
                 placeholder="#000000"
-                class="leading-6 inline-block align-middle w-9 mr-5 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
+                class="leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
               />
               <input
                 type="text"
                 v-model="palette.name"
                 :ref="`paletteName${index}`"
                 placeholder="Enter color label"
-                class="leading-6 inline-block align-middle w-10 text-gray-700 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
+                class="leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
               />
             </div>
 
@@ -291,14 +280,16 @@
         </div>
       </div>
     </section>
-    <section class="mt-9">
-      <h1 class="mb-6 font-bold uppercase tracking-wide">3. Export Colors for Tailwind CSS</h1>
+    <section class="mt-10">
+      <h1 class="mb-6 font-bold uppercase tracking-wide">
+        3.&nbsp;&nbsp;Export Colors for Tailwind CSS
+      </h1>
       <p class="mt-6">
         <a
           href="https://tailwindcss.com/docs/customizing-colors"
           target="_blank"
           rel="noopener"
-          class="border-b border-gray-500 inline-block hover:opacity-50"
+          class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-50"
           >Customize your Tailwind CSS colors</a
         >
         with these generated colors:
@@ -346,6 +337,7 @@ export default {
       presets: {
         bell: {
           label: 'Bell Curve',
+          icon: 'fa-wave-sine',
           getValues(lums, count) {
             let min = lums.reduce((num, val) => (val < num ? val : num), 100);
             let max = lums.reduce((num, val) => (val > num ? val : num), 0);
@@ -380,6 +372,7 @@ export default {
         },
         linear: {
           label: 'Linear',
+          icon: 'fa-horizontal-rule',
           getValues(lums, count) {
             let min = lums.reduce((num, val) => (val < num ? val : num), 100);
             let max = lums.reduce((num, val) => (val > num ? val : num), 0);
@@ -398,6 +391,7 @@ export default {
         },
         dark: {
           label: 'Darker Side',
+          icon: 'fa-moon',
           getValues(lums, count) {
             let min = lums.reduce((num, val) => (val < num ? val : num), 100);
             let max = lums.reduce((num, val) => (val > num ? val : num), 0);
@@ -419,6 +413,7 @@ export default {
         },
         light: {
           label: 'Lighter Side',
+          icon: 'fa-sun',
           getValues(lums, count) {
             let min = lums.reduce((num, val) => (val < num ? val : num), 100);
             let max = lums.reduce((num, val) => (val > num ? val : num), 0);
@@ -463,6 +458,7 @@ export default {
       setFromUploadTimeout: 0,
       hasUpdatedLumsCount: false,
       copyText: '',
+      showLumsMenu: false,
     };
   },
 

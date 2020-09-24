@@ -11,13 +11,13 @@
       A design-friendly dev project from
       <a
         href="https://brandnamemaker.com"
-        class="border-b border-gray-500 inline-block hover:opacity-50"
+        class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-50"
         >Brandname Maker</a
       >
       &amp;
       <a
         href="https://truefrontierapps.com"
-        class="border-b border-gray-500 inline-block hover:opacity-50"
+        class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-50"
         >True Frontier</a
       >. &copy; Copyright
       {{ new Date().getFullYear() === 2020 ? 2020 : `2020-${new Date().getFullYear()}` }}. All
@@ -25,7 +25,7 @@
       <p class="mt-3 text-sm opacity-75">
         <i class="fa fa-bullhorn" data-fa-transform="flip-h rotate-30"></i> With help from
         <a
-          class="border-b border-gray-500 inline-block hover:opacity-75"
+          class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-75"
           href="https://www.simeongriggs.dev/"
           target="_blank"
           rel="noopener"
@@ -33,7 +33,7 @@
         >
         and his
         <a
-          class="border-b border-gray-500 inline-block hover:opacity-75"
+          class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-75"
           href="https://tailwind.simeongriggs.dev/"
           target="_blank"
           rel="noopener"
