@@ -147,3 +147,41 @@ export function HSLtoRGB(h, s, l) {
     b: (b + m) * 255,
   };
 }
+
+// @see: https://stackoverflow.com/a/55600168/622287
+export function colorName(h, s, l) {
+  l = Math.floor(l);
+  s = Math.floor(s);
+  h = Math.floor(h);
+  if (s <= 10 && l >= 90) {
+    return 'white';
+  } else if ((s <= 10 && l <= 70) || s === 0) {
+    return 'gray';
+  } else if (l <= 15) {
+    return 'black';
+  } else if ((h >= 0 && h <= 15) || h >= 346) {
+    return 'red';
+  } else if (h >= 16 && h <= 35) {
+    if (s < 90) {
+      return 'brown';
+    } else {
+      return 'orange';
+    }
+  } else if (h >= 36 && h <= 54) {
+    if (s < 90) {
+      return 'brown';
+    } else {
+      return 'yellow';
+    }
+  } else if (h >= 55 && h <= 155) {
+    return 'green';
+  } else if (h >= 156 && h <= 190) {
+    return 'teal';
+  } else if (h >= 191 && h <= 260) {
+    return 'blue';
+  } else if (h >= 261 && h <= 290) {
+    return 'purple';
+  } else if (h >= 291 && h <= 345) {
+    return 'pink';
+  }
+}

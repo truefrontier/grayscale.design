@@ -486,7 +486,15 @@ export default {
       }, {});
 
       this.palettes.forEach((palette) => {
-        colors[palette.name] = Object.keys(palette.swatches).reduce((obj, index) => {
+        let name = palette.name;
+        if (!name) {
+          let closestToMid = Color.closestLum(this.lumsValues, 50);
+          let [midIndex] = Object.keys(closestToMid) || Math.floor(this.lumsCount / 2);
+          let swatch = palette.swatches[midIndex];
+          let { h, s, l } = Color.RGBToHSL(...swatch.rgb);
+          name = Color.colorName(h, s, l);
+        }
+        colors[name] = Object.keys(palette.swatches).reduce((obj, index) => {
           if (palette.swatches[index].rgb) {
             obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(
               ...palette.swatches[index].rgb.map(Math.round),
