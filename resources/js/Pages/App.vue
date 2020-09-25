@@ -800,7 +800,7 @@ export default {
 
     getPickerHex(hex) {
       if (hex.length === 4) {
-        return hex + hex.replace('#', '');
+        return '#' + [...hex.replace('#', '')].reduce((str, cur) => str + cur + cur, '');
       }
 
       return hex;

@@ -88,14 +88,20 @@ export default {
 
     'palette.picker': {
       handler(val = '#000000') {
-        this.palette.hex = val.length === 4 ? val + val.replace('#', '') : val;
+        this.palette.hex =
+          val.length === 4
+            ? '#' + [...val.replace('#', '')].reduce((str, cur) => str + cur + cur, '')
+            : val;
         this.updateBase(this.palette.hex);
       },
     },
 
     'palette.hex': {
       handler(val = '#000000') {
-        this.palette.picker = val.length === 4 ? val + val.replace('#', '') : val;
+        this.palette.picker =
+          val.length === 4
+            ? '#' + [...val.replace('#', '')].reduce((str, cur) => str + cur + cur, '')
+            : val;
         this.updateBase(this.palette.picker);
       },
     },
