@@ -276,23 +276,38 @@
               </div>
             </div>
           </div>
-          <palette-row class="mt-4" :palette="palette" hide-lum></palette-row>
+          <palette-row
+            class="mt-4"
+            :palette="palette"
+            hide-lum
+            :store-swatches="(swatches) => storeSwatches(swatches, index)"
+          ></palette-row>
         </div>
       </div>
     </section>
     <section class="mt-10">
-      <h1 class="mb-6 font-bold uppercase tracking-wide">
-        3.&nbsp;&nbsp;Export Colors for Tailwind CSS
-      </h1>
-      <p class="mt-6">
+      <h1 class="font-bold uppercase tracking-wide">3.&nbsp;&nbsp;Export Your Colors</h1>
+      <form action="/export-svgs" target="_blank" method="POST">
+        <input type="text" name="palettes" class="hidden" v-model="exportConfig" />
+        <input type="hidden" name="_token" v-model="csrf" />
+        <button
+          type="submit"
+          class="mt-6 border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+        >
+          Export Svgs
+        </button>
+      </form>
+
+      <p class="mt-8">
+        Or
         <a
           href="https://tailwindcss.com/docs/customizing-colors"
           target="_blank"
           rel="noopener"
           class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-50"
-          >Customize your Tailwind CSS colors</a
+          >customize your Tailwind CSS colors</a
         >
-        with these generated colors:
+        with your generated colors:
       </p>
       <div class="mt-6 bg-gray-300 rounded-lg p-6 text-gray-800 overflow-auto">
         <button
@@ -330,6 +345,11 @@ export default {
 
   components: {
     PaletteRow,
+  },
+
+  props: {
+    cms: Object,
+    csrf: String,
   },
 
   data() {
@@ -459,6 +479,7 @@ export default {
       hasUpdatedLumsCount: false,
       copyText: '',
       showLumsMenu: false,
+      storedSwatches: {},
     };
   },
 
@@ -474,14 +495,24 @@ export default {
       return Object.keys(this.lums).length;
     },
 
-    tailwindConfig() {
+    exportConfig() {
       let colors = {};
-      colors.gray = Object.keys(this.lums).reduce((obj, index) => {
-        obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(...this.lums[index].rgb);
-        return obj;
-      }, {});
 
-      this.palettes.forEach((palette) => {
+      colors.gray = {
+        name: 'gray',
+        swatches: Object.keys(this.lums).reduce((obj, index) => {
+          let swatch = {
+            lum: this.lums[index].lum,
+            rgb: this.lums[index].rgb,
+            hex: Color.RGBToHex(...this.lums[index].rgb),
+            hsl: Object.values(Color.RGBToHSL(...this.lums[index].rgb)),
+          };
+          obj[index] = swatch;
+          return obj;
+        }, {}),
+      };
+
+      this.palettes.forEach((palette, i) => {
         let name = palette.name;
         if (!name) {
           let closestToMid = Color.closestLum(this.lumsValues, 50);
@@ -490,22 +521,60 @@ export default {
           let { h, s, l } = Color.RGBToHSL(...swatch.rgb);
           name = Color.colorName(h, s, l);
         }
-        colors[name] = Object.keys(palette.swatches).reduce((obj, index) => {
-          if (palette.swatches[index].rgb) {
-            obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(
-              ...palette.swatches[index].rgb.map(Math.round),
-            );
+        if (name === 'gray') name += '-custom';
+
+        colors[name] = Object.keys(palette.swatches).reduce(
+          (obj, j) => {
+            if (this.storedSwatches[i] && this.storedSwatches[i][j]) {
+              obj.swatches[j] = this.storedSwatches[i][j];
+            }
+            return obj;
+          },
+          { ...palette, name, swatches: {} },
+        );
+      });
+
+      return JSON.stringify(colors);
+    },
+
+    tailwindConfig() {
+      let colors = {};
+
+      colors.gray = Object.keys(this.lums).reduce((obj, index) => {
+        obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(...this.lums[index].rgb);
+        return obj;
+      }, {});
+
+      this.palettes.forEach((palette, i) => {
+        let name = palette.name;
+        if (!name) {
+          let closestToMid = Color.closestLum(this.lumsValues, 50);
+          let [midIndex] = Object.keys(closestToMid) || Math.floor(this.lumsCount / 2);
+          let swatch = palette.swatches[midIndex];
+          let { h, s, l } = Color.RGBToHSL(...swatch.rgb);
+          name = Color.colorName(h, s, l);
+        }
+        if (name === 'gray') name += '-custom';
+
+        colors[name] = Object.keys(palette.swatches).reduce((obj, j) => {
+          if (this.storedSwatches[i] && this.storedSwatches[i][j]) {
+            obj[`${parseInt(j, 10) + 1}00`] = this.storedSwatches[i][j].hex;
           }
           return obj;
         }, {});
       });
-      let config = JSON.stringify(colors, null, '  ');
+
+      let config = JSON.stringify(colors, null, ' ');
       localStorage.setItem(new Date(), config);
       return config;
     },
   },
 
   watch: {
+    /**
+     * Create a grayscale palette from uploaded image
+     * @param  {Object} val     JSON response from imgix
+     */
     grayscaleJson(val) {
       let hexes = [];
       let colors = [];
@@ -545,6 +614,10 @@ export default {
       }
     },
 
+    /**
+     * Create a palette from colors pulled from an image
+     * @param  {Object} val   JSON response from imgix
+     */
     paletteJson(val) {
       let hexes = [];
       let colors = [];
@@ -630,6 +703,10 @@ export default {
   },
 
   methods: {
+    storeSwatches(swatches, index) {
+      this.storedSwatches[index] = swatches;
+    },
+
     dedupePalettes() {
       let dupes = this.getDupes();
 
@@ -745,6 +822,7 @@ export default {
       clearTimeout(this.paletteCacheBustTimeout);
       this.paletteCacheBustTimeout = setTimeout(() => {
         this.palettes.reverse();
+
         this.$nextTick(() => {
           this.palettes.reverse();
         });

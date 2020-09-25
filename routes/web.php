@@ -13,6 +13,7 @@
 
 use Statamic\Facades\Collection;
 
+Route::post('/export-svgs', 'ExportController@svgs');
 Route::post('/palette-uploads', 'UploadController@upload');
 
 Collection::all()->each(function ($collection) {

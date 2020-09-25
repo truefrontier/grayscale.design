@@ -64,6 +64,7 @@ class PageController extends FrontendController {
 
         return Inertia::render($pageName, [
             'cms' => $cms,
+            'csrf' => csrf_token(),
         ])->withViewData([
             'statamic' => [
                 'cms' => $cms,

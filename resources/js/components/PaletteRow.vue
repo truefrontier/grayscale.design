@@ -44,6 +44,12 @@ export default {
       type: String,
       default: '',
     },
+    storeSwatches: {
+      type: Function,
+      default() {
+        return () => {};
+      },
+    },
   },
 
   data() {
@@ -174,15 +180,20 @@ export default {
           if (newH < 0) newH = 360 - newH;
           if (newH > 360) newH = newH - 360;
           let newS = baseHSL.s + parseFloat(this.paletteClone.filters.sat) * diffIndex;
+          if (newS < 0) newS = Math.max(newS, 0);
+          if (newS > 100) newS = Math.min(newS, 100);
           let newL = await Color.lightnessFromHSLum(newH, newS, swatch.lum);
           let newRGB = Color.HSLtoRGB(newH, newS, newL);
           let rgb = Object.values(newRGB).map(Math.round);
+          this.paletteClone.swatches[i].hsl = [newH, newS, newL];
           this.paletteClone.swatches[i].hex = Color.RGBToHex(...rgb);
           this.paletteClone.swatches[i].rgb = rgb;
           this.paletteClone.swatches[i].lum = Color.lumFromRGB(
             ...this.paletteClone.swatches[i].rgb,
           );
         });
+
+        this.storeSwatches(this.paletteClone.swatches);
       };
 
       if (window.requestAnimationFrame) {
