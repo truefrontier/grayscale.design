@@ -30,3 +30,25 @@ textarea {
     }
   }
 }
+
+.PaletteRow.is-locked {
+  .SwatchSquare {
+    &.is-closest {
+      > button {
+        &:after {
+          @apply mt-0 h-4 rounded-t-none rounded-b-lg;
+        }
+      }
+      &:first-child {
+        > button {
+          @apply rounded-bl-none;
+        }
+      }
+      &:last-child {
+        > button {
+          @apply rounded-br-none;
+        }
+      }
+    }
+  }
+}

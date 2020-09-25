@@ -30,9 +30,14 @@
                 autoDistribute = true;
                 showLumsMenu = false;
               "
+              :title="hasLockedLums ? 'You have LOCKED colors' : ''"
+              :disabled="hasLockedLums"
               :class="[
-                'block w-full text-left py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
+                'block w-full text-left py-half-4 px-5 whitespace-no-wrap',
                 { 'bg-gray-400 bg-opacity-75': autoDistribute },
+                hasLockedLums
+                  ? 'text-gray-600 cursor-not-allowed'
+                  : 'text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
               ]"
             >
               <i class="far fa-fw fa-hand-sparkles mr-4"></i>Auto
@@ -55,13 +60,17 @@
               Presets
             </div>
             <a
+              :title="hasLockedLums ? 'You have LOCKED colors' : ''"
               :class="[
-                'block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
+                'block py-half-4 px-5 whitespace-no-wrap',
                 {
                   'bg-gray-400 bg-opacity-75':
                     JSON.stringify(preset.getValues(lumsValues, lumsCount)) ==
                     JSON.stringify(lumsValues),
                 },
+                hasLockedLums
+                  ? 'text-gray-600 cursor-not-allowed'
+                  : 'text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
               ]"
               v-for="(preset, key) in presets"
               :href="`#${key}`"
@@ -95,13 +104,15 @@
             <div
               v-for="(swatch, index) in lums"
               :key="index"
-              draggable
+              :title="isLockedLum(index) ? 'LOCKED' : ''"
+              :draggable="!isLockedLum(index)"
               @dragstart="onDragStart($event, index)"
               @drag="onDrag($event, index)"
               @dragend="onDragEnd($event, index)"
               :class="[
                 'absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-pointer w-half-7 h-half-7 shadow-inner rounded-full border-1 border-white',
                 isDragging === index ? 'shadow-outline' : 'transition-all duration-200',
+                isLockedLum(index) ? 'cursor-not-allowed' : '',
               ]"
               :style="{
                 left: `${100 - swatch.lum}%`,
@@ -223,7 +234,16 @@
                 </a>
               </div>
             </div>
-            <div class="h-8 leading-8 mr-8">
+            <div class="h-8 leading-8 mr-8 relative">
+              <button
+                @click="toggleLocked(palette.hex)"
+                class="hidden sm:block absolute right-full top-0 px-4 opacity-25 hover:opacity-100 focus:outline-none focus:shadow-none"
+                title="Adjusts grayscale to match this color"
+              >
+                <i
+                  :class="['fa-fw', isLockedHex(palette.hex) ? 'fa fa-lock' : 'far fa-unlock']"
+                ></i>
+              </button>
               <input
                 type="color"
                 :value="getPickerHex(palette.hex)"
@@ -236,7 +256,7 @@
                 v-model="palette.hex"
                 :ref="`paletteHex${index}`"
                 placeholder="#000000"
-                class="leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
+                class="leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg font-bold border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none relative z-30"
               />
               <input
                 type="text"
@@ -280,6 +300,7 @@
             class="mt-4"
             :palette="palette"
             hide-lum
+            :is-locked="isLockedHex(palette.hex)"
             :store-swatches="(swatches) => storeSwatches(swatches, index)"
           ></palette-row>
         </div>
@@ -463,6 +484,8 @@ export default {
       palettes: [],
       dragTimeout: 0,
       showFilters: [],
+      lockedPalettes: [],
+      lockedByHex: {},
       showPresets: false,
       showUploadForm: false,
       paletteCacheBustTimeout: 0,
@@ -484,6 +507,17 @@ export default {
   },
 
   computed: {
+    paletteBases() {
+      return this.palettes.reduce((arr, palette) => {
+        arr.push(palette.hex);
+        return arr;
+      }, []);
+    },
+
+    hasLockedLums() {
+      return Object.keys(this.lockedByHex).length > 0;
+    },
+
     lumsValues() {
       return Object.keys(this.lums).reduce((arr, index) => {
         arr.push(this.lums[index].lum);
@@ -571,6 +605,18 @@ export default {
   },
 
   watch: {
+    paletteBases(val) {
+      Object.keys(this.lockedByHex).forEach((hex) => {
+        if (val.indexOf(hex) === -1) {
+          this.toggleLocked(hex, false);
+        }
+      });
+    },
+
+    hasLockedLums(val) {
+      if (!!val) this.autoDistribute = false;
+    },
+
     /**
      * Create a grayscale palette from uploaded image
      * @param  {Object} val     JSON response from imgix
@@ -788,6 +834,60 @@ export default {
       } else {
         this.showFilters = [...new Set([...this.showFilters, index])];
       }
+    },
+
+    toggleLocked(hex, force = null) {
+      if (this.isLockedHex(hex) || (force !== true && force === false)) {
+        let lumsByPalette = Object.keys(this.lockedByHex).reduce((obj, hx) => {
+          let lockedPalette = this.lockedByHex[hx];
+          if (hex !== hx) {
+            obj[hx] = lockedPalette;
+          } else {
+            this.lums[lockedPalette.lumIndex] = {
+              lum: lockedPalette.lastLum,
+              rgb: this.lumToGrayscaleRGB(lockedPalette.lastLum),
+            };
+          }
+          return obj;
+        }, {});
+        this.lockedByHex = lumsByPalette;
+      } else {
+        let lockedByHex = clone(this.lockedByHex);
+        let rgb = Object.values(Color.hexToRGB(hex));
+        let lum = Color.lumFromRGB(...rgb);
+        let closest = Color.closestLum(this.lumsValues, lum);
+        let [lumIndex] = Object.keys(closest) || [];
+
+        if (this.isLockedLum(lumIndex)) {
+          alert('This color value is already LOCKED!');
+          return;
+        }
+
+        let [lastLum] = Object.values(closest) || [];
+        lumIndex = parseInt(lumIndex, 10);
+        this.lums[lumIndex] = {
+          lum,
+          rgb: this.lumToGrayscaleRGB(lum),
+        };
+
+        lockedByHex[hex] = {
+          lumIndex,
+          lastLum,
+        };
+        this.lockedByHex = lockedByHex;
+      }
+    },
+
+    isLockedHex(hex) {
+      return Object.keys(this.lockedByHex).indexOf(hex) !== -1;
+    },
+
+    isLockedLum(lumIndex) {
+      return (
+        Object.values(this.lockedByHex)
+          .map((val) => val.lumIndex)
+          .indexOf(parseInt(lumIndex, 10)) !== -1
+      );
     },
 
     getPickerHex(hex) {

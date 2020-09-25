@@ -1,5 +1,5 @@
 <template>
-  <div class="PaletteRow">
+  <div :class="['PaletteRow', { 'is-locked': isLocked }]">
     <div class="flex items-center justify-between">
       <swatch-square
         v-for="(swatch, index) in swatches"
@@ -40,6 +40,10 @@ export default {
   props: {
     palette: Object,
     hideLum: Boolean,
+    isLocked: {
+      type: Boolean,
+      default: false,
+    },
     name: {
       type: String,
       default: '',
