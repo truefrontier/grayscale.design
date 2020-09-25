@@ -96,6 +96,7 @@
               v-for="(swatch, index) in lums"
               :key="index"
               draggable
+              @dragenter="onDragEnter($event, index)"
               @dragstart="onDragStart($event, index)"
               @drag="onDrag($event, index)"
               @dragend="onDragEnd($event, index)"
@@ -842,6 +843,10 @@ export default {
     lumToGrayscaleRGB(lum) {
       let newL = Color.lightnessFromHSLum(0, 0, lum);
       return Object.values(Color.HSLtoRGB(0, 0, newL)).map(Math.round);
+    },
+
+    onDragEnter($event, index) {
+      //
     },
 
     onDragStart($event, index) {

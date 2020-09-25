@@ -10,7 +10,7 @@
       :style="{
         color: getBgColor(swatch),
         backgroundColor: getBgColor(swatch),
-        transitionDelay: `${index * 40}ms`,
+        // transitionDelay: `${index * 40}ms`,
       }"
     >
       <span
