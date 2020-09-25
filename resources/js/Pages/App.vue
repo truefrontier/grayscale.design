@@ -77,7 +77,13 @@
         </div>
       </div>
       <div class="mt-4 -mx-6 sm:mx-0">
-        <div class="sm:rounded-full shadow-lg bg-gray-800 relative px-6">
+        <div
+          ref="grayscale"
+          class="sm:rounded-full shadow-lg bg-gray-800 relative px-6"
+          @mousedown="isMouseDown = true"
+          @mouseup="isMouseDown = false"
+          @mousemove="onMouseMove"
+        >
           <div class="h-8 sm:h-half-9 divide-x divide-gray-600 flex justify-between">
             <div class="flex-grow"></div>
             <div class="flex-grow"></div>
@@ -96,7 +102,6 @@
               v-for="(swatch, index) in lums"
               :key="index"
               draggable
-              @dragenter="onDragEnter($event, index)"
               @dragstart="onDragStart($event, index)"
               @drag="onDrag($event, index)"
               @dragend="onDragEnd($event, index)"
@@ -481,6 +486,8 @@ export default {
       copyText: '',
       showLumsMenu: false,
       storedSwatches: {},
+      isMouseDown: false,
+      mouseX: 0,
     };
   },
 
@@ -845,8 +852,8 @@ export default {
       return Object.values(Color.HSLtoRGB(0, 0, newL)).map(Math.round);
     },
 
-    onDragEnter($event, index) {
-      //
+    onMouseMove(e) {
+      if (this.isMouseDown) this.mouseX = e.pageX;
     },
 
     onDragStart($event, index) {
@@ -867,7 +874,7 @@ export default {
       let parentWidth = parent.clientWidth;
       let grandparent = parent.parentElement;
       if (!grandparent) return;
-      let elX = $event.pageX - parent.offsetLeft - grandparent.offsetLeft;
+      let elX = ($event.pageX || this.mouseX) - parent.offsetLeft - grandparent.offsetLeft;
       if (elX < 0 || elX > parentWidth) {
         $event.preventDefault();
         return false;
