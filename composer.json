@@ -15,8 +15,9 @@
         "inertiajs/inertia-laravel": "^0.2.8",
         "laravel/framework": "^7.24",
         "laravel/tinker": "^2.0",
-        "statamic/cms": "3.0.7",
-        "tightenco/ziggy": "^0.9.4"
+        "statamic/cms": "3.0.13",
+        "tightenco/ziggy": "^0.9.4",
+        "ueberdosis/html-to-prosemirror": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
