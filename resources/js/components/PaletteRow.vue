@@ -159,7 +159,7 @@ export default {
         e.preventDefault();
         e.clipboardData.setData('text/plain', this.copyText);
         setTimeout(() => {
-          this.copyText = false;
+          this.copyText = '';
         }, 500);
       }
     },
