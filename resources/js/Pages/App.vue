@@ -75,6 +75,7 @@
               v-for="(preset, key) in presets"
               :href="`#${key}`"
               :key="key"
+              @mouseenter="autoDistribute = false"
               @click.prevent="
                 autoDistribute = false;
                 showLumsMenu = false;
