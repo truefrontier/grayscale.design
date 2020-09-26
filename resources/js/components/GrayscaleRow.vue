@@ -137,7 +137,7 @@ export default {
 
       clearTimeout(this.setLumsTimeout);
       this.setLumsTimeout = setTimeout(() => {
-        this.setLums(lumsValues);
+        this.setLums(lumsValues, parseInt(index, 10), pos);
       }, 50);
     },
 

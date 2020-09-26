@@ -899,14 +899,23 @@ export default {
       }, 100);
     },
 
-    setLums(values) {
-      this.lums = Object.keys(this.lums).reduce((obj, index) => {
-        obj[index] = {
-          lum: values[index],
-          rgb: this.lumToGrayscaleRGB(values[index]),
+    setLums(values, index = null, pos = null) {
+      this.lums = Object.keys(this.lums).reduce((obj, i) => {
+        obj[i] = {
+          lum: values[i],
+          rgb: this.lumToGrayscaleRGB(values[i]),
         };
         return obj;
       }, {});
+
+      this.$nextTick(() => {
+        this.adjustLums(
+          index === 0 ? pos : this.lums[0].lum,
+          index === this.lumsCount - 1 ? pos : this.lums[this.lumsCount - 1].lum,
+          100 - pos,
+          index,
+        );
+      });
     },
 
     lumToGrayscaleRGB(lum) {
