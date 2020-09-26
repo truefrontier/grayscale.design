@@ -85,43 +85,14 @@
           </div>
         </div>
       </div>
-      <div class="mt-4 -mx-6 sm:mx-0">
-        <div ref="grayscale" class="sm:rounded-full shadow-lg bg-gray-800 relative px-6">
-          <div class="h-8 sm:h-half-9 divide-x divide-gray-600 flex justify-between">
-            <div class="flex-grow"></div>
-            <div class="flex-grow"></div>
-            <div class="flex-grow"></div>
-            <div class="flex-grow"></div>
-            <div class="flex-grow"></div>
-            <div class="flex-grow"></div>
-            <div class="flex-grow"></div>
-            <div class="flex-grow"></div>
-            <div class="flex-grow"></div>
-            <div class="flex-grow"></div>
-          </div>
-          <div class="border-t border-gray-600 absolute inset-x-0 top-1/2 -mt-px"></div>
-          <div class="absolute inset-y-0 left-0 right-0 mx-6 border-l border-r border-gray-600">
-            <div
-              v-for="(swatch, index) in lums"
-              :key="index"
-              :title="isLockedLum(index) ? 'LOCKED' : ''"
-              :draggable="!isLockedLum(index)"
-              @dragstart="onDragStart($event, index)"
-              @drag="onDrag($event, index)"
-              @dragend="onDragEnd($event, index)"
-              :class="[
-                'absolute top-1/2 transform -translate-y-1/2 -translate-x-1/2 cursor-pointer w-half-7 h-half-7 shadow-inner rounded-full border-1 border-white',
-                isDragging === index ? 'shadow-outline' : 'transition-all duration-200',
-                isLockedLum(index) ? 'cursor-not-allowed' : '',
-              ]"
-              :style="{
-                left: `${100 - swatch.lum}%`,
-                backgroundColor: `rgb(${lumToGrayscaleRGB(swatch.lum).join(',')})`,
-              }"
-            ></div>
-          </div>
-        </div>
-      </div>
+
+      <grayscale-row
+        class="mt-4 -mx-6 sm:mx-0"
+        :lums="lums"
+        :lums-values="lumsValues"
+        :set-lums="setLums"
+        :is-locked-lum="isLockedLum"
+      ></grayscale-row>
 
       <palette-row class="mt-7" :palette="{ swatches: lums }"></palette-row>
 
@@ -358,14 +329,14 @@ import { jsonToFormData } from '../utils/forms';
 import * as Color from '../utils/color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
-var BLANK_IMG = new Image();
-BLANK_IMG.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=';
+import GrayscaleRow from '../components/GrayscaleRow';
 
 export default {
   name: 'App',
 
   components: {
     PaletteRow,
+    GrayscaleRow,
   },
 
   props: {
@@ -476,13 +447,11 @@ export default {
         },
       },
       lums: { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {} },
-      isDragging: null,
       isChoosingBase: null,
       lastPos: null,
       adjustLumsTimeout: 0,
       autoDistribute: false,
       palettes: [],
-      dragTimeout: 0,
       showFilters: [],
       lockedPalettes: [],
       lockedByHex: {},
@@ -944,89 +913,23 @@ export default {
       return Object.values(Color.HSLtoRGB(0, 0, newL)).map(Math.round);
     },
 
-    onDragStart($event, index) {
-      this.isDragging = index;
-      $event.dataTransfer.setDragImage(BLANK_IMG, 0, 0);
-    },
-
-    onDragEnd($event, index) {
-      let el = $event.target;
-      let parent = el.parentElement;
-      if (!parent) return;
-      let parentWidth = parent.clientWidth;
-      let grandparent = parent.parentElement;
-      if (!grandparent) return;
-      let elX = $event.screenX - parent.offsetLeft - grandparent.offsetLeft;
-      if (elX < 0 || elX > parentWidth) {
-        $event.preventDefault();
-        return false;
-      }
-      let pos = parseFloat((elX / parentWidth) * 100);
-
-      if ($event.screenX) this.prepareAdjustLums(index, pos);
-
-      setTimeout(() => {
-        this.isDragging = null;
-        this.lastPos = null;
-      }, 2000);
-    },
-
-    onDrag($event, index) {
-      index = parseInt(index, 10);
-      let el = $event.target;
-      let parent = el.parentElement;
-      if (!parent) return;
-      let parentWidth = parent.clientWidth;
-      let grandparent = parent.parentElement;
-      if (!grandparent) return;
-      let elX = $event.pageX - parent.offsetLeft - grandparent.offsetLeft;
-      if (elX < 0 || elX > parentWidth) {
-        $event.preventDefault();
-        return false;
-      }
-      let pos = parseFloat((elX / parentWidth) * 100);
-      if ($event.screenX) this.prepareAdjustLums(index, pos);
-    },
-
-    prepareAdjustLums(index, pos) {
-      this.lums = clone(this.lums);
-      this.lums[index].lum = 100 - pos;
-      this.lums[index].rgb = this.lumToGrayscaleRGB(100 - pos);
-      clearTimeout(this.adjustLumsTimeout);
-      this.adjustLumsTimeout = setTimeout(
-        () =>
-          this.adjustLums(
-            index === 0 ? pos : this.lums[0].lum,
-            index === this.lumsCount - 1 ? pos : this.lums[this.lumsCount - 1].lum,
-            100 - pos,
-            index,
-          ),
-        20,
-      );
-    },
-
     adjustLums(startPos, endPos, curPos, curIndex) {
       if (!this.autoDistribute) return;
-      if (curPos !== this.lastPos) {
-        let lumIndices = Object.keys(this.lums);
-        lumIndices.pop();
-        lumIndices.shift();
-        lumIndices.forEach((ndx) => {
-          ndx = parseInt(ndx, 10);
-          if (ndx < curIndex) {
-            let dist = (curPos - startPos) / curIndex;
-            this.lums[ndx].lum = ndx * dist + this.lums[0].lum;
-            this.lums[ndx].rgb = this.lumToGrayscaleRGB(this.lums[ndx].lum);
-          } else if (curIndex < ndx) {
-            let dist = (endPos - curPos) / (this.lumsCount - curIndex - 1);
-            this.lums[ndx].lum = (ndx - curIndex) * dist + curPos;
-            this.lums[ndx].rgb = this.lumToGrayscaleRGB(this.lums[ndx].lum);
-          }
-        });
-
-        // Prevent this from running unnecessarily
-        this.lastPos = curPos;
-      }
+      let lumIndices = Object.keys(this.lums);
+      lumIndices.pop();
+      lumIndices.shift();
+      lumIndices.forEach((ndx) => {
+        ndx = parseInt(ndx, 10);
+        if (ndx < curIndex) {
+          let dist = (curPos - startPos) / curIndex;
+          this.lums[ndx].lum = ndx * dist + this.lums[0].lum;
+          this.lums[ndx].rgb = this.lumToGrayscaleRGB(this.lums[ndx].lum);
+        } else if (curIndex < ndx) {
+          let dist = (endPos - curPos) / (this.lumsCount - curIndex - 1);
+          this.lums[ndx].lum = (ndx - curIndex) * dist + curPos;
+          this.lums[ndx].rgb = this.lumToGrayscaleRGB(this.lums[ndx].lum);
+        }
+      });
     },
 
     addPalette() {
