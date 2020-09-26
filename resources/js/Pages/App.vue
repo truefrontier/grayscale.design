@@ -342,7 +342,13 @@ export default {
   },
 
   props: {
-    cms: Object,
+    cms: {
+      type: Object,
+      default() {
+        const Statamic = window.Statamic || {};
+        return Statamic.cms || {};
+      },
+    },
     csrf: String,
   },
 

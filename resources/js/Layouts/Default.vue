@@ -1,11 +1,21 @@
 <template>
   <div class="DefaultLayout leading-6 container mx-auto px-6 text-gray-900">
-    <inertia-link
-      href="/"
-      class="text-3xl sm:text-4xl text-gray-900 leading-7 whitespace-no-wrap font-bold inline-block my-8 tracking-tight"
-    >
-      <strong>grayscale <span class="text-gray-500">design</span></strong>
-    </inertia-link>
+    <div class="sm:flex my-8 items-center justify-between">
+      <inertia-link
+        href="/"
+        class="mr-5 text-3xl leading-7 sm:text-4xl text-gray-900 whitespace-no-wrap font-bold inline-block tracking-tight"
+      >
+        <strong class="text-gray-900">grayscale <span class="text-gray-500">design</span></strong>
+      </inertia-link>
+      <div class="block mt-6 sm:mt-0">
+        <inertia-link
+          href="/app"
+          class="font-bold inline-block mt-3 leading-6 text-xl text-blue-600 transition-colors duration-300 hover:text-blue-500"
+        >
+          <i class="fad fa-palette mr-4"></i>Color Palette Generator
+        </inertia-link>
+      </div>
+    </div>
     <slot></slot>
     <footer class="mt-8 py-7 text-gray-800">
       A design-friendly dev project from

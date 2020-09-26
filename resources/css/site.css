@@ -56,6 +56,20 @@ textarea {
 .rich-text {
   @apply text-gray-900;
 
+  > * {
+    @apply mt-7;
+    &:first-child {
+      @apply mt-0;
+    }
+  }
+
+  a {
+    @apply transition-all duration-200 border-b border-gray-500 text-blue-700;
+    &:hover {
+      @apply opacity-50;
+    }
+  }
+
   h1,
   h2,
   h3,
@@ -66,13 +80,13 @@ textarea {
   }
 
   h1 {
-    @apply text-3xl;
+    @apply text-3xl leading-7;
   }
   h2 {
-    @apply text-2xl;
+    @apply text-2xl leading-7;
   }
   h3 {
-    @apply text-xl;
+    @apply text-xl leading-7;
   }
 
   ul,

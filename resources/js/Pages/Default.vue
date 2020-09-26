@@ -1,6 +1,6 @@
 <template>
-  <div class="DefaultPage">
-    <h1 class="text-4xl leading-7 text-gray-500">{{ cms.title }}</h1>
+  <div class="DefaultPage rich-text">
+    <h1 class="font-black text-4xl">{{ cms.title }}</h1>
     <div v-html="cms.content"></div>
   </div>
 </template>
