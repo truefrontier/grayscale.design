@@ -100,11 +100,12 @@ export default {
       let grandparent = parent.parentElement;
       if (!grandparent) return;
       let elX = $event[prop] - parent.offsetLeft - grandparent.offsetLeft;
-      if (elX < 0 || elX > parentWidth) {
+      if (elX <= 0 || elX >= parentWidth) {
         $event.preventDefault();
-        return false;
+        return elX <= 0 ? 0 : 100;
       }
-      return parseFloat((elX / parentWidth) * 100);
+      let pos = parseFloat((elX / parentWidth) * 100);
+      return pos > 100 ? 100 : pos < 0 ? 0 : pos;
     },
 
     onDragEnd($event, index) {
