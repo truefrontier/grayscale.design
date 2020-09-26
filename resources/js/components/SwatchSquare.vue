@@ -1,6 +1,7 @@
 <template>
   <div v-if="swatch.rgb" :class="['SwatchSquare', { 'is-closest': isClosest }]">
     <button
+      type="button"
       @click="copy(swatch.hex)"
       :class="[
         'w-full h-9 shadow-inner transition-colors duration-150 relative z-10',
