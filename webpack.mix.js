@@ -50,11 +50,19 @@ if (mix.inProduction()) {
     proxy: 'grayscale.test',
     notify: false,
     files: [
+      './webpack.mix.js',
+      './tailwind.config.js',
+      './content/**/*.md',
+      './content/**/*.yaml',
+      './content/**/*.html',
+      './resources/**/*.md',
+      './resources/**/*.yaml',
       './resources/**/*.js',
       './resources/**/*.vue',
       './resources/**/*.css',
       './resources/**/*.scss',
       './resources/**/*.html',
+      './resources/**/*.php',
     ],
   });
 }

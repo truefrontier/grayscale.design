@@ -321,6 +321,7 @@
         <i class="fa fa-send mr-4"></i>Send us an email
       </a>
     </section>
+    <section class="mt-9 rich-text" v-html="cms.content"></section>
   </div>
 </template>
 
