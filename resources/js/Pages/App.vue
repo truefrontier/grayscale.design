@@ -503,8 +503,8 @@ export default {
     exportConfig() {
       let colors = {};
 
-      colors.gray = {
-        name: 'gray',
+      colors.grayscale = {
+        name: 'grayscale',
         swatches: Object.keys(this.lums).reduce((obj, index) => {
           let swatch = {
             lum: this.lums[index].lum,
@@ -526,7 +526,7 @@ export default {
           let { h, s, l } = Color.RGBToHSL(...swatch.rgb);
           name = Color.colorName(h, s, l);
         }
-        if (name === 'gray') name += '-custom';
+        if (name === 'grayscale') name += '-alt';
 
         colors[name] = Object.keys(palette.swatches).reduce(
           (obj, j) => {
@@ -545,7 +545,7 @@ export default {
     tailwindConfig() {
       let colors = {};
 
-      colors.gray = Object.keys(this.lums).reduce((obj, index) => {
+      colors.grayscale = Object.keys(this.lums).reduce((obj, index) => {
         obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(...this.lums[index].rgb);
         return obj;
       }, {});
@@ -559,7 +559,7 @@ export default {
           let { h, s, l } = Color.RGBToHSL(...swatch.rgb);
           name = Color.colorName(h, s, l);
         }
-        if (name === 'gray') name += '-custom';
+        if (name === 'grayscale') name += '-alt';
 
         colors[name] = Object.keys(palette.swatches).reduce((obj, j) => {
           if (this.storedSwatches[i] && this.storedSwatches[i][j]) {
