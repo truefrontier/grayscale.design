@@ -60,7 +60,7 @@ Using a consistent palette that's _Color Value-First_ and Luminance-Based makes 
 
 As if it wasn't obvious enough already, the colors in the last example were generated (easily) using the <strong class="mx-4">grayscale <span class="text-gray-500">design</span></strong> [Luminance-Based Color Palette Generator](/app). You gotta [try it out](/app)! 🚀
 
-P.S. "Bingo!"
+...Wait, did someone say, "Bingo!"? 😜 
 
 
 </div>
