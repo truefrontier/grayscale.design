@@ -13,6 +13,8 @@ __Color Value__ is one of the most important attributes of design and art. But..
 
 It's time to bring __Color Value__ to center stage! 🤘
 
+Try the [Luminance-Based Color Palette Generator](/app) to make a color palette that puts Color Value in its rightful place... first!
+
 In web design/development, you hear a lot about making your websites more "accessible". And one aspect of that accessibility is making sure there's enough contrast between your background and your content. For example:
 
 <div class="flex">
@@ -25,7 +27,7 @@ Getting the right contrast is _super important_ for your design, but is _hard_ t
 
 ### __PROBLEM:__ Getting great contrast _using color_ is tough.
 
-Without understanding color value well (or having a [luminance-based color palette generator](/app) handy... _subtle foreshadow..._), picking colors is kinda like Bingo night without the glorious geriatric comradery. (Shout out to my Granny! Love you!)
+Without understanding color value well (or—shameless plug: having a [luminance-based color palette generator](/app) handy), picking colors is kinda like Bingo night without the glorious geriatric comradery. (Shout out to my Granny! Love you!)
 
 ### __SOLUTION:__ Don't use color.*
 
