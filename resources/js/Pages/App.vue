@@ -233,7 +233,7 @@
                 type="text"
                 v-model="palette.name"
                 :ref="`paletteName${index}`"
-                placeholder="Enter color label"
+                placeholder="Add label"
                 class="font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
               />
             </div>
