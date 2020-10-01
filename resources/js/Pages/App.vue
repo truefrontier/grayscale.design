@@ -190,8 +190,7 @@
                   "
                   class="block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75"
                 >
-                  <i class="far fa-fw fa-sliders-h mr-4"></i
-                  >{{ showFilters.includes(index) ? 'Hide' : 'Show' }} Filters
+                  <i class="far fa-fw fa-sliders-h mr-4"></i>Tweak Hue/Sat
                 </a>
                 <hr class="my-3 border-gray-600 opacity-75" />
                 <a
