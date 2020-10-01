@@ -949,9 +949,6 @@ export default {
     },
 
     addPalette() {
-      let lastPalette = this.palettes.pop();
-      console.log('%c lastPalette -->', 'color:#F80', lastPalette);
-
       this.palettes.unshift({
         name: '',
         swatches: clone(this.lums),
@@ -969,13 +966,12 @@ export default {
         return p;
       });
 
-      this.$nextTick(() => {
-        this.palettes.push(lastPalette);
-        //   setTimeout(() => {
-        //     let [input] = this.$refs.palettePicker0 || [];
-        //     if (input) input.click();
-        //   }, 10);
-      });
+      // this.$nextTick(() => {
+      //   setTimeout(() => {
+      //     let [input] = this.$refs.palettePicker0 || [];
+      //     if (input) input.click();
+      //   }, 10);
+      // });
     },
 
     onFileUpload() {
