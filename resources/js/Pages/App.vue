@@ -949,28 +949,22 @@ export default {
     },
 
     addPalette() {
-      let lastPalette = this.palettes.pop();
-      console.log('%c lastPalette -->', 'color:#F80', lastPalette);
-
       this.palettes.unshift({
         name: '',
         swatches: clone(this.lums),
-        hex: '#000000',
+        hex: '#000001',
         filters: {
           hue: 0,
           sat: 0,
         },
       });
 
+      console.log('%c this.palettes -->', 'color:#F80', this.palettes);
+
       this.isChoosingBase = 0;
 
-      this.palettes.map((p) => {
-        p.update = new Date();
-        return p;
-      });
-
       this.$nextTick(() => {
-        this.palettes.push(lastPalette);
+        this.palettes[0].hex = '#000000';
         //   setTimeout(() => {
         //     let [input] = this.$refs.palettePicker0 || [];
         //     if (input) input.click();
