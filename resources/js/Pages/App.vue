@@ -270,7 +270,7 @@
           <palette-row
             class="mt-4"
             :palette="palette"
-            :key="index"
+            :key="`palette-${index}`"
             hide-lum
             :is-locked="isLockedHex(palette.hex)"
             :store-swatches="(swatches) => storeSwatches(swatches, index)"
