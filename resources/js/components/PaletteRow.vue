@@ -90,6 +90,12 @@ export default {
       },
     },
 
+    'palette.update': {
+      handler(val) {
+        this.updateBase(this.palette.picker);
+      },
+    },
+
     'palette.picker': {
       handler(val = '#000000') {
         this.palette.hex =
