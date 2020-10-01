@@ -949,7 +949,9 @@ export default {
     },
 
     addPalette() {
-      this.palettes.unshift({
+      let palettes = clone(this.palettes);
+
+      palettes.unshift({
         name: '',
         swatches: clone(this.lums),
         hex: '#000000',
@@ -959,19 +961,16 @@ export default {
         },
       });
 
+      this.palettes = [];
       this.isChoosingBase = 0;
 
-      this.palettes.map((p) => {
-        p.update = new Date();
-        return p;
+      this.$nextTick(() => {
+        this.palettes = palettes;
+        // setTimeout(() => {
+        //   let [input] = this.$refs.palettePicker0 || [];
+        //   if (input) input.click();
+        // }, 10);
       });
-
-      // this.$nextTick(() => {
-      //   setTimeout(() => {
-      //     let [input] = this.$refs.palettePicker0 || [];
-      //     if (input) input.click();
-      //   }, 10);
-      // });
     },
 
     onFileUpload() {
