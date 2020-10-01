@@ -92,7 +92,12 @@ export default {
 
     'palette.update': {
       handler(val) {
-        this.updateBase(this.palette.picker);
+        this.updateBase(
+          this.palette.hex ||
+            this.palette.picker ||
+            this.paletteClone.hex ||
+            this.paletteClone.picker,
+        );
       },
     },
 
