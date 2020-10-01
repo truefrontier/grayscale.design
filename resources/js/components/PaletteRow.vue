@@ -140,8 +140,7 @@ export default {
 
   mounted() {
     document.addEventListener('copy', this.onCopy.bind(this));
-    let hex = this.getHex();
-    if (hex) this.updateBase(hex);
+    this.updateBase(this.getHex());
   },
 
   beforeDestroy() {
