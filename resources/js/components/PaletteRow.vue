@@ -140,7 +140,6 @@ export default {
 
   mounted() {
     document.addEventListener('copy', this.onCopy.bind(this));
-    this.updateBase(this.getHex());
   },
 
   beforeDestroy() {
@@ -148,16 +147,6 @@ export default {
   },
 
   methods: {
-    getHex() {
-      return (
-        (this.paletteClone && this.paletteClone.hex) ||
-        (this.paletteClone && this.paletteClone.picker) ||
-        (this.palette && this.palette.hex) ||
-        (this.palette && this.palette.picker) ||
-        '#000000'
-      );
-    },
-
     copy(copyText) {
       this.copyText = copyText;
       this.$nextTick(() => {
