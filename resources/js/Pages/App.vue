@@ -954,18 +954,18 @@ export default {
       palettes.unshift({
         name: '',
         swatches: clone(this.lums),
-        hex: '#000001',
+        hex: '#000000',
         filters: {
           hue: 0,
           sat: 0,
         },
       });
 
-      this.palettes = palettes;
+      this.palettes = [];
       this.isChoosingBase = 0;
 
       this.$nextTick(() => {
-        this.palettes[0].hex = '#000000';
+        this.palettes = palettes;
         // setTimeout(() => {
         //   let [input] = this.$refs.palettePicker0 || [];
         //   if (input) input.click();
