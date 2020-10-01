@@ -133,9 +133,19 @@
             />
             Upload an image
           </label>
-          <p class="text-sm opacity-50 mt-3 w-double-10 max-w-full mx-auto">
-            Optionally upload image to auto-generate your grayscale and colors. Max
-            filesize:&nbsp;5MB
+          <p class="text-sm leading-6 mt-3 w-double-10 max-w-full mx-auto">
+            <span class="opacity-50">
+              Max filesize:&nbsp;5MB. Upload an image to auto-generate your grayscale and colors.
+            </span>
+
+            <a
+              class="whitespace-no-wrap text-gray-500 transition-colors duration-300 hover:text-gray-700"
+              href="https://www.imgix.com/"
+              target="_blank"
+              title="imgix"
+              >Powered by
+              <img class="inline h-double-4" src="/img/imgix_logo1_small.png" alt="imgix" />
+            </a>
           </p>
         </div>
       </div>
