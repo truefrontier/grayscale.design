@@ -90,6 +90,17 @@ export default {
       },
     },
 
+    'palette.update': {
+      handler(val) {
+        this.updateBase(
+          this.palette.hex ||
+            this.palette.picker ||
+            this.paletteClone.hex ||
+            this.paletteClone.picker,
+        );
+      },
+    },
+
     'palette.picker': {
       handler(val = '#000000') {
         this.palette.hex =
