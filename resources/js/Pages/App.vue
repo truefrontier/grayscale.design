@@ -270,6 +270,7 @@
           <palette-row
             class="mt-4"
             :palette="palette"
+            :key="index"
             hide-lum
             :is-locked="isLockedHex(palette.hex)"
             :store-swatches="(swatches) => storeSwatches(swatches, index)"
@@ -958,8 +959,6 @@ export default {
           sat: 0,
         },
       });
-
-      console.log('%c this.palettes -->', 'color:#F80', this.palettes);
 
       this.isChoosingBase = 0;
 
