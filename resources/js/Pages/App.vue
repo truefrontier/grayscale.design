@@ -949,7 +949,9 @@ export default {
     },
 
     addPalette() {
-      this.palettes.unshift({
+      let palettes = clone(this.palettes);
+
+      palettes.unshift({
         name: '',
         swatches: clone(this.lums),
         hex: '#000001',
@@ -959,6 +961,7 @@ export default {
         },
       });
 
+      this.palettes = palettes;
       this.isChoosingBase = 0;
 
       this.$nextTick(() => {
