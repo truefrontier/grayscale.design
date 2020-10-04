@@ -47,7 +47,7 @@ if (mix.inProduction()) {
   });
 } else {
   mix.browserSync({
-    proxy: 'grayscale.test',
+    proxy: 'https://grayscale.test',
     notify: false,
     files: [
       './webpack.mix.js',
