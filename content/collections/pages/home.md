@@ -13,7 +13,7 @@ __Color Value__ is one of the most important attributes of design and art. But..
 
 It's time to bring __Color Value__ to center stage! 🤘
 
-Try the [Luminance-Based Color Palette Generator](/app) to make a color palette that puts Color Value in its rightful place... first!
+<a href="/app" class="mb-8 mr-4 inline-block transtion-all bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-full">Try Our Color Palette Generator &rarr;</a> or read on...
 
 In web design/development, you hear a lot about making your websites more "accessible". And one aspect of that accessibility is making sure there's enough contrast between your background and your content. For example:
 
