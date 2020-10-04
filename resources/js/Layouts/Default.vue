@@ -20,12 +20,6 @@
     <footer class="mt-8 py-7 text-gray-800">
       A design-friendly dev project from
       <a
-        href="https://brandnamemaker.com"
-        class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-50"
-        >Brandname Maker</a
-      >
-      &amp;
-      <a
         href="https://truefrontierapps.com"
         class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-50"
         >True Frontier</a
