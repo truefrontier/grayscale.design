@@ -1,5 +1,5 @@
 <template>
-  <div class="DefaultLayout leading-6 container mx-auto px-6 text-gray-900">
+  <div class="DefaultLayout leading-6 container mx-auto px-7 text-gray-900">
     <div class="sm:flex my-8 items-center justify-between">
       <inertia-link
         href="/"
