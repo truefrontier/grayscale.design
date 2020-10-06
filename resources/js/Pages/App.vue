@@ -218,7 +218,7 @@
             <div class="h-8 leading-8 mr-8 relative">
               <button
                 @click="toggleLocked(palette.hex)"
-                class="hidden sm:block absolute right-full top-0 px-4 opacity-25 hover:opacity-100 focus:outline-none focus:shadow-none"
+                class="absolute right-full top-0 px-4 opacity-25 hover:opacity-100 focus:outline-none focus:shadow-none"
                 title="Adjusts grayscale to match this color"
               >
                 <i
