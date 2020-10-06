@@ -259,6 +259,7 @@
                   type="range"
                   min="-50"
                   v-model="palette.filters.hue"
+                  step="0.1"
                   max="50"
                   class="p-half-4 w-full"
                 />
@@ -271,6 +272,7 @@
                   type="range"
                   min="-30"
                   v-model="palette.filters.sat"
+                  step="0.1"
                   max="30"
                   class="p-half-4 w-full"
                 />
@@ -932,7 +934,7 @@ export default {
             },
           });
         });
-      }, 50);
+      }, 200);
     },
 
     formatSwatchColor(swatch) {
