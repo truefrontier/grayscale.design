@@ -419,6 +419,7 @@
 
 <script>
 import { jsonToFormData } from '../utils/forms';
+import { makeQuery, getQuery } from '../utils/url';
 import * as Color from '../utils/color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
@@ -573,6 +574,7 @@ export default {
       storedSwatches: {},
       cssTab: 'vars',
       cssType: 'hex',
+      updateUrlTimeout: 0,
     };
   },
 
@@ -586,8 +588,24 @@ export default {
     },
 
     paletteBases() {
+      this.updateUrl();
       return this.palettes.reduce((arr, palette) => {
         arr.push(palette.hex);
+        return arr;
+      }, []);
+    },
+
+    paletteNames() {
+      this.updateUrl();
+      return this.palettes.reduce((arr, palette) => {
+        arr.push(palette.name);
+        return arr;
+      }, []);
+    },
+
+    paletteFilters() {
+      return this.palettes.reduce((arr, palette) => {
+        arr.push(palette.filters);
         return arr;
       }, []);
     },
@@ -847,6 +865,8 @@ export default {
         this.updateSwatchTimeout = setTimeout(() => {
           this.updateSwatchLums(val);
         }, 250);
+
+        this.updateUrl();
       },
     },
 
@@ -859,6 +879,30 @@ export default {
 
   created() {
     this.setLums([98, 92, 82, 67, 50, 33, 18, 8, 2]);
+    if (Object.keys(this.$route.query).length) {
+      let { lums = [], palettes = [], filters = [], names = [] } = this.$route.query;
+      lums = lums
+        .split(',')
+        .filter((val) => !!val)
+        .map(parseFloat);
+      this.setLums(lums);
+
+      let paletteBases = palettes.split(',').filter((val) => !!val);
+      let namesArr = names.split(',').filter((val) => !!val);
+      let filtersArr = filters.split(',').filter((val) => !!val);
+      paletteBases.forEach((hex, i) => {
+        let [hue = 0, sat = 0] = filtersArr[i].split('|');
+        this.addPalette();
+        this.$nextTick(() => {
+          this.palettes[i].name = namesArr[i];
+          this.palettes[i].hex = hex;
+          this.palettes[i].filters = {
+            hue,
+            sat,
+          };
+        });
+      });
+    }
   },
 
   mounted() {
@@ -871,6 +915,26 @@ export default {
   },
 
   methods: {
+    updateUrl() {
+      clearTimeout(this.updateUrlTimeout);
+      this.updateUrlTimeout = setTimeout(() => {
+        this.$nextTick(() => {
+          this.$router.push({
+            query: {
+              lums: this.lumsValues.map((v) => v.toFixed(2)).join(','),
+              palettes: this.paletteBases.join(','),
+              filters: this.paletteFilters
+                .map((f) => {
+                  return `${f.hue}|${f.sat}`;
+                })
+                .join(','),
+              names: this.paletteNames.join(','),
+            },
+          });
+        });
+      }, 50);
+    },
+
     formatSwatchColor(swatch) {
       if (this.cssType === 'hex') return swatch.hex;
       if (this.cssType === 'rgb') return `rgb(${swatch.rgb.join(', ')})`;
@@ -882,6 +946,7 @@ export default {
 
     storeSwatches(swatches, hex) {
       this.$set(this.storedSwatches, hex, swatches);
+      this.updateUrl();
     },
 
     dedupePalettes() {
@@ -1103,11 +1168,11 @@ export default {
       });
     },
 
-    addPalette() {
+    addPalette(ev, hex = '#0000000') {
       this.palettes.unshift({
         name: '',
         swatches: clone(this.lums),
-        hex: '#000001',
+        hex: hex,
         filters: {
           hue: 0,
           sat: 0,
@@ -1116,13 +1181,12 @@ export default {
 
       this.isChoosingBase = 0;
 
-      this.$nextTick(() => {
-        this.palettes[0].hex = '#000000';
-        // setTimeout(() => {
-        //   let [input] = this.$refs.palettePicker0 || [];
-        //   if (input) input.click();
-        // }, 10);
-      });
+      // this.$nextTick(() => {
+      //   setTimeout(() => {
+      //     let [input] = this.$refs.palettePicker0 || [];
+      //     if (input) input.click();
+      //   }, 10);
+      // });
     },
 
     onFileUpload() {

@@ -30,6 +30,7 @@
         "tailwindcss-breakpoint-helper": "0.0.8",
         "tailwindcss-golden-ratio": "^0.3.4",
         "vue": "^2.6.12",
+        "vue-router": "^3.4.5",
         "vue-template-compiler": "^2.6.12",
         "ziggy-js": "^0.9.4"
     },
