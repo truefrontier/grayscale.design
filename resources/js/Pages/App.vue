@@ -179,7 +179,7 @@
         Add A Color
       </button>
       <div class="mt-8">
-        <div v-for="(palette, index) in palettes" :key="index" class="mt-8">
+        <div v-for="(palette, index) in palettes" :key="palettes.length - index" class="mt-8">
           <div class="min-h-8 md:flex justify-between items-center relative">
             <div class="absolute right-0 top-0">
               <button
@@ -687,9 +687,9 @@ export default {
       });
 
       // Force render on the palette array
-      let last = this.palettes.pop();
+      // let last = this.palettes.pop();
       this.$nextTick(() => {
-        this.palettes.unshift(last);
+        // this.palettes.unshift(last);
         this.$nextTick(() => {
           setTimeout(() => {
             this.dedupePalettes();
