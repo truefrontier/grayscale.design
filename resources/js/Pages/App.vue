@@ -299,27 +299,109 @@
           Export Svgs
         </button>
       </form>
-
-      <p class="mt-8">
-        Or
-        <a
-          href="https://tailwindcss.com/docs/customizing-colors"
-          target="_blank"
-          rel="noopener"
-          class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-50"
-          >customize your Tailwind CSS colors</a
-        >
-        with your generated colors:
-      </p>
-      <div class="mt-6 bg-gray-300 rounded-lg p-6 text-gray-800 overflow-auto">
+      <div class="mt-8 flex justify-between space-x-7">
+        <div class="space-x-5">
+          <button
+            :class="[
+              cssTab === 'vars'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssTab = 'vars'"
+          >
+            CSS Variables
+          </button>
+          <button
+            :class="[
+              cssTab === 'tailwind'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssTab = 'tailwind'"
+          >
+            Tailwind CSS
+          </button>
+          <button
+            :class="[
+              cssTab === 'stylus'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssTab = 'stylus'"
+          >
+            Stylus
+          </button>
+          <button
+            :class="[
+              cssTab === 'scss'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssTab = 'scss'"
+          >
+            SCSS
+          </button>
+          <button
+            :class="[
+              cssTab === 'less'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssTab = 'less'"
+          >
+            LESS
+          </button>
+        </div>
+        <div class="space-x-5">
+          <button
+            :class="[
+              cssType === 'hex'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssType = 'hex'"
+          >
+            HEX
+          </button>
+          <button
+            :class="[
+              cssType === 'rgb'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssType = 'rgb'"
+          >
+            RGB
+          </button>
+          <button
+            :class="[
+              cssType === 'hsl'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssType = 'hsl'"
+          >
+            HSL
+          </button>
+        </div>
+      </div>
+      <div class="bg-gray-300 rounded-lg p-6 text-gray-800 overflow-auto">
         <button
-          @click="copy(tailwindConfig)"
+          @click="copy(tabContent)"
           class="relative z-20 bg-gray-200 float-right rounded border-1 text-blue-600 border-blue-600 px-5 py-4 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 hover:text-white duration-300 uppercase text-sm font-bold tracking-wide"
         >
           <i :class="['fa fa-fw mr-3', copyText ? 'fa-check' : 'fa-clone']"></i
           >{{ copyText ? 'Copied!' : 'Copy' }}
         </button>
-        <pre class="relative z-10">{{ tailwindConfig }}</pre>
+        <pre class="relative z-10">{{ tabContent }}</pre>
       </div>
     </section>
     <section class="mt-9 text-center leading-7">
@@ -489,10 +571,20 @@ export default {
       copyText: '',
       showLumsMenu: false,
       storedSwatches: {},
+      cssTab: 'vars',
+      cssType: 'hex',
     };
   },
 
   computed: {
+    tabContent() {
+      if (this.cssTab === 'tailwind') return this.cssTailwind;
+      if (this.cssTab === 'vars') return this.cssVars;
+      if (this.cssTab === 'scss') return this.cssScss;
+      if (this.cssTab === 'stylus') return this.cssStylus;
+      if (this.cssTab === 'less') return this.cssLess;
+    },
+
     paletteBases() {
       return this.palettes.reduce((arr, palette) => {
         arr.push(palette.hex);
@@ -516,6 +608,10 @@ export default {
     },
 
     exportConfig() {
+      return JSON.stringify(this.cssColors);
+    },
+
+    cssColors() {
       let colors = {};
 
       colors.grayscale = {
@@ -554,39 +650,79 @@ export default {
         );
       });
 
-      return JSON.stringify(colors);
+      return colors;
     },
 
-    tailwindConfig() {
-      let colors = {};
-
-      colors.grayscale = Object.keys(this.lums).reduce((obj, index) => {
-        obj[`${parseInt(index, 10) + 1}00`] = Color.RGBToHex(...this.lums[index].rgb);
+    cssTailwind() {
+      let colors = Object.keys(this.cssColors).reduce((obj, name) => {
+        obj[name] = {};
+        Object.keys(this.cssColors[name].swatches).forEach((i) => {
+          let swatch = this.cssColors[name].swatches[i];
+          obj[name][`${parseInt(i, 10) + 1}00`] = this.formatSwatchColor(swatch);
+        });
         return obj;
       }, {});
 
-      this.palettes.forEach((palette, i) => {
-        let name = palette.name;
-        if (!name) {
-          let closestToMid = Color.closestLum(this.lumsValues, 50);
-          let [midIndex] = Object.keys(closestToMid) || Math.floor(this.lumsCount / 2);
-          let swatch = palette.swatches[midIndex];
-          let { h, s, l } = Color.RGBToHSL(...swatch.rgb);
-          name = Color.colorName(h, s, l);
-        }
-        if (name === 'grayscale') name += '-alt';
-
-        colors[name] = Object.keys(palette.swatches).reduce((obj, j) => {
-          if (this.storedSwatches[i] && this.storedSwatches[i][j]) {
-            obj[`${parseInt(j, 10) + 1}00`] = this.storedSwatches[i][j].hex;
-          }
-          return obj;
-        }, {});
-      });
-
-      let config = JSON.stringify(colors, null, ' ');
+      let config = JSON.stringify(colors, null, '  ');
       localStorage.setItem(new Date(), config);
       return config;
+    },
+
+    cssVars() {
+      let colors = this.cssColors;
+      let css = ':root {';
+      css += Object.keys(colors).reduce((str, name) => {
+        str += '\n';
+        Object.keys(colors[name].swatches).forEach((i) => {
+          let swatch = colors[name].swatches[i];
+          str += `  --${name}-${parseInt(i, 10) + 1}00: ${this.formatSwatchColor(swatch)};\n`;
+        });
+        return str;
+      }, '');
+      css += '}';
+      return css;
+    },
+
+    cssScss() {
+      let colors = this.cssColors;
+      let css = '';
+      css += Object.keys(colors).reduce((str, name) => {
+        Object.keys(colors[name].swatches).forEach((i) => {
+          let swatch = colors[name].swatches[i];
+          str += `$${name}-${parseInt(i, 10) + 1}00: ${this.formatSwatchColor(swatch)};\n`;
+        });
+        str += '\n';
+        return str;
+      }, '');
+      return css;
+    },
+
+    cssLess() {
+      let colors = this.cssColors;
+      let css = '';
+      css += Object.keys(colors).reduce((str, name) => {
+        Object.keys(colors[name].swatches).forEach((i) => {
+          let swatch = colors[name].swatches[i];
+          str += `@${name}-${parseInt(i, 10) + 1}00: ${this.formatSwatchColor(swatch)};\n`;
+        });
+        str += '\n';
+        return str;
+      }, '');
+      return css;
+    },
+
+    cssStylus() {
+      let colors = this.cssColors;
+      let css = '';
+      css += Object.keys(colors).reduce((str, name) => {
+        Object.keys(colors[name].swatches).forEach((i) => {
+          let swatch = colors[name].swatches[i];
+          str += `${name}-${parseInt(i, 10) + 1}00 = ${this.formatSwatchColor(swatch)}\n`;
+        });
+        str += '\n';
+        return str;
+      }, '');
+      return css;
     },
   },
 
@@ -735,6 +871,15 @@ export default {
   },
 
   methods: {
+    formatSwatchColor(swatch) {
+      if (this.cssType === 'hex') return swatch.hex;
+      if (this.cssType === 'rgb') return `rgb(${swatch.rgb.join(', ')})`;
+      if (this.cssType === 'hsl')
+        return `hsl(${swatch.hsl[0]}, ${
+          swatch.hsl[1] === 0 ? 0 : swatch.hsl[1].toFixed(2)
+        }%, ${swatch.hsl[2].toFixed(2)}%)`;
+    },
+
     storeSwatches(swatches, index) {
       this.storedSwatches[index] = swatches;
     },
