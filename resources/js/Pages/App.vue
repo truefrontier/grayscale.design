@@ -282,7 +282,7 @@
             :palette="palette"
             hide-lum
             :is-locked="isLockedHex(palette.hex)"
-            :store-swatches="(swatches) => storeSwatches(swatches, index)"
+            :store-swatches="(swatches) => storeSwatches(swatches, palette.hex)"
           ></palette-row>
         </div>
       </div>
@@ -641,8 +641,8 @@ export default {
 
         colors[name] = Object.keys(palette.swatches).reduce(
           (obj, j) => {
-            if (this.storedSwatches[i] && this.storedSwatches[i][j]) {
-              obj.swatches[j] = this.storedSwatches[i][j];
+            if (this.storedSwatches[palette.hex] && this.storedSwatches[palette.hex][j]) {
+              obj.swatches[j] = this.storedSwatches[palette.hex][j];
             }
             return obj;
           },
@@ -880,8 +880,8 @@ export default {
         }%, ${swatch.hsl[2].toFixed(2)}%)`;
     },
 
-    storeSwatches(swatches, index) {
-      this.storedSwatches[index] = swatches;
+    storeSwatches(swatches, hex) {
+      this.$set(this.storedSwatches, hex, swatches);
     },
 
     dedupePalettes() {
