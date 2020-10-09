@@ -921,18 +921,21 @@ export default {
       clearTimeout(this.updateUrlTimeout);
       this.updateUrlTimeout = setTimeout(() => {
         this.$nextTick(() => {
-          this.$router.push({
-            query: {
-              lums: this.lumsValues.map((v) => v.toFixed(2)).join(','),
-              palettes: this.paletteBases.join(','),
-              filters: this.paletteFilters
-                .map((f) => {
-                  return `${f.hue}|${f.sat}`;
-                })
-                .join(','),
-              names: this.paletteNames.join(','),
-            },
-          });
+          let query = {
+            lums: this.lumsValues.map((v) => v.toFixed(2)).join(','),
+            palettes: this.paletteBases.join(','),
+            filters: this.paletteFilters
+              .map((f) => {
+                return `${f.hue}|${f.sat}`;
+              })
+              .join(','),
+            names: this.paletteNames.join(','),
+          };
+          if (JSON.stringify(query) !== JSON.stringify(this.$route.query)) {
+            this.$router.push({
+              query,
+            });
+          }
         });
       }, 200);
     },
