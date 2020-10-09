@@ -301,7 +301,7 @@
           Export Svgs
         </button>
       </form>
-      <div class="mt-8 flex justify-between space-x-7">
+      <div class="mt-8 md:flex justify-between md:space-x-7">
         <div class="space-x-5">
           <button
             :class="[
@@ -359,7 +359,7 @@
             LESS
           </button>
         </div>
-        <div class="space-x-5">
+        <div class="mt-5 md:mt-0 space-x-5">
           <button
             :class="[
               cssType === 'hex'
