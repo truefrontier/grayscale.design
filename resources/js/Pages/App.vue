@@ -685,12 +685,12 @@ export default {
 
       let config = JSON.stringify(colors, null, '  ');
       localStorage.setItem(new Date(), config);
-      return config;
+      return `// Grayscale Design palette: ${window.location.href}\n\n` + config;
     },
 
     cssVars() {
       let colors = this.cssColors;
-      let css = ':root {';
+      let css = `/* Grayscale Design palette: ${window.location.href} */\n\n:root {`;
       css += Object.keys(colors).reduce((str, name) => {
         str += '\n';
         Object.keys(colors[name].swatches).forEach((i) => {
@@ -705,7 +705,7 @@ export default {
 
     cssScss() {
       let colors = this.cssColors;
-      let css = '';
+      let css = `// Grayscale Design palette: ${window.location.href}\n\n`;
       css += Object.keys(colors).reduce((str, name) => {
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
@@ -719,7 +719,7 @@ export default {
 
     cssLess() {
       let colors = this.cssColors;
-      let css = '';
+      let css = `// Grayscale Design palette: ${window.location.href}\n\n`;
       css += Object.keys(colors).reduce((str, name) => {
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
@@ -733,7 +733,7 @@ export default {
 
     cssStylus() {
       let colors = this.cssColors;
-      let css = '';
+      let css = `// Grayscale Design palette: ${window.location.href}\n\n`;
       css += Object.keys(colors).reduce((str, name) => {
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
