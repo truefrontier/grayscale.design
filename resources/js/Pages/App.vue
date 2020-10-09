@@ -1128,10 +1128,10 @@ export default {
     },
 
     setLums(values, index = null, pos = null) {
-      this.lums = Object.keys(this.lums).reduce((obj, i) => {
+      this.lums = values.reduce((obj, val, i) => {
         obj[i] = {
-          lum: values[i],
-          rgb: this.lumToGrayscaleRGB(values[i]),
+          lum: val,
+          rgb: this.lumToGrayscaleRGB(val),
         };
         return obj;
       }, {});
