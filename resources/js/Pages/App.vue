@@ -172,12 +172,32 @@
     </section>
     <section class="mt-10">
       <h1 class="font-bold uppercase tracking-wide">2.&nbsp;&nbsp;Set your colors</h1>
-      <button
-        @click="addPalette"
-        class="mt-6 border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
-      >
-        Add A Color
-      </button>
+      <div class="mt-6 inline-block space-x-4">
+        <button
+          @click="addPalette"
+          class="border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+        >
+          Add A Color
+        </button>
+        <a
+          v-if="palettes.length"
+          href="#"
+          class="border-b border-gray-500 text-blue-700 hover:opacity-50 transition-all duration-200"
+          @click="palettes = []"
+          >Remove All</a
+        >
+        <button
+          v-for="color in suggestedColors"
+          @click="addSuggestedColor(color)"
+          class="mt-3 transition-all hover:shadow border-1 duration-300 rounded-full py-4 px-5 text-white hover:opacity-75"
+          :style="{
+            'background-color': color,
+            'border-color': color,
+          }"
+        >
+          <i class="far fa-plus"></i>
+        </button>
+      </div>
       <div class="mt-8">
         <div v-for="(palette, index) in palettes" :key="palettes.length - index" class="mt-8">
           <div class="min-h-8 md:flex justify-between items-center relative">
@@ -581,6 +601,37 @@ export default {
   },
 
   computed: {
+    suggestedColors() {
+      if (!this.paletteBases.length) return [];
+      let hex = this.paletteBases[0];
+      if (hex === '#000000') return [];
+      let { r, g, b } = Color.hexToRGB(hex);
+      let { h, s, l } = Color.RGBToHSL(r, g, b);
+      let lum = 40; // Color.lumFromRGB(r, g, b);
+      let complH = h > 179 ? h - 180 : h + 180;
+      let complRGB = Color.HSLtoRGB(complH, s, Color.lightnessFromHSLum(complH, s, lum));
+      let complHex = Color.RGBToHex(...Object.values(complRGB).map(Math.round));
+      let tri1H = h + 120;
+      if (tri1H > 359) tri1H -= 360;
+      let tri1RGB = Color.HSLtoRGB(tri1H, s, Color.lightnessFromHSLum(tri1H, s, lum));
+      let tri1Hex = Color.RGBToHex(...Object.values(tri1RGB).map(Math.round));
+      let tri2H = h - 120;
+      if (tri2H < 0) tri2H += 360;
+      let tri2RGB = Color.HSLtoRGB(tri2H, s, Color.lightnessFromHSLum(tri2H, s, lum));
+      let tri2Hex = Color.RGBToHex(...Object.values(tri2RGB).map(Math.round));
+      let near1H = h + 60;
+      if (near1H > 359) near1H -= 360;
+      let near1RGB = Color.HSLtoRGB(near1H, s, Color.lightnessFromHSLum(near1H, s, lum));
+      let near1Hex = Color.RGBToHex(...Object.values(near1RGB).map(Math.round));
+      let near2H = h - 60;
+      if (near2H < 0) near2H += 360;
+      let near2RGB = Color.HSLtoRGB(near2H, s, Color.lightnessFromHSLum(near2H, s, lum));
+      let near2Hex = Color.RGBToHex(...Object.values(near2RGB).map(Math.round));
+      return [near2Hex, tri2Hex, complHex, tri1Hex, near1Hex].filter(
+        (h) => this.paletteBases.indexOf(h) === -1,
+      );
+    },
+
     tabContent() {
       if (this.cssTab === 'tailwind') return this.cssTailwind;
       if (this.cssTab === 'vars') return this.cssVars;
@@ -917,6 +968,13 @@ export default {
   },
 
   methods: {
+    addSuggestedColor(hex) {
+      this.addPalette();
+      this.$nextTick(() => {
+        this.palettes[0].hex = hex;
+      });
+    },
+
     updateUrl() {
       clearTimeout(this.updateUrlTimeout);
       this.updateUrlTimeout = setTimeout(() => {
@@ -1173,11 +1231,11 @@ export default {
       });
     },
 
-    addPalette(ev, hex = '#0000000') {
+    addPalette(ev, hex = '#000000') {
       this.palettes.unshift({
         name: '',
         swatches: clone(this.lums),
-        hex: hex,
+        hex,
         filters: {
           hue: 0,
           sat: 0,
