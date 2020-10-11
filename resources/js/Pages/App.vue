@@ -172,30 +172,32 @@
     </section>
     <section class="mt-10">
       <h1 class="font-bold uppercase tracking-wide">2.&nbsp;&nbsp;Set your colors</h1>
-      <div class="mt-double-4 inline-block space-x-4">
+      <div class="mt-6 inline-block space-x-4">
         <button
           @click="addPalette"
-          class="mt-3 border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+          class="border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
         >
           Add A Color
         </button>
         <a
           v-if="palettes.length"
           href="#"
-          class="mt-3 border-b border-red-500 text-red-600 hover:text-red-700 transition-all duration-200"
+          class="border-b border-red-500 text-red-600 hover:text-red-700 transition-all duration-200"
           @click="removeAll"
           >Remove All</a
         >
+      </div>
+      <div class="space-x-4">
         <button
           v-for="color in suggestedColors"
           @click="addSuggestedColor(color)"
-          class="mt-3 transition-all hover:shadow border-1 duration-300 rounded-full py-4 px-5 text-white hover:opacity-75"
+          class="mt-4 transition-all hover:shadow border-1 duration-300 h-half-8 w-half-8 shadow-inner text-white text-opacity-50 hover:opacity-75"
           :style="{
             'background-color': color,
             'border-color': color,
           }"
         >
-          <i class="far fa-plus"></i>
+          <i class="fal fa-plus fa-sm"></i>
         </button>
       </div>
       <div class="mt-8">
