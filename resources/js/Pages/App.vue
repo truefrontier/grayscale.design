@@ -182,8 +182,8 @@
         <a
           v-if="palettes.length"
           href="#"
-          class="mt-3 border-b border-gray-500 text-blue-700 hover:opacity-50 transition-all duration-200"
-          @click="palettes = []"
+          class="mt-3 border-b border-red-500 text-red-600 hover:text-red-700 transition-all duration-200"
+          @click="removeAll"
           >Remove All</a
         >
         <button
@@ -968,6 +968,10 @@ export default {
   },
 
   methods: {
+    removeAll() {
+      if (confirm('Are you sure?')) this.palettes = [];
+    },
+
     addSuggestedColor(hex) {
       this.addPalette();
       this.$nextTick(() => {
