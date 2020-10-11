@@ -1,5 +1,5 @@
 <template>
-  <div class="App">
+  <div class="App" @click="showPicker = null">
     <section class="mt-6">
       <h1 class="mb-6 mr-5 font-bold uppercase tracking-wide">
         1.&nbsp;&nbsp;Set Your Luminance-Based Grayscale
@@ -247,13 +247,25 @@
                   :class="['fa-fw', isLockedHex(palette.hex) ? 'fa fa-lock' : 'far fa-unlock']"
                 ></i>
               </button>
-              <input
+              <hex-color-picker
+                v-if="showPicker === index"
+                @click.stop=""
+                class="absolute bottom-full left-0"
+                :color="palette.hex"
+                @color-changed="palette.hex = $event.target.color"
+              ></hex-color-picker>
+              <button
+                @click.stop="showPicker = showPicker === index ? null : index"
+                class="h-half-8 w-half-8 mr-4 inline-block align-middle shadow-inner"
+                :style="{ background: palette.hex }"
+              ></button>
+              <!-- <input
                 type="color"
                 :value="getPickerHex(palette.hex)"
                 @input="palette.hex = $event.target.value"
                 :ref="`palettePicker${index}`"
                 class="leading-6 inline-block align-middle h-7 w-8 p-0 border-1 rounded bg-transparent mr-4"
-              />
+              /> -->
               <input
                 type="text"
                 v-model="palette.hex"
@@ -442,6 +454,7 @@
 </template>
 
 <script>
+import 'vanilla-colorful';
 import { jsonToFormData } from '../utils/forms';
 import { makeQuery, getQuery } from '../utils/url';
 import * as Color from '../utils/color';
