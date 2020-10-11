@@ -172,17 +172,17 @@
     </section>
     <section class="mt-10">
       <h1 class="font-bold uppercase tracking-wide">2.&nbsp;&nbsp;Set your colors</h1>
-      <div class="mt-6 inline-block space-x-4">
+      <div class="mt-double-4 inline-block space-x-4">
         <button
           @click="addPalette"
-          class="border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+          class="mt-3 border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
         >
           Add A Color
         </button>
         <a
           v-if="palettes.length"
           href="#"
-          class="border-b border-gray-500 text-blue-700 hover:opacity-50 transition-all duration-200"
+          class="mt-3 border-b border-gray-500 text-blue-700 hover:opacity-50 transition-all duration-200"
           @click="palettes = []"
           >Remove All</a
         >
