@@ -29,7 +29,7 @@ Getting the right contrast is _super important_ for your design, and is easy to 
 
 Without understanding color value well, picking colors is kinda like Bingo night without the glorious geriatric comradery. (Shout out to my Granny! Love you!) 
 
-White text on a blue background is likely going to look better than white text on a yellow background. 
+White text on a blue background (even a lighter blue) is likely going to have better contrast and readability than white text on a yellow background. 
 
 
 <div class="flex text-white">
