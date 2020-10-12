@@ -22,18 +22,26 @@ In web design/development, you hear a lot about making your websites more "acces
     <div class="py-half-7 px-7 bg-grayscale-300 text-gray-100">Y U HATE ME?</div>
 </div>
 
-Getting the right contrast is _super important_ for your design, but is _hard_ to do well... 
+Getting the right contrast is _super important_ for your design, and is easy to do if you're only using black and white... but getting the contrast just right with color is another story...
 
 
 ### __PROBLEM:__ Getting great contrast _using color_ is tough.
 
-Without understanding color value well (or—shameless plug: having a [luminance-based color palette generator](/app) handy), picking colors is kinda like Bingo night without the glorious geriatric comradery. (Shout out to my Granny! Love you!)
+Without understanding color value well, picking colors is kinda like Bingo night without the glorious geriatric comradery. (Shout out to my Granny! Love you!) 
+
+White text on a blue background is likely going to look better than white text on a yellow background. 
+
+
+<div class="flex text-white">
+    <div class="py-half-7 px-7" style="background: hsl(220, 100%, 70%);">NOT TOO BAD</div>
+    <div class="py-half-7 px-7" style="background: hsl(50, 100%, 70%);">I NEED HELP!</div>
+</div>
 
 ### __SOLUTION:__ Don't use color.*
 
 <p class="mt-0"><small class="opacity-50">* At least not at first. Let me explain...</small></p>
 
-What if... you designed _everything_ in grayscale first... to get the contrast _just_ right. And then, you came back when you were done and swapped out those grays with colors that had the same color value?
+What if... you designed _everything_ in grayscale first... to get the contrast _just_ right. And then, you came back when you were done and swapped out those grays with colors _that had the same color value_?
 
 
 Hold up... but can't you already do that with HSL (Hue, Saturation, Lightness) format? __TL;DR:__ Doesn't work _because_ "Lightness" _is not_ Color Value. Oh, by the way, it's pretty much the same story for HSV (Hue, Saturation, Value). 😿
