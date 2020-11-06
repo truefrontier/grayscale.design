@@ -7,6 +7,7 @@
         :copy="copy"
         :copied="copyText"
         :swatch="swatch"
+        :text-overlay="textOverlay"
         :index="parseInt(index, 10)"
         :is-first="index == 0"
         :is-last="index == Object.keys(swatches).length - 1"
@@ -41,6 +42,10 @@ export default {
     palette: Object,
     hideLum: Boolean,
     isLocked: {
+      type: Boolean,
+      default: false,
+    },
+    textOverlay: {
       type: Boolean,
       default: false,
     },

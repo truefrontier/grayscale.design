@@ -20,6 +20,14 @@
       >
         {{ swatch.hex }}
       </span>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <strong v-if="textOverlay" class="block text-black text-lg">
+          <i class="fa fa-font-case"></i>
+        </strong>
+        <strong v-if="textOverlay" class="block text-white text-lg">
+          <i class="fa fa-font-case"></i>
+        </strong>
+      </div>
       <span
         v-if="swatch.hex"
         :class="[
@@ -46,6 +54,7 @@ export default {
     isClosest: Boolean,
     copy: Function,
     copied: String,
+    textOverlay: Boolean,
   },
 
   methods: {

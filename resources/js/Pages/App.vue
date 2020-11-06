@@ -83,6 +83,23 @@
               "
               ><i :class="['fa fa-fw mr-4', preset.icon]"></i>{{ preset.label }}</a
             >
+            <div
+              class="mt-5 text-sm block py-half-4 px-5 mr-5 whitespace-no-wrap text-gray-900 uppercase tracking-wide font-bold"
+            >
+              Contrast
+            </div>
+            <button
+              @click="
+                textOverlay = !textOverlay;
+                showLumsMenu = false;
+              "
+              :class="[
+                'block w-full text-left py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75',
+                { 'bg-gray-400 bg-opacity-75': textOverlay },
+              ]"
+            >
+              <i class="fa fa-fw fa-font-case mr-4"></i>Text Overlay
+            </button>
           </div>
         </div>
       </div>
@@ -95,7 +112,11 @@
         :is-locked-lum="isLockedLum"
       ></grayscale-row>
 
-      <palette-row class="mt-7" :palette="{ swatches: lums }"></palette-row>
+      <palette-row
+        class="mt-7"
+        :palette="{ swatches: lums }"
+        :text-overlay="textOverlay"
+      ></palette-row>
 
       <div class="text-center justify-between md:flex md:space-x-6">
         <div>
@@ -612,6 +633,7 @@ export default {
       cssTab: 'vars',
       cssType: 'hex',
       updateUrlTimeout: 0,
+      textOverlay: false,
     };
   },
 
