@@ -271,7 +271,7 @@
               <hex-color-picker
                 v-if="showPicker === index"
                 @click.stop=""
-                class="absolute bottom-full left-0"
+                class="absolute bottom-full left-0 z-10"
                 :color="palette.hex"
                 @color-changed="palette.hex = $event.target.color"
               ></hex-color-picker>
