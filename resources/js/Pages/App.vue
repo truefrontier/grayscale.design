@@ -1054,6 +1054,7 @@ export default {
     },
 
     dedupePalettes() {
+      return;
       let dupes = this.getDupes();
 
       for (var i = dupes.length - 1; i >= 0; i--) {
