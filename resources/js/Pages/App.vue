@@ -1,9 +1,19 @@
 <template>
   <div class="App" @click="showPicker = null">
     <section class="mt-6">
-      <h1 class="mb-6 mr-5 font-bold uppercase tracking-wide">
-        1.&nbsp;&nbsp;Set Your Luminance-Based Grayscale
-      </h1>
+      <div class="md:flex justify-between">
+        <h1 class="mb-6 mr-5 font-bold uppercase tracking-wide">
+          1.&nbsp;&nbsp;Set Your Luminance-Based Grayscale
+        </h1>
+        <a
+          class="leading-7 h-7 box-content whitespace-nowrap text-blue-600 hover:bg-white duration-300 inline-block pl-4 pr-5 rounded-full border-1 border-blue-500 bg-blue-200 uppercase text-sm font-bold tracking-wide"
+          href="https://www.loom.com/share/3da3164377e84cbe87c7d0281c823e5e"
+          target="_blank"
+          ><i class="fa fa-play-circle mr-3 opacity-75"></i>Watch Demo<i
+            class="ml-3 fa fa-xs fa-external-link opacity-50"
+          ></i
+        ></a>
+      </div>
       <div class="mt-6 md:mt-0 flex items-center justify-between">
         <p class="flex-shrink">
           Drag the sliders below or use the
