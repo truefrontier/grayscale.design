@@ -1054,7 +1054,6 @@ export default {
     },
 
     dedupePalettes() {
-      return;
       let dupes = this.getDupes();
 
       for (var i = dupes.length - 1; i >= 0; i--) {
@@ -1076,9 +1075,9 @@ export default {
           for (var j = rgbs[p2].length - 1; j >= 0; j--) {
             let matches = 0;
             let [R, G, B] = rgbs[p2][j];
-            if (r - 1 <= R && r + 2 >= R) matches++;
-            if (g - 1 <= G && g + 2 >= G) matches++;
-            if (b - 1 <= B && b + 2 >= B) matches++;
+            if (r - 1 <= R && r + 1 >= R) matches++;
+            if (g - 1 <= G && g + 1 >= G) matches++;
+            if (b - 1 <= B && b + 1 >= B) matches++;
             if (matches >= 2) {
               let hex1 = this.palettes[p1].hex;
               let hex2 = this.palettes[p2].hex;
