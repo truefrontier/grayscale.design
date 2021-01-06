@@ -7,6 +7,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>grayscale design | Luminance-based color palette generator for Tailwind CSS</title>
         <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
+        <link rel="canonical" href="{{ url()->current() }}" />
         <script src="https://kit.fontawesome.com/41590b8d21.js" crossorigin="anonymous"></script>
     @if (env('APP_ENV') === 'production')
         <!-- Fathom - beautiful, simple website analytics -->
