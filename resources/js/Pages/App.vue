@@ -1054,6 +1054,13 @@ export default {
     },
 
     dedupePalettes() {
+      this.palettes.reverse();
+      this.$nextTick(
+        setTimeout(() => {
+          this.palettes.reverse();
+        }),
+      );
+      return;
       let dupes = this.getDupes();
 
       for (var i = dupes.length - 1; i >= 0; i--) {
