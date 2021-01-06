@@ -1075,9 +1075,9 @@ export default {
           for (var j = rgbs[p2].length - 1; j >= 0; j--) {
             let matches = 0;
             let [R, G, B] = rgbs[p2][j];
-            if (r - 3 <= R && r + 3 >= R) matches++;
-            if (g - 3 <= G && g + 3 >= G) matches++;
-            if (b - 3 <= B && b + 3 >= B) matches++;
+            if (r - 1 <= R && r + 2 >= R) matches++;
+            if (g - 1 <= G && g + 2 >= G) matches++;
+            if (b - 1 <= B && b + 2 >= B) matches++;
             if (matches >= 2) {
               let hex1 = this.palettes[p1].hex;
               let hex2 = this.palettes[p2].hex;
