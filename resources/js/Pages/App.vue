@@ -613,6 +613,13 @@ export default {
             return vals;
           },
         },
+        tailwind: {
+          label: 'Tailwind',
+          icon: 'fa-tailwind',
+          getValues(lums, count) {
+            return [92.72, 85.96, 73.8, 58.76, 39.22, 24.42, 15.15, 11.44, 6.93, 4.69];
+          },
+        },
       },
       lums: { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {} },
       isChoosingBase: null,
