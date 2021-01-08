@@ -91,7 +91,7 @@
                 showLumsMenu = false;
                 setLums(preset.getValues(lumsValues, lumsCount));
               "
-              ><i :class="['fa fa-fw mr-4', preset.icon]"></i>{{ preset.label }}</a
+              ><i :class="['fa-fw mr-4', preset.icon]"></i>{{ preset.label }}</a
             >
             <div
               class="mt-5 text-sm block py-half-4 px-5 mr-5 whitespace-no-wrap text-gray-900 uppercase tracking-wide font-bold"
@@ -517,7 +517,7 @@ export default {
       presets: {
         bell: {
           label: 'Bell Curve',
-          icon: 'fa-wave-sine',
+          icon: 'fa fa-wave-sine',
           getValues(lums, count) {
             let min = lums.reduce((num, val) => (val < num ? val : num), 100);
             let max = lums.reduce((num, val) => (val > num ? val : num), 0);
@@ -552,7 +552,7 @@ export default {
         },
         linear: {
           label: 'Linear',
-          icon: 'fa-horizontal-rule',
+          icon: 'fa fa-horizontal-rule',
           getValues(lums, count) {
             let min = lums.reduce((num, val) => (val < num ? val : num), 100);
             let max = lums.reduce((num, val) => (val > num ? val : num), 0);
@@ -571,7 +571,7 @@ export default {
         },
         dark: {
           label: 'Darker Side',
-          icon: 'fa-moon',
+          icon: 'fa fa-moon',
           getValues(lums, count) {
             let min = lums.reduce((num, val) => (val < num ? val : num), 100);
             let max = lums.reduce((num, val) => (val > num ? val : num), 0);
@@ -593,7 +593,7 @@ export default {
         },
         light: {
           label: 'Lighter Side',
-          icon: 'fa-sun',
+          icon: 'fa fa-sun',
           getValues(lums, count) {
             let min = lums.reduce((num, val) => (val < num ? val : num), 100);
             let max = lums.reduce((num, val) => (val > num ? val : num), 0);
@@ -615,7 +615,7 @@ export default {
         },
         tailwind: {
           label: 'Tailwind',
-          icon: 'fa-tailwind',
+          icon: 'fak fa-tailwind',
           getValues(lums, count) {
             return [92.72, 85.96, 73.8, 58.76, 39.22, 24.42, 15.15, 11.44, 6.93, 4.69];
           },
