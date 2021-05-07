@@ -514,6 +514,7 @@ export default {
 
   data() {
     return {
+      showPicker: null,
       presets: {
         bell: {
           label: 'Bell Curve',
@@ -710,6 +711,14 @@ export default {
       }, []);
     },
 
+    paletteLabels() {
+      this.updateUrl();
+      return this.palettes.reduce((arr, palette) => {
+        arr.push(palette.label);
+        return arr;
+      }, []);
+    },
+
     paletteFilters() {
       return this.palettes.reduce((arr, palette) => {
         arr.push(palette.filters);
@@ -747,6 +756,7 @@ export default {
             rgb: this.lums[index].rgb,
             hex: Color.RGBToHex(...this.lums[index].rgb),
             hsl: Object.values(Color.RGBToHSL(...this.lums[index].rgb)),
+            label: this.lums[index].label,
           };
           obj[index] = swatch;
           return obj;
@@ -1002,7 +1012,7 @@ export default {
   created() {
     this.setLums([98, 92, 82, 67, 50, 33, 18, 8, 2]);
     if (Object.keys(this.$route.query).length) {
-      let { lums = [], palettes = [], filters = [], names = [] } = this.$route.query;
+      let { lums = [], palettes = [], filters = [], names = [], labels = [] } = this.$route.query;
       lums = lums
         .split(',')
         .filter((val) => !!val)
@@ -1011,6 +1021,7 @@ export default {
 
       let paletteBases = palettes.split(',').filter((val) => !!val);
       let namesArr = names.split(',').filter((val) => !!val);
+      let labelsArr = labels.split(',').filter((val) => !!val);
       let filtersArr = filters.split(',').filter((val) => !!val);
       paletteBases.forEach((hex, i) => {
         let [hue = 0, sat = 0] = filtersArr[i].split('|');
@@ -1022,6 +1033,7 @@ export default {
             hue,
             sat,
           };
+          this.palettes[i].label = labelsArr[i];
         });
       });
     }
@@ -1061,6 +1073,7 @@ export default {
               })
               .join(','),
             names: this.paletteNames.join(','),
+            labels: this.paletteLabels.join(','),
           };
           if (JSON.stringify(query) !== JSON.stringify(this.$route.query)) {
             this.$router.push({
@@ -1182,9 +1195,11 @@ export default {
           if (hex !== hx) {
             obj[hx] = lockedPalette;
           } else {
+            let label = this.lums[lockedPalette.lumIndex].label;
             this.lums[lockedPalette.lumIndex] = {
               lum: lockedPalette.lastLum,
               rgb: this.lumToGrayscaleRGB(lockedPalette.lastLum),
+              label,
             };
           }
           return obj;
@@ -1204,9 +1219,11 @@ export default {
 
         let [lastLum] = Object.values(closest) || [];
         lumIndex = parseInt(lumIndex, 10);
+        let label = this.lums[lumIndex].label;
         this.lums[lumIndex] = {
           lum,
           rgb: this.lumToGrayscaleRGB(lum),
+          label,
         };
 
         lockedByHex[hex] = {
@@ -1246,13 +1263,14 @@ export default {
         swatchKeys.forEach((i) => {
           if (i < lumsCount) {
             palette.swatches[i].lum = lums[i].lum;
+            palette.swatches[i].label = lums[i].label;
           } else {
             delete palette.swatches[i];
           }
         });
         let i = swatchKeys.length - 1;
         while (i < lumsCount) {
-          palette.swatches[i] = { lum: lums[i].lum };
+          palette.swatches[i] = { lum: lums[i].lum, label: lums[i].label };
           i++;
         }
         return palette;
