@@ -785,7 +785,7 @@ export default {
         Object.keys(this.cssColors[name].swatches).forEach((i) => {
           let swatch = this.cssColors[name].swatches[i];
           let label =
-            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+            swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
           obj[name][label] = this.formatSwatchColor(swatch);
         });
         return obj;
@@ -804,8 +804,7 @@ export default {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          let label =
-            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
           str += `  --${name}-${label}: ${this.formatSwatchColor(swatch)};\n`;
         });
         return str;
@@ -821,8 +820,7 @@ export default {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          let label =
-            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
           str += `$${name}-${label}: ${this.formatSwatchColor(swatch)};\n`;
         });
         str += '\n';
@@ -838,8 +836,7 @@ export default {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          let label =
-            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
           str += `@${name}-${label}: ${this.formatSwatchColor(swatch)};\n`;
         });
         str += '\n';
@@ -855,8 +852,7 @@ export default {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          let label =
-            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
           str += `${name}-${label} = ${this.formatSwatchColor(swatch)}\n`;
         });
         str += '\n';
@@ -919,7 +915,7 @@ export default {
           this.lums[i] = {
             lum,
             rgb: [r, g, b],
-            label: colors.length === 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00',
+            label: colors.length >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00',
           };
           i++;
         }
@@ -1277,7 +1273,7 @@ export default {
         obj[i] = {
           lum: val,
           rgb: this.lumToGrayscaleRGB(val),
-          label: values.length === 10 ? (i === 0 ? 50 : i + '00') : parseInt(i, 10) + 1 + '00',
+          label: values.length >= 10 ? (i === 0 ? 50 : i + '00') : parseInt(i, 10) + 1 + '00',
         };
         return obj;
       }, {});
@@ -1412,6 +1408,11 @@ export default {
         }
         i++;
       }
+      let swatchCount = Object.keys(lums).length;
+      Object.keys(lums).forEach((i) => {
+        let lum = lums[i];
+        lum.label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
+      });
       this.lums = lums;
 
       if (this.uploadFileUrl) {
