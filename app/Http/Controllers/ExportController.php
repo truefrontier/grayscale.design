@@ -34,13 +34,15 @@ class ExportController extends Controller {
             $file .= '<text transform="translate(' . ($leftPadding - 20) . ' ' . ($y + $swatchH + 50) . ')" style="font-size: 5px;fill: #b4bed5;font-family: Courier, monospace;font-weight: 700">val:</text>';
             $j = 0;
             foreach ($color->swatches as $index => $swatch) {
+                $swatchCount = count((array) $color->swatches);
+                $label = $swatchCount === 10 ? ($index == 0 ? '50' : $index . '00') : ($index + 1) . '00';
                 $x = $j * $swatchW + $leftPadding;
                 $file .= '<rect id="' . "$name-" . ($index + 1) . '00" x="' . $x . '" y="' . $y . '" width="' . $swatchW . '" height="' . $swatchH . '" style="fill: ' . $swatch->hex . '" />';
                 $file .= '<text transform="translate(' . $x . ' ' . ($y + $swatchH + 10) . ')" style="font-size: 5px;fill: #231f20;font-family: Courier, monospace">' . $swatch->hex . '</text>';
                 $file .= '<text transform="translate(' . $x . ' ' . ($y + $swatchH + 20) . ')" style="font-size: 5px;fill: #231f20;font-family: Courier, monospace">' . implode(', ', $swatch->rgb) . '</text>';
                 $file .= '<text transform="translate(' . $x . ' ' . ($y + $swatchH + 30) . ')" style="font-size: 5px;fill: #231f20;font-family: Courier, monospace">' . round($swatch->hsl[0]) . ', ' . round($swatch->hsl[1], 1) . '%, ' . round($swatch->hsl[2], 1) . '%</text>';
                 $file .= '<text transform="translate(' . $x . ' ' . ($y + $swatchH + 40) . ')" style="font-size: 5px;fill: #231f20;font-family: Courier, monospace">' . round($swatch->lum, 2) . '%</text>';
-                $file .= '<text transform="translate(' . $x . ' ' . ($y + $swatchH + 50) . ')" style="font-size: 5px;fill: #231f20;font-family: Courier, monospace">' . ($index + 1) . '00</text>';
+                $file .= '<text transform="translate(' . $x . ' ' . ($y + $swatchH + 50) . ')" style="font-size: 5px;fill: #231f20;font-family: Courier, monospace">' . $label . '</text>';
                 $j++;
             }
             $i++;

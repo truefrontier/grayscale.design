@@ -781,9 +781,12 @@ export default {
     cssTailwind() {
       let colors = Object.keys(this.cssColors).reduce((obj, name) => {
         obj[name] = {};
+        let swatchCount = Object.keys(this.cssColors[name].swatches).length;
         Object.keys(this.cssColors[name].swatches).forEach((i) => {
           let swatch = this.cssColors[name].swatches[i];
-          obj[name][`${parseInt(i, 10) + 1}00`] = this.formatSwatchColor(swatch);
+          let label =
+            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          obj[name][label] = this.formatSwatchColor(swatch);
         });
         return obj;
       }, {});
@@ -798,9 +801,12 @@ export default {
       let css = `/* Grayscale Design palette: ${window.location.href} */\n\n:root {`;
       css += Object.keys(colors).reduce((str, name) => {
         str += '\n';
+        let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          str += `  --${name}-${parseInt(i, 10) + 1}00: ${this.formatSwatchColor(swatch)};\n`;
+          let label =
+            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          str += `  --${name}-${label}: ${this.formatSwatchColor(swatch)};\n`;
         });
         return str;
       }, '');
@@ -812,9 +818,12 @@ export default {
       let colors = this.cssColors;
       let css = `// Grayscale Design palette: ${window.location.href}\n\n`;
       css += Object.keys(colors).reduce((str, name) => {
+        let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          str += `$${name}-${parseInt(i, 10) + 1}00: ${this.formatSwatchColor(swatch)};\n`;
+          let label =
+            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          str += `$${name}-${label}: ${this.formatSwatchColor(swatch)};\n`;
         });
         str += '\n';
         return str;
@@ -826,9 +835,12 @@ export default {
       let colors = this.cssColors;
       let css = `// Grayscale Design palette: ${window.location.href}\n\n`;
       css += Object.keys(colors).reduce((str, name) => {
+        let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          str += `@${name}-${parseInt(i, 10) + 1}00: ${this.formatSwatchColor(swatch)};\n`;
+          let label =
+            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          str += `@${name}-${label}: ${this.formatSwatchColor(swatch)};\n`;
         });
         str += '\n';
         return str;
@@ -840,9 +852,12 @@ export default {
       let colors = this.cssColors;
       let css = `// Grayscale Design palette: ${window.location.href}\n\n`;
       css += Object.keys(colors).reduce((str, name) => {
+        let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          str += `${name}-${parseInt(i, 10) + 1}00 = ${this.formatSwatchColor(swatch)}\n`;
+          let label =
+            swatchCount === 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          str += `${name}-${label} = ${this.formatSwatchColor(swatch)}\n`;
         });
         str += '\n';
         return str;
@@ -901,7 +916,11 @@ export default {
           let g = Math.round(color.green * 255);
           let b = Math.round(color.blue * 255);
           let lum = Color.lumFromRGB(r, g, b);
-          this.lums[i] = { lum, rgb: [r, g, b] };
+          this.lums[i] = {
+            lum,
+            rgb: [r, g, b],
+            label: colors.length === 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00',
+          };
           i++;
         }
       }
@@ -1258,6 +1277,7 @@ export default {
         obj[i] = {
           lum: val,
           rgb: this.lumToGrayscaleRGB(val),
+          label: values.length === 10 ? (i === 0 ? 50 : i + '00') : parseInt(i, 10) + 1 + '00',
         };
         return obj;
       }, {});

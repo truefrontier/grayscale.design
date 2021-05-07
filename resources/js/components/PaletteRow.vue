@@ -18,7 +18,7 @@
           class="font-mono opacity-50 text-gray-800 text-sm text-center px-2 leading-5 mt-4 mb-3"
         >
           <span class="hidden md:inline-block">{{ palette.name ? palette.name + '-' : '' }}</span
-          >{{ parseInt(index, 10) + 1 }}00
+          >{{ swatch.label }}
         </div>
         <div
           v-if="!hideLum"
