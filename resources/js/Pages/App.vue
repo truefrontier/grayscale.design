@@ -1086,8 +1086,7 @@ export default {
         let swatchCount = Object.keys(this.cssColors[name].swatches).length;
         Object.keys(this.cssColors[name].swatches).forEach((i) => {
           let swatch = this.cssColors[name].swatches[i];
-          let label =
-            swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(index, 10) + 1 + '00';
+          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
           obj[name][label] = this.formatSwatchColor(swatch);
         });
         return obj;
