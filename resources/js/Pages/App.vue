@@ -627,17 +627,6 @@
         <div class="space-x-5">
           <button
             :class="[
-              cssTab === 'vars'
-                ? 'font-bold'
-                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
-              'mb-6 transition-all duration-200',
-            ]"
-            @click.prevent="cssTab = 'vars'"
-          >
-            CSS Variables
-          </button>
-          <button
-            :class="[
               cssTab === 'tailwind'
                 ? 'font-bold'
                 : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
@@ -646,6 +635,17 @@
             @click.prevent="cssTab = 'tailwind'"
           >
             Tailwind CSS
+          </button>
+          <button
+            :class="[
+              cssTab === 'vars'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssTab = 'vars'"
+          >
+            CSS Variables
           </button>
           <button
             :class="[
@@ -684,17 +684,6 @@
         <div class="mt-5 md:mt-0 space-x-5">
           <button
             :class="[
-              cssType === 'hex'
-                ? 'font-bold'
-                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
-              'mb-6 transition-all duration-200',
-            ]"
-            @click.prevent="cssType = 'hex'"
-          >
-            HEX
-          </button>
-          <button
-            :class="[
               cssType === 'rgb'
                 ? 'font-bold'
                 : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
@@ -703,6 +692,17 @@
             @click.prevent="cssType = 'rgb'"
           >
             RGB
+          </button>
+          <button
+            :class="[
+              cssType === 'hex'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssType = 'hex'"
+          >
+            HEX
           </button>
           <button
             :class="[
@@ -940,8 +940,8 @@ export default {
       copyText: '',
       showLumsMenu: false,
       storedSwatches: {},
-      cssTab: 'vars',
-      cssType: 'hex',
+      cssTab: 'tailwind',
+      cssType: 'rgb',
       updateUrlTimeout: 0,
       textOverlay: false,
     };
@@ -1301,7 +1301,7 @@ export default {
   },
 
   created() {
-    this.setLums([98, 92, 82, 67, 50, 33, 18, 8, 2]);
+    this.setLums([92.72, 85.96, 73.8, 58.76, 39.22, 24.42, 15.15, 11.44, 6.93, 4.69]);
     if (Object.keys(this.$route.query).length) {
       let { lums = [], palettes = [], filters = [], names = [], labels = [] } = this.$route.query;
       lums = lums
