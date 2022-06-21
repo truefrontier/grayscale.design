@@ -6,25 +6,7 @@
           1.&nbsp;&nbsp;Set Your Luminance-Based Grayscale
         </h1>
         <a
-          class="
-            leading-7
-            h-7
-            box-content
-            whitespace-nowrap
-            text-blue-600
-            hover:bg-white
-            duration-300
-            inline-block
-            pl-4
-            pr-5
-            rounded-full
-            border-1 border-blue-500
-            bg-blue-200
-            uppercase
-            text-sm
-            font-bold
-            tracking-wide
-          "
+          class="leading-7 h-7 box-content whitespace-nowrap text-blue-600 hover:bg-white duration-300 inline-block pl-4 pr-5 rounded-full border-1 border-blue-500 bg-blue-200 uppercase text-sm font-bold tracking-wide"
           href="https://www.loom.com/share/3da3164377e84cbe87c7d0281c823e5e"
           target="_blank"
           ><i class="fa fa-play-circle mr-3 opacity-75"></i>Watch Demo<i
@@ -40,49 +22,16 @@
         <div class="relative">
           <button
             @click="showLumsMenu = !showLumsMenu"
-            class="
-              text-center
-              h-7
-              leading-7
-              px-4
-              rounded
-              text-xl text-blue-600
-              hover:opacity-75
-              focus:text-blue-900
-            "
+            class="text-center h-7 leading-7 px-4 rounded text-xl text-blue-600 hover:opacity-75 focus:text-blue-900"
           >
             <i class="far fa-lg fa-ellipsis-h"></i>
           </button>
           <div
             v-if="showLumsMenu"
-            class="
-              absolute
-              right-0
-              top-100
-              mr-4
-              mt-2
-              text-left
-              shadow-lg
-              bg-gray-500
-              py-4
-              min-w-9
-              rounded-b-lg rounded-tl-lg
-              z-40
-            "
+            class="absolute right-0 top-100 mr-4 mt-2 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-40"
           >
             <div
-              class="
-                text-sm
-                block
-                py-half-4
-                px-5
-                mr-5
-                whitespace-no-wrap
-                text-gray-900
-                uppercase
-                tracking-wide
-                font-bold
-              "
+              class="text-sm block py-half-4 px-5 mr-5 whitespace-no-wrap text-gray-900 uppercase tracking-wide font-bold"
             >
               Distribute
             </div>
@@ -116,19 +65,7 @@
               <i class="far fa-fw fa-hand-paper mr-4"></i>Manual
             </button>
             <div
-              class="
-                mt-5
-                text-sm
-                block
-                py-half-4
-                px-5
-                mr-5
-                whitespace-no-wrap
-                text-gray-900
-                uppercase
-                tracking-wide
-                font-bold
-              "
+              class="mt-5 text-sm block py-half-4 px-5 mr-5 whitespace-no-wrap text-gray-900 uppercase tracking-wide font-bold"
             >
               Presets
             </div>
@@ -157,19 +94,7 @@
               ><i :class="['fa-fw mr-4', preset.icon]"></i>{{ preset.label }}</a
             >
             <div
-              class="
-                mt-5
-                text-sm
-                block
-                py-half-4
-                px-5
-                mr-5
-                whitespace-no-wrap
-                text-gray-900
-                uppercase
-                tracking-wide
-                font-bold
-              "
+              class="mt-5 text-sm block py-half-4 px-5 mr-5 whitespace-no-wrap text-gray-900 uppercase tracking-wide font-bold"
             >
               Contrast
             </div>
@@ -207,52 +132,14 @@
         <div>
           <button
             @click="setLumsCount(lumsCount - 1)"
-            class="
-              relative
-              inline-block
-              mt-7
-              border-1 border-gray-500
-              transition-all
-              hover:shadow
-              hover:border-gray-800
-              hover:bg-gray-800
-              duration-300
-              rounded
-              py-4
-              px-5
-              text-gray-600
-              hover:text-white
-              uppercase
-              text-sm
-              font-bold
-              tracking-wide
-            "
+            class="relative inline-block mt-7 border-1 border-gray-500 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-600 hover:text-white uppercase text-sm font-bold tracking-wide"
           >
             <i class="far fa-lg fa-minus"></i>
           </button>
           <span class="px-4 opacity-50">{{ lumsCount }} values</span>
           <button
             @click="setLumsCount(lumsCount + 1)"
-            class="
-              relative
-              inline-block
-              mt-7
-              border-1 border-gray-500
-              transition-all
-              hover:shadow
-              hover:border-gray-800
-              hover:bg-gray-800
-              duration-300
-              rounded
-              py-4
-              px-5
-              text-gray-600
-              hover:text-white
-              uppercase
-              text-sm
-              font-bold
-              tracking-wide
-            "
+            class="relative inline-block mt-7 border-1 border-gray-500 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-600 hover:text-white uppercase text-sm font-bold tracking-wide"
           >
             <i class="far fa-lg fa-plus"></i>
           </button>
@@ -283,13 +170,7 @@
             </span>
 
             <a
-              class="
-                whitespace-no-wrap
-                text-gray-500
-                transition-colors
-                duration-300
-                hover:text-gray-700
-              "
+              class="whitespace-no-wrap text-gray-500 transition-colors duration-300 hover:text-gray-700"
               href="https://www.imgix.com/"
               target="_blank"
               title="imgix"
@@ -308,16 +189,7 @@
         >
           <img class="rounded-lg" :src="base64File || uploadFileUrl" alt="" />
           <img
-            class="
-              rounded-lg
-              absolute
-              inset-0
-              z-10
-              opacity-100
-              hover:opacity-0
-              transition-opacity
-              duration-200
-            "
+            class="rounded-lg absolute inset-0 z-10 opacity-100 hover:opacity-0 transition-opacity duration-200"
             :src="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
             alt=""
           />
@@ -334,36 +206,14 @@
       <div class="mt-6 inline-block space-x-4">
         <button
           @click="addPalette"
-          class="
-            border-1 border-blue-600
-            transition-all
-            hover:shadow
-            hover:border-blue-800
-            hover:bg-blue-800
-            duration-300
-            rounded
-            py-4
-            px-5
-            text-blue-600
-            hover:text-white
-            uppercase
-            text-sm
-            font-bold
-            tracking-wide
-          "
+          class="border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
         >
           Add A Color
         </button>
         <a
           v-if="palettes.length"
           href="#"
-          class="
-            border-b border-red-500
-            text-red-600
-            hover:text-red-700
-            transition-all
-            duration-200
-          "
+          class="border-b border-red-500 text-red-600 hover:text-red-700 transition-all duration-200"
           @click="removeAll"
           >Remove All</a
         >
@@ -372,18 +222,7 @@
         <button
           v-for="color in suggestedColors"
           @click="addSuggestedColor(color)"
-          class="
-            mt-4
-            transition-all
-            hover:shadow
-            border-1
-            duration-300
-            h-half-8
-            w-half-8
-            shadow-inner
-            text-white text-opacity-50
-            hover:opacity-75
-          "
+          class="mt-4 transition-all hover:shadow border-1 duration-300 h-half-8 w-half-8 shadow-inner text-white text-opacity-50 hover:opacity-75"
           :style="{
             'background-color': color,
             'border-color': color,
@@ -398,36 +237,13 @@
             <div class="absolute right-0 top-0">
               <button
                 @click="togglePaletteMenu(index)"
-                class="
-                  text-center
-                  h-7
-                  my-half-6
-                  rounded
-                  text-xl text-blue-600
-                  p-4
-                  hover:opacity-75
-                  focus:text-blue-900
-                "
+                class="text-center h-7 my-half-6 rounded text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900"
               >
                 <i class="far fa-lg fa-ellipsis-h"></i>
               </button>
               <div
                 v-if="shownPaletteMenu == index"
-                class="
-                  absolute
-                  z-40
-                  right-0
-                  top-100
-                  mr-4
-                  -mt-3
-                  text-left
-                  shadow-lg
-                  bg-gray-500
-                  py-4
-                  min-w-9
-                  rounded-b-lg rounded-tl-lg
-                  z-10
-                "
+                class="absolute z-40 right-0 top-100 mr-4 -mt-3 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
               >
                 <a
                   href="#"
@@ -435,14 +251,7 @@
                     toggleFilters(index);
                     togglePaletteMenu(index);
                   "
-                  class="
-                    block
-                    py-half-4
-                    px-5
-                    whitespace-no-wrap
-                    text-gray-800
-                    hover:bg-gray-400 hover:bg-opacity-75
-                  "
+                  class="block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75"
                 >
                   <i class="far fa-fw fa-sliders-h mr-4"></i>Tweak Hue/Sat
                 </a>
@@ -453,14 +262,7 @@
                     removePalette(index);
                     togglePaletteMenu(index);
                   "
-                  class="
-                    block
-                    py-half-4
-                    px-5
-                    whitespace-no-wrap
-                    text-red-800
-                    hover:bg-gray-400 hover:bg-opacity-75
-                  "
+                  class="block py-half-4 px-5 whitespace-no-wrap text-red-800 hover:bg-gray-400 hover:bg-opacity-75"
                 >
                   <i class="far fa-fw fa-times mr-4"></i>Remove
                 </a>
@@ -469,16 +271,7 @@
             <div class="h-8 leading-8 mr-8 relative">
               <button
                 @click="toggleLocked(palette.hex)"
-                class="
-                  absolute
-                  right-full
-                  top-0
-                  px-4
-                  opacity-25
-                  hover:opacity-100
-                  focus:outline-none
-                  focus:shadow-none
-                "
+                class="absolute right-full top-0 px-4 opacity-25 hover:opacity-100 focus:outline-none focus:shadow-none"
                 title="Adjusts grayscale to match this color"
               >
                 <i
@@ -509,47 +302,14 @@
                 v-model="palette.hex"
                 :ref="`paletteHex${index}`"
                 placeholder="#000000"
-                class="
-                  font-mono
-                  leading-6
-                  inline-block
-                  align-middle
-                  w-9
-                  mr-5
-                  text-gray-600
-                  hover:text-gray-800
-                  py-3
-                  px-0
-                  text-lg
-                  border-b border-gray-400 border-dashed
-                  hover:border-gray-600
-                  focus:border-gray-600
-                  focus:shadow-none
-                  relative
-                  z-30
-                "
+                class="font-mono leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none relative z-30"
               />
               <input
                 type="text"
                 v-model="palette.name"
                 :ref="`paletteName${index}`"
                 placeholder="Add label"
-                class="
-                  font-mono
-                  leading-6
-                  inline-block
-                  align-middle
-                  w-10
-                  text-gray-600
-                  hover:text-gray-800
-                  py-3
-                  px-0
-                  text-lg
-                  border-b border-gray-400 border-dashed
-                  hover:border-gray-600
-                  focus:border-gray-600
-                  focus:shadow-none
-                "
+                class="font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
               />
             </div>
 
@@ -601,24 +361,7 @@
         <input type="hidden" name="_token" v-model="csrf" />
         <button
           type="submit"
-          class="
-            mt-6
-            border-1 border-blue-600
-            transition-all
-            hover:shadow
-            hover:border-blue-800
-            hover:bg-blue-800
-            duration-300
-            rounded
-            py-4
-            px-5
-            text-blue-600
-            hover:text-white
-            uppercase
-            text-sm
-            font-bold
-            tracking-wide
-          "
+          class="mt-6 border-1 border-blue-600 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 duration-300 rounded py-4 px-5 text-blue-600 hover:text-white uppercase text-sm font-bold tracking-wide"
         >
           Export Svgs
         </button>
@@ -720,28 +463,7 @@
       <div class="bg-gray-300 rounded-lg p-6 text-gray-800 overflow-auto">
         <button
           @click="copy(tabContent)"
-          class="
-            relative
-            z-20
-            bg-gray-200
-            float-right
-            rounded
-            border-1
-            text-blue-600
-            border-blue-600
-            px-5
-            py-4
-            transition-all
-            hover:shadow
-            hover:border-blue-800
-            hover:bg-blue-800
-            hover:text-white
-            duration-300
-            uppercase
-            text-sm
-            font-bold
-            tracking-wide
-          "
+          class="relative z-20 bg-gray-200 float-right rounded border-1 text-blue-600 border-blue-600 px-5 py-4 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 hover:text-white duration-300 uppercase text-sm font-bold tracking-wide"
         >
           <i :class="['fa fa-fw mr-3', copyText ? 'fa-check' : 'fa-clone']"></i
           >{{ copyText ? 'Copied!' : 'Copy' }}
@@ -752,21 +474,7 @@
     <section class="mt-9 text-center leading-7">
       <div class="text-3xl font-bold">Have feedback?</div>
       <a
-        class="
-          inline-block
-          mt-5
-          leading-6
-          sm:leading-7
-          sm:mt-4
-          text-xl
-          sm:text-2xl
-          sm:border-b-1
-          border-gold-300
-          transition-all
-          duration-300
-          text-gold-600
-          hover:text-gold-500
-        "
+        class="inline-block mt-5 leading-6 sm:leading-7 sm:mt-4 text-xl sm:text-2xl sm:border-b-1 border-gold-300 transition-all duration-300 text-gold-600 hover:text-gold-500"
         href="mailto:feedback@grayscale.design"
       >
         <i class="fa fa-send mr-4"></i>Send us an email
