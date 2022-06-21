@@ -674,6 +674,11 @@ export default {
   },
 
   computed: {
+    isRadix() {
+      return this.cssTab === 'radix';
+      return JSON.stringify(this.presets.radix.getValues()) == JSON.stringify(this.lumsValues);
+    },
+
     suggestedColors() {
       if (!this.paletteBases.length) return [];
       let hex = this.paletteBases[0];
@@ -813,7 +818,7 @@ export default {
         let swatchCount = Object.keys(this.cssColors[name].swatches).length;
         Object.keys(this.cssColors[name].swatches).forEach((i) => {
           let swatch = this.cssColors[name].swatches[i];
-          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
+          let label = this.getValueLabel(i, swatchCount);
           obj[name][label] = this.formatSwatchColor(swatch);
         });
         return obj;
@@ -831,7 +836,7 @@ export default {
         str += `\nconst ${name} = {\n`;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          let label = parseInt(i, 10) + 1;
+          let label = this.getValueLabel(i);
           str += `  '${name}${label}': '${this.formatSwatchColor(swatch)}',\n`;
         });
         str += '};\n';
@@ -850,7 +855,7 @@ export default {
             hex,
             rgb: [r, g, b].map(Math.round),
             hsl: [h, s, l],
-            label: parseInt(i, 10) + 1,
+            label: this.getValueLabel(i),
           };
 
           str += `  '${name}${newSwatch.label}': '${this.formatSwatchColor(newSwatch)}',\n`;
@@ -870,7 +875,7 @@ export default {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
+          let label = this.getValueLabel(i, swatchCount);
           str += `  --${name}-${label}: ${this.formatSwatchColor(swatch)};\n`;
         });
         return str;
@@ -886,7 +891,7 @@ export default {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
+          let label = this.getValueLabel(i, swatchCount);
           str += `$${name}-${label}: ${this.formatSwatchColor(swatch)};\n`;
         });
         str += '\n';
@@ -902,7 +907,7 @@ export default {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
+          let label = this.getValueLabel(i, swatchCount);
           str += `@${name}-${label}: ${this.formatSwatchColor(swatch)};\n`;
         });
         str += '\n';
@@ -918,7 +923,7 @@ export default {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
-          let label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
+          let label = this.getValueLabel(i, swatchCount >= 10);
           str += `${name}-${label} = ${this.formatSwatchColor(swatch)}\n`;
         });
         str += '\n';
@@ -981,7 +986,7 @@ export default {
           this.lums[i] = {
             lum,
             rgb: [r, g, b],
-            label: colors.length >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00',
+            label: this.getValueLabel(i, colors.length),
           };
           i++;
         }
@@ -1105,6 +1110,16 @@ export default {
   },
 
   methods: {
+    getValueLabel(i, count) {
+      return this.isRadix
+        ? parseInt(i, 10) + 1
+        : count >= 10
+        ? i == 0
+          ? '50'
+          : i + '00'
+        : parseInt(i, 10) + 1 + '00';
+    },
+
     removeAll() {
       if (confirm('Are you sure?')) this.palettes = [];
     },
@@ -1319,14 +1334,17 @@ export default {
         swatchKeys.forEach((i) => {
           if (i < lumsCount) {
             palette.swatches[i].lum = lums[i].lum;
-            palette.swatches[i].label = lums[i].label;
+            palette.swatches[i].label = this.isRadix ? parseInt(i, 10) + 1 : lums[i].label;
           } else {
             delete palette.swatches[i];
           }
         });
         let i = swatchKeys.length - 1;
         while (i < lumsCount) {
-          palette.swatches[i] = { lum: lums[i].lum, label: lums[i].label };
+          palette.swatches[i] = {
+            lum: lums[i].lum,
+            label: this.isRadix ? parseInt(i, 10) + 1 : lums[i].label,
+          };
           i++;
         }
         return palette;
@@ -1347,7 +1365,7 @@ export default {
         obj[i] = {
           lum: val,
           rgb: this.lumToGrayscaleRGB(val),
-          label: values.length >= 10 ? (i === 0 ? 50 : i + '00') : parseInt(i, 10) + 1 + '00',
+          label: this.getValueLabel(i, values.length),
         };
         return obj;
       }, {});
@@ -1485,7 +1503,7 @@ export default {
       let swatchCount = Object.keys(lums).length;
       Object.keys(lums).forEach((i) => {
         let lum = lums[i];
-        lum.label = swatchCount >= 10 ? (i == 0 ? '50' : i + '00') : parseInt(i, 10) + 1 + '00';
+        lum.label = this.getValueLabel(i, swatchCount);
       });
       this.lums = lums;
 
