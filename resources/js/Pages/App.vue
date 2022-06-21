@@ -1084,8 +1084,8 @@ export default {
     },
 
     formatSwatchColor(swatch) {
-      if (this.cssType === 'hex') return swatch.hex;
-      if (this.cssType === 'rgb') return `rgb(${swatch.rgb.join(', ')})`;
+      if (this.cssType === 'hex') return swatch?.hex;
+      if (this.cssType === 'rgb') return `rgb(${swatch.rgb?.join(', ')})`;
       if (this.cssType === 'hsl')
         return `hsl(${swatch.hsl[0]}, ${
           swatch.hsl[1] === 0 ? 0 : swatch.hsl[1].toFixed(2)
