@@ -381,6 +381,17 @@
           </button>
           <button
             :class="[
+              cssTab === 'radix'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssTab = 'radix'"
+          >
+            Radix UI
+          </button>
+          <button
+            :class="[
               cssTab === 'vars'
                 ? 'font-bold'
                 : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
@@ -621,6 +632,13 @@ export default {
             return [92.72, 85.96, 73.8, 58.76, 39.22, 24.42, 15.15, 11.44, 6.93, 4.69];
           },
         },
+        radix: {
+          label: 'Radix',
+          icon: 'fak fa-radix',
+          getValues(lums, count) {
+            return [98.1, 96.4, 90.1, 83.3, 75.6, 65.8, 52.6, 37.4, 15.2, 12.8, 10.2, 1.2];
+          },
+        },
       },
       lums: { 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {}, 7: {}, 8: {} },
       isChoosingBase: null,
@@ -689,6 +707,7 @@ export default {
 
     tabContent() {
       if (this.cssTab === 'tailwind') return this.cssTailwind;
+      if (this.cssTab === 'radix') return this.cssRadix;
       if (this.cssTab === 'vars') return this.cssVars;
       if (this.cssTab === 'scss') return this.cssScss;
       if (this.cssTab === 'stylus') return this.cssStylus;
@@ -803,6 +822,44 @@ export default {
       let config = JSON.stringify(colors, null, '  ');
       localStorage.setItem(new Date(), config);
       return `// Grayscale Design palette: ${window.location.href}\n\n` + config;
+    },
+
+    cssRadix() {
+      let colors = this.cssColors;
+      let js = `// Grayscale Design palette: ${window.location.href}\n`;
+      js += Object.keys(colors).reduce((str, name) => {
+        str += `\nconst ${name} = {\n`;
+        Object.keys(colors[name].swatches).forEach((i) => {
+          let swatch = colors[name].swatches[i];
+          let label = parseInt(i, 10) + 1;
+          str += `  '${name}${label}': '${this.formatSwatchColor(swatch)}',\n`;
+        });
+        str += '};\n';
+
+        // Dark Colors
+        str += `\nconst ${name}Dark = {\n`;
+        Object.keys(colors[name].swatches).forEach((i) => {
+          let swatch = colors[name].swatches[i];
+          let lum = 100 - swatch.lum;
+          let [h, s] = swatch.hsl;
+          let l = Color.lightnessFromHSLum(h, s, lum);
+          let { r, g, b } = Color.HSLtoRGB(swatch.hsl[0], swatch.hsl[1], l);
+          let hex = Color.RGBToHex(r, g, b);
+          let newSwatch = {
+            lum,
+            hex,
+            rgb: [r, g, b].map(Math.round),
+            hsl: [h, s, l],
+            label: parseInt(i, 10) + 1,
+          };
+
+          str += `  '${name}${newSwatch.label}': '${this.formatSwatchColor(newSwatch)}',\n`;
+        });
+        str += '};\n';
+        return str;
+      }, '');
+
+      return js;
     },
 
     cssVars() {
