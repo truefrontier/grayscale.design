@@ -833,13 +833,16 @@ export default {
           let swatch = this.cssColors[name].swatches[i];
           let label = this.getValueLabel(i, swatchCount);
           obj[name][label] = this.formatSwatchColor(swatch);
+          if (this.isLockedHex(swatch.hex)) {
+            obj[name]['DEFAULT'] = obj[name][label];
+          }
         });
         return obj;
       }, {});
 
       let config = JSON.stringify(colors, null, '  ');
       localStorage.setItem(new Date(), config);
-      return `// Grayscale Design palette: ${window.location.href}\n\n` + config;
+      return `// Grayscale Design palette: ${window.location.href}\nconst grayscale = ` + config;
     },
 
     cssRadix() {
@@ -886,7 +889,7 @@ export default {
 
     cssVars() {
       let colors = this.cssColors;
-      let css = `/* Grayscale Design palette: ${window.location.href} */\n\n:root {`;
+      let css = `/* Grayscale Design palette: ${window.location.href} */\n:root {`;
       css += Object.keys(colors).reduce((str, name) => {
         str += '\n';
         let swatchCount = Object.keys(colors[name].swatches).length;
@@ -903,7 +906,7 @@ export default {
 
     cssScss() {
       let colors = this.cssColors;
-      let css = `// Grayscale Design palette: ${window.location.href}\n\n`;
+      let css = `// Grayscale Design palette: ${window.location.href}\n`;
       css += Object.keys(colors).reduce((str, name) => {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
@@ -919,7 +922,7 @@ export default {
 
     cssLess() {
       let colors = this.cssColors;
-      let css = `// Grayscale Design palette: ${window.location.href}\n\n`;
+      let css = `// Grayscale Design palette: ${window.location.href}\n`;
       css += Object.keys(colors).reduce((str, name) => {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
@@ -935,7 +938,7 @@ export default {
 
     cssStylus() {
       let colors = this.cssColors;
-      let css = `// Grayscale Design palette: ${window.location.href}\n\n`;
+      let css = `// Grayscale Design palette: ${window.location.href}\n`;
       css += Object.keys(colors).reduce((str, name) => {
         let swatchCount = Object.keys(colors[name].swatches).length;
         Object.keys(colors[name].swatches).forEach((i) => {
