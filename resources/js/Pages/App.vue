@@ -124,7 +124,9 @@
 
       <palette-row
         class="mt-7"
-        :palette="{ swatches: lums }"
+        :palette="{
+          swatches: cssTab === 'radix' ? radixLums : lums,
+        }"
         :text-overlay="textOverlay"
       ></palette-row>
 
@@ -629,7 +631,7 @@ export default {
           label: 'Tailwind',
           icon: 'fak fa-tailwind',
           getValues(lums, count) {
-            return [92.72, 85.96, 73.8, 58.76, 39.22, 24.42, 15.15, 11.44, 6.93, 4.69];
+            return [93.88, 87.19, 75.61, 61.14, 42.57, 28.39, 18.04, 11.21, 6.97, 4.72, 1.63];
           },
         },
         radix: {
@@ -674,9 +676,20 @@ export default {
   },
 
   computed: {
-    isRadix() {
-      return this.cssTab === 'radix';
+    radixLums() {
+      let newLums = this.lums;
+      Object.keys(this.lums).forEach((lum, i) => {
+        newLums[lum].label = parseInt(i, 10) + 1;
+      });
+      return newLums;
+    },
+
+    isRadixPreset() {
       return JSON.stringify(this.presets.radix.getValues()) == JSON.stringify(this.lumsValues);
+    },
+
+    isTailwindPreset() {
+      return JSON.stringify(this.presets.tailwind.getValues()) == JSON.stringify(this.lumsValues);
     },
 
     suggestedColors() {
@@ -832,37 +845,41 @@ export default {
     cssRadix() {
       let colors = this.cssColors;
       let js = `// Grayscale Design palette: ${window.location.href}\n`;
-      js += Object.keys(colors).reduce((str, name) => {
-        str += `\nconst ${name} = {\n`;
-        Object.keys(colors[name].swatches).forEach((i) => {
-          let swatch = colors[name].swatches[i];
-          let label = this.getValueLabel(i);
-          str += `  '${name}${label}': '${this.formatSwatchColor(swatch)}',\n`;
-        });
-        str += '};\n';
+      try {
+        js += Object.keys(colors).reduce((str, name) => {
+          str += `\nconst ${name} = {\n`;
+          Object.keys(colors[name].swatches).forEach((i) => {
+            let swatch = colors[name].swatches[i];
+            let label = parseInt(i, 10) + 1;
+            str += `  '${name}${label}': '${this.formatSwatchColor(swatch)}',\n`;
+          });
+          str += '};\n';
 
-        // Dark Colors
-        str += `\nconst ${name}Dark = {\n`;
-        Object.keys(colors[name].swatches).forEach((i) => {
-          let swatch = colors[name].swatches[i];
-          let lum = 100 - swatch.lum;
-          let [h, s] = swatch.hsl;
-          let l = Color.lightnessFromHSLum(h, s, lum);
-          let { r, g, b } = Color.HSLtoRGB(swatch.hsl[0], swatch.hsl[1], l);
-          let hex = Color.RGBToHex(r, g, b);
-          let newSwatch = {
-            lum,
-            hex,
-            rgb: [r, g, b].map(Math.round),
-            hsl: [h, s, l],
-            label: this.getValueLabel(i),
-          };
+          // Dark Colors
+          str += `\nconst ${name}Dark = {\n`;
+          Object.keys(colors[name].swatches).forEach((i) => {
+            let swatch = colors[name].swatches[i];
+            let lum = 100 - swatch.lum;
+            let [h, s] = swatch.hsl;
+            let l = Color.lightnessFromHSLum(h, s, lum);
+            let { r, g, b } = Color.HSLtoRGB(swatch.hsl[0], swatch.hsl[1], l);
+            let hex = Color.RGBToHex(r, g, b);
+            let newSwatch = {
+              lum,
+              hex,
+              rgb: [r, g, b].map(Math.round),
+              hsl: [h, s, l],
+              label: parseInt(i, 10) + 1,
+            };
 
-          str += `  '${name}${newSwatch.label}': '${this.formatSwatchColor(newSwatch)}',\n`;
-        });
-        str += '};\n';
-        return str;
-      }, '');
+            str += `  '${name}${newSwatch.label}': '${this.formatSwatchColor(newSwatch)}',\n`;
+          });
+          str += '};\n';
+          return str;
+        }, '');
+      } catch (e) {
+        //
+      }
 
       return js;
     },
@@ -934,6 +951,18 @@ export default {
   },
 
   watch: {
+    cssTab(val, oldVal) {
+      if (val && val !== oldVal && this.lumsValues?.length) this.setLums(this.lumsValues);
+    },
+
+    isRadixPreset(val) {
+      if (val) this.cssTab = 'radix';
+    },
+
+    isTailwindPreset(val) {
+      if (val) this.cssTab = 'tailwind';
+    },
+
     paletteBases(val) {
       Object.keys(this.lockedByHex).forEach((hex) => {
         if (val.indexOf(hex) === -1) {
@@ -1071,7 +1100,7 @@ export default {
   },
 
   created() {
-    this.setLums([92.72, 85.96, 73.8, 58.76, 39.22, 24.42, 15.15, 11.44, 6.93, 4.69]);
+    this.setLums(this.presets.tailwind.getValues());
     if (Object.keys(this.$route.query).length) {
       let { lums = [], palettes = [], filters = [], names = [], labels = [] } = this.$route.query;
       lums = lums
@@ -1111,13 +1140,12 @@ export default {
 
   methods: {
     getValueLabel(i, count) {
-      return this.isRadix
-        ? parseInt(i, 10) + 1
-        : count >= 10
-        ? i == 0
-          ? '50'
-          : i + '00'
-        : parseInt(i, 10) + 1 + '00';
+      if (this.cssTab == 'radix') return parseInt(i, 10) + 1;
+      if (count == 11 && i == 10) return '950';
+      if (count >= 10) {
+        return i == 0 ? '50' : parseInt(i, 10) + '00';
+      }
+      return parseInt(i, 10) + 1 + '00';
     },
 
     removeAll() {
@@ -1334,7 +1362,7 @@ export default {
         swatchKeys.forEach((i) => {
           if (i < lumsCount) {
             palette.swatches[i].lum = lums[i].lum;
-            palette.swatches[i].label = this.isRadix ? parseInt(i, 10) + 1 : lums[i].label;
+            palette.swatches[i].label = lums[i].label;
           } else {
             delete palette.swatches[i];
           }
@@ -1343,7 +1371,7 @@ export default {
         while (i < lumsCount) {
           palette.swatches[i] = {
             lum: lums[i].lum,
-            label: this.isRadix ? parseInt(i, 10) + 1 : lums[i].label,
+            label: lums[i].label,
           };
           i++;
         }
