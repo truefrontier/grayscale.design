@@ -629,7 +629,7 @@ export default {
         },
         default: {
           label: 'Default',
-          icon: 'fa fa-circle-dot',
+          icon: 'fa fa-dot-circle',
           getValues(lums, count) {
             return [93.87, 82.28, 68.67, 49.10, 40.20, 32.78, 13.29, 9.31, 6.30, 2.62, 1.30, 0.52];
           },
