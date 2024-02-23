@@ -11,7 +11,7 @@
         <script src="https://kit.fontawesome.com/41590b8d21.js" crossorigin="anonymous"></script>
     @if (env('APP_ENV') === 'production')
         <!-- Fathom - beautiful, simple website analytics -->
-        <script src="https://angelfish.grayscale.design/script.js" site="QBCMJQGI" defer></script>
+        <script src="https://cdn.usefathom.com/script.js" data-site="QBCMJQGI" defer></script>
         <!-- / Fathom -->
     @endif
     </head>
