@@ -627,6 +627,13 @@ export default {
             return vals;
           },
         },
+        default: {
+          label: 'Default',
+          icon: 'fa fa-circle-dot',
+          getValues(lums, count) {
+            return [93.87, 82.28, 68.67, 49.10, 40.20, 32.78, 13.29, 9.31, 6.30, 2.62, 1.30, 0.52];
+          },
+        },
         tailwind: {
           label: 'Tailwind',
           icon: 'fak fa-tailwind',
@@ -1103,7 +1110,7 @@ export default {
   },
 
   created() {
-    this.setLums(this.presets.tailwind.getValues());
+    this.setLums(this.presets.default.getValues());
     if (Object.keys(this.$route.query).length) {
       let { lums = [], palettes = [], filters = [], names = [], labels = [] } = this.$route.query;
       lums = lums
