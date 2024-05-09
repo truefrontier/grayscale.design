@@ -15,12 +15,12 @@ export function hexToRGB(hex) {
 }
 
 function componentToHex(c) {
-  var hex = c.toString(16);
+  var hex = c.toString(16).padStart(2, '0');
   return hex.length == 1 ? '0' + hex : hex;
 }
 
 export function RGBToHex(r, g, b) {
-  return '#' + componentToHex(r) + componentToHex(g) + componentToHex(b);
+  return '#' + componentToHex(Math.round(r)) + componentToHex(Math.round(g)) + componentToHex(Math.round(b));
 }
 
 export function RGBToHSL(r, g, b) {
@@ -53,11 +53,21 @@ export function RGBToHSL(r, g, b) {
 
 export function lumFromRGB(r, g, b) {
   // Formula from WCAG 2.0
-  let [R, G, B] = [r, g, b].map(function (c) {
+  let [R, G, B] = [Math.round(r), Math.round(g), Math.round(b)].map(function (c) {
     c /= 255; // to 0-1 range
     return c < 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
   });
   return 21.26 * R + 71.52 * G + 7.22 * B;
+}
+
+export function RGBFromLum(lum, h = 180, s = 50) {
+  // Adjust the lightness to match the grayscale luminance
+  const newL = lightnessFromHSLum(h, s, lum);
+
+  // Convert the adjusted HSL back to RGB
+  const { r: newR, g: newG, b: newB } = HSLtoRGB(h, s, newL);
+
+  return { r: newR, g: newG, b: newB };
 }
 
 export function closestLum(lums, lum) {
@@ -142,9 +152,65 @@ export function HSLtoRGB(h, s, l) {
   }
 
   return {
-    r: (r + m) * 255,
-    g: (g + m) * 255,
-    b: (b + m) * 255,
+    r: Math.round((r + m) * 255),
+    g: Math.round((g + m) * 255),
+    b: Math.round((b + m) * 255),
+  };
+}
+
+// False color grayscale
+export function falseColorGrayscale(r, g, b) {
+  // Convert RGB to HSL
+  const { h, s, l } = RGBToHSL(r, g, b);
+
+  // Get the luminance of the original RGB color
+  const lum = lumFromRGB(r, g, b);
+
+  // Adjust the lightness to match the grayscale luminance
+  const newL = lightnessFromHSLum(h, s, lum);
+
+  // Convert the adjusted HSL back to RGB
+  const { r: newR, g: newG, b: newB } = HSLtoRGB(h, s, newL);
+
+  return { r: newR, g: newG, b: newB };
+}
+
+function grayscaleToFalseColor(grayscale, hue, saturation) {
+  // Convert grayscale to RGB, which in grayscale is just the same value for R, G, and B
+  let r = grayscale, g = grayscale, b = grayscale;
+
+  // Calculate the luminance of this grayscale value
+  let targetLuminance = lumFromRGB(r, g, b);
+
+  // Use a binary search or iterative approach to find the closest lightness in HSL space
+  let bestL = 0, minDiff = Infinity;
+  for (let l = 0; l <= 100; l += 0.1) {
+    let { r: lr, g: lg, b: lb } = HSLtoRGB(hue, saturation, l);
+    let lum = lumFromRGB(lr, lg, lb);
+    let diff = Math.abs(lum - targetLuminance);
+    if (diff < minDiff) {
+      minDiff = diff;
+      bestL = l;
+    }
+  }
+
+  return HSLtoRGB(hue, saturation, bestL);
+}
+
+export function generateFalseColorGrayscale(r, g, b, desiredHue, desiredSaturation) {
+  // Get the false color grayscale
+  const falseColorGrayscale = falseColorGrayscale(r, g, b);
+
+  // Convert the false color grayscale to a false color
+  const falseColor = grayscaleToFalseColor(
+    (falseColorGrayscale.r + falseColorGrayscale.g + falseColorGrayscale.b) / 3,
+    desiredHue,
+    desiredSaturation
+  );
+
+  return {
+    falseColorGrayscale,
+    falseColor
   };
 }
 
@@ -185,3 +251,54 @@ export function colorName(h, s, l) {
     return 'pink';
   }
 }
+
+/**
+ * 
+ */
+function generateEvenlyDistributedPoints(count, xValue = 4, xDelta = 0.66) {
+  const points = [];
+  const interval = (2 * xValue) / (count - 1);
+  for (let i = 0; i < count; i++) {
+      const x = -xValue + i * interval;
+      points.push(x);
+  }
+  
+  const allPoints = [];
+  points.forEach(point => {
+      allPoints.push(point - xDelta);
+      allPoints.push(point);
+      allPoints.push(point + xDelta);
+  });
+
+  return { points, allPoints };
+}
+
+
+function solveForY(x) {
+  return -0.011 * x ** 3 + 0.888 * x ** 2 + 10.267 * x + 27.629; // cubic-bezier(.5,0,1,1), xValue = 4, xDelta = 0.66
+  // return 0.033 * x**3 + 1.096 * x**2 + 9.149 * x + 22.314; // cubic-bezier(.62,0,1,1), xValue = 4.225, xDelta = 0.49
+}
+
+function solveForX(targetY) {
+  let x = -5;
+  let deltaX = 0.01;
+  let currentY = solveForY(x);
+  while (x <= 5) {
+      if (Math.abs(currentY - targetY) < 0.01) {
+          return x;
+      }
+      x += deltaX;
+      currentY = solveForY(x);
+  }
+  return null;
+}
+
+function calculateYValues(xValues, round = 2) {
+    return xValues.map(x => Math.round(solveForY(x) * 10**round) / 10**round);
+}
+let xValues = generateEvenlyDistributedPoints(4);
+let yValues = calculateYValues(xValues.allPoints);
+
+// 92.93,82.2,72.05,50.99,42.87,35.4,20.76,15.54,11.04,3.5,1.47,0.23 // cubic-bezier(.5,0,1,1), xValue = 4, xDelta = 0.62
+// 90.81,82.20,73.97,49.37,42.87,36.80,19.70,15.54,11.86,3.04,1.47,0.41 // cubic-bezier(.5,0,1,1), xValue = 4, xDelta = 0.5
+// 93.49,83.02,73.31,43.99,37.46,31.55,14.88,11.51,08.62,1.74,0.73,0.07 // cubic-bezier(.62,0,1,1), xValue = 4.225, xDelta = 0.49
