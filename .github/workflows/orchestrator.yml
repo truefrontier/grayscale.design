@@ -9,7 +9,8 @@ jobs:
     if: >
       github.event.issue.state == 'open' &&
       contains(github.event.comment.body, '@claude-dev-truefrontier') &&
-      github.event.comment.user.type == 'User'
+      github.event.comment.user.type == 'User' &&
+      github.event.comment.user.login == 'kevnk'
     runs-on: ubuntu-latest
     permissions:
       issues: write
