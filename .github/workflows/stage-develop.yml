@@ -78,7 +78,7 @@ jobs:
       - name: Run Development Implementation
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           branch_prefix: "feature/issue-${{ github.event.issue.number }}-"
           use_sticky_comment: true
           claude_args: |
