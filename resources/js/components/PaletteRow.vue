@@ -203,6 +203,7 @@ export default {
           this.paletteClone.swatches[i].hsl = [newH, newS, newL];
           this.paletteClone.swatches[i].hex = Color.RGBToHex(...rgb);
           this.paletteClone.swatches[i].rgb = rgb;
+          this.paletteClone.swatches[i].oklch = Object.values(Color.RGBToOKLCH(...rgb));
           this.paletteClone.swatches[i].lum = Color.lumFromRGB(
             ...this.paletteClone.swatches[i].rgb,
           );

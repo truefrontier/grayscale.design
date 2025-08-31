@@ -302,3 +302,39 @@ let yValues = calculateYValues(xValues.allPoints);
 // 92.93,82.2,72.05,50.99,42.87,35.4,20.76,15.54,11.04,3.5,1.47,0.23 // cubic-bezier(.5,0,1,1), xValue = 4, xDelta = 0.62
 // 90.81,82.20,73.97,49.37,42.87,36.80,19.70,15.54,11.86,3.04,1.47,0.41 // cubic-bezier(.5,0,1,1), xValue = 4, xDelta = 0.5
 // 93.49,83.02,73.31,43.99,37.46,31.55,14.88,11.51,08.62,1.74,0.73,0.07 // cubic-bezier(.62,0,1,1), xValue = 4.225, xDelta = 0.49
+
+// Convert RGB to OKLCH (OKLAB with chroma and hue)
+export function RGBToOKLCH(r, g, b) {
+  // First convert RGB to linear RGB
+  const linearR = gammaToLinear(r / 255);
+  const linearG = gammaToLinear(g / 255);
+  const linearB = gammaToLinear(b / 255);
+  
+  // Convert linear RGB to OKLAB
+  const l = 0.4122214708 * linearR + 0.5363325363 * linearG + 0.0514459929 * linearB;
+  const m = 0.2119034982 * linearR + 0.6806995451 * linearG + 0.1073969566 * linearB;
+  const s = 0.0883024619 * linearR + 0.2817188376 * linearG + 0.6299787005 * linearB;
+  
+  const l_ = Math.cbrt(l);
+  const m_ = Math.cbrt(m);
+  const s_ = Math.cbrt(s);
+  
+  const okL = 0.2104542553 * l_ + 0.7936177850 * m_ - 0.0040720468 * s_;
+  const okA = 1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * s_;
+  const okB = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * s_;
+  
+  // Convert OKLAB to OKLCH
+  const okC = Math.sqrt(okA * okA + okB * okB);
+  let okH = Math.atan2(okB, okA) * (180 / Math.PI);
+  if (okH < 0) okH += 360;
+  
+  return {
+    l: Math.round(okL * 10000) / 10000, // Lightness (0-1)
+    c: Math.round(okC * 10000) / 10000, // Chroma (0+)
+    h: Math.round(okH * 100) / 100      // Hue (0-360 degrees)
+  };
+}
+
+function gammaToLinear(c) {
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
