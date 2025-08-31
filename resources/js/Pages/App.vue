@@ -471,6 +471,17 @@
           >
             HSL
           </button>
+          <button
+            :class="[
+              cssType === 'oklch'
+                ? 'font-bold'
+                : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+              'mb-6 transition-all duration-200',
+            ]"
+            @click.prevent="cssType = 'oklch'"
+          >
+            OKLCH
+          </button>
         </div>
       </div>
       <div class="bg-gray-300 rounded-lg p-6 text-gray-800 overflow-auto">
@@ -800,6 +811,7 @@ export default {
             rgb: this.lums[index].rgb,
             hex: Color.RGBToHex(...this.lums[index].rgb),
             hsl: Object.values(Color.RGBToHSL(...this.lums[index].rgb)),
+            oklch: Object.values(Color.RGBToOKLCH(...this.lums[index].rgb)),
             label: this.lums[index].label,
           };
           obj[index] = swatch;
@@ -1200,6 +1212,10 @@ export default {
         return `hsl(${swatch.hsl[0]}, ${
           swatch.hsl[1] === 0 ? 0 : swatch.hsl[1].toFixed(2)
         }%, ${swatch.hsl[2].toFixed(2)}%)`;
+      if (this.cssType === 'oklch')
+        return `oklch(${swatch.oklch[0].toFixed(4)} ${swatch.oklch[1].toFixed(4)} ${
+          swatch.oklch[2] === 0 ? 0 : swatch.oklch[2].toFixed(2)
+        })`;
     },
 
     storeSwatches(swatches, hex) {
