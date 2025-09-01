@@ -1036,7 +1036,10 @@ export default {
         Object.keys(colors[name].swatches).forEach((i) => {
           let swatch = colors[name].swatches[i];
           let label = this.getValueLabel(i, swatchCount);
-          str += `    --${name}-${label}: ${swatch.rgb.join(' ')};\n`;
+          let value = swatch.rgb?.join(' ');
+          if (value) {
+            str += `    --${name}-${label}: ${value};\n`;
+          }
         });
         return str;
       }, '');
