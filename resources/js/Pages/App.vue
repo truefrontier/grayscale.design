@@ -1394,8 +1394,53 @@ export default {
         return true;
       }
       evt.preventDefault();
-      const cleanedValue = `#${txt.replace('#','')}`;
-      target.value = cleanedValue;
+      
+      let hexValue = '';
+      const input = txt.trim();
+      
+      // Check if it's already a hex value (with or without #)
+      const hexMatch = input.match(/^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/);
+      if (hexMatch) {
+        hexValue = `#${hexMatch[1]}`;
+        // Expand 3-char hex to 6-char
+        if (hexValue.length === 4) {
+          hexValue = '#' + [...hexValue.slice(1)].map(c => c + c).join('');
+        }
+      } 
+      // Check for RGB/HSL values in various formats
+      else {
+        // Check for HSL values (looking for % on 2nd or 3rd value, or 'hsl' keyword)
+        // HSL format: hue (0-360), saturation (0-100%), lightness (0-100%)
+        const hslMatch = input.match(/(\d+)\s*[,\s]\s*(\d+)(%?)\s*[,\s]\s*(\d+)(%?)/);
+        if (hslMatch && (hslMatch[3] === '%' || hslMatch[5] === '%' || input.toLowerCase().includes('hsl'))) {
+          const h = parseInt(hslMatch[1]);
+          const s = parseInt(hslMatch[2]);
+          const l = parseInt(hslMatch[4]);
+          const rgb = Color.HSLtoRGB(h, s, l);
+          hexValue = Color.RGBToHex(Math.round(rgb.r), Math.round(rgb.g), Math.round(rgb.b));
+        }
+        // Otherwise treat as RGB values (including RGBA with alpha that might have %)
+        else if (hslMatch) {
+          // It matched the pattern but no % signs, so treat as RGB
+          const r = Math.min(255, Math.max(0, parseInt(hslMatch[1])));
+          const g = Math.min(255, Math.max(0, parseInt(hslMatch[2])));
+          const b = Math.min(255, Math.max(0, parseInt(hslMatch[4])));
+          hexValue = Color.RGBToHex(r, g, b);
+        }
+        // If nothing matched, try to use it as hex anyway
+        else {
+          // Remove any non-hex characters and take first 6 valid hex chars
+          const cleaned = input.replace(/[^0-9A-Fa-f]/g, '').slice(0, 6);
+          if (cleaned.length >= 3) {
+            hexValue = `#${cleaned}`;
+          } else {
+            // Default to black if we can't parse it
+            hexValue = '#000000';
+          }
+        }
+      }
+      
+      target.value = hexValue;
       // Trigger input event to update v-model
       target.dispatchEvent(new Event('input', { bubbles: true }));
       return false;
