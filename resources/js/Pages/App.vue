@@ -305,6 +305,8 @@
                 :ref="`paletteHex${index}`"
                 placeholder="#000000"
                 class="font-mono leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none relative z-30"
+                @focus="$event.target.select()"
+                @paste="onPaste"
               />
               <input
                 type="text"
@@ -1385,6 +1387,20 @@ export default {
   },
 
   methods: {
+    onPaste(evt) {
+      const target = evt.target;
+      const txt = evt?.clipboardData?.getData('text/plain')
+      if (!txt) {
+        return true;
+      }
+      evt.preventDefault();
+      const cleanedValue = `#${txt.replace('#','')}`;
+      target.value = cleanedValue;
+      // Trigger input event to update v-model
+      target.dispatchEvent(new Event('input', { bubbles: true }));
+      return false;
+    },
+
     getValueLabel(i, count) {
       if (this.cssTab == 'radix') return parseInt(i, 10) + 1;
       if (count == 11 && i == 10) return '950';
