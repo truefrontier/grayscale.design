@@ -496,7 +496,17 @@
       </div>
     </section>
     <section class="mt-10">
-      <h1 class="font-bold uppercase tracking-wide">4.&nbsp;&nbsp;Tailwind Auto-Dark Mode</h1>
+      <div class="flex justify-between">
+        <h1 class="font-bold uppercase tracking-wide leading-7">4.&nbsp;&nbsp;Tailwind Auto-Dark Mode</h1>
+        <a
+          class="leading-7 h-7 box-content whitespace-nowrap text-blue-600 hover:bg-white duration-300 inline-block pl-4 pr-5 rounded-full border-1 border-blue-500 bg-blue-200 uppercase text-sm font-bold tracking-wide"
+          href="https://www.loom.com/share/4b52f02f07264137b70c7864f8928c77"
+          target="_blank"
+          ><i class="fa fa-play-circle mr-3 opacity-75"></i>Watch Demo<i
+            class="ml-3 fa fa-xs fa-external-link opacity-50"
+          ></i
+        ></a>
+      </div>
       <p class="mt-4 text-gray-600 leading-relaxed">
         Generate CSS and Tailwind config for automatic dark mode using flipped color scales. 
         This approach creates symmetric color values that automatically invert in dark mode while maintaining consistent contrast ratios.
@@ -1103,8 +1113,8 @@ export default {
         }
       });
 
-      css += `\n      /* with this utility class you can do something like <div class="text-primary-400 dark:unset-dark-mode"> and it (and all it's child elements) will not automatically switch in darkmode. */\n`;
       css += `    }\n\n`;
+      css += `\n    /* with this utility class you can do something like <div class="text-primary-400 dark:unset-dark-mode"> and it (and all it's child elements) will not automatically switch in darkmode. */\n`;
       css += `    .unset-dark-mode {\n`;
       
       // Reset all colors to their original values in the unset class
