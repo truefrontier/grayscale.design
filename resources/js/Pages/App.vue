@@ -305,6 +305,8 @@
                 :ref="`paletteHex${index}`"
                 placeholder="#000000"
                 class="font-mono leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none relative z-30"
+                @focus="$event.target.select()"
+                @paste="onPaste"
               />
               <input
                 type="text"
@@ -493,6 +495,67 @@
           >{{ copyText ? 'Copied!' : 'Copy' }}
         </button>
         <pre class="relative z-10">{{ tabContent }}</pre>
+      </div>
+    </section>
+    <section class="mt-10">
+      <div class="flex justify-between">
+        <h1 class="font-bold uppercase tracking-wide leading-7">4.&nbsp;&nbsp;Tailwind Auto-Dark Mode</h1>
+        <a
+          class="leading-7 h-7 box-content whitespace-nowrap text-blue-600 hover:bg-white duration-300 inline-block pl-4 pr-5 rounded-full border-1 border-blue-500 bg-blue-200 uppercase text-sm font-bold tracking-wide"
+          href="https://www.loom.com/share/4b52f02f07264137b70c7864f8928c77"
+          target="_blank"
+          ><i class="fa fa-play-circle mr-3 opacity-75"></i>Watch Demo<i
+            class="ml-3 fa fa-xs fa-external-link opacity-50"
+          ></i
+        ></a>
+      </div>
+      <p class="mt-4 text-gray-600 leading-relaxed">
+        Generate CSS and Tailwind config for automatic dark mode using flipped color scales. 
+        This approach creates symmetric color values that automatically invert in dark mode while maintaining consistent contrast ratios.
+      </p>
+      <div class="mt-6 space-x-5">
+        <button
+          :class="[
+            autoDarkModeTab === 'css'
+              ? 'font-bold'
+              : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+            'mb-6 transition-all duration-200',
+          ]"
+          @click.prevent="autoDarkModeTab = 'css'"
+        >
+          CSS Variables
+        </button>
+        <button
+          :class="[
+            autoDarkModeTab === 'config'
+              ? 'font-bold'
+              : 'border-b border-gray-500 text-blue-700 hover:opacity-50',
+            'mb-6 transition-all duration-200',
+          ]"
+          @click.prevent="autoDarkModeTab = 'config'"
+        >
+          Tailwind Config
+        </button>
+      </div>
+      <div class="bg-gray-300 rounded-lg p-6 text-gray-800 overflow-auto">
+        <button
+          @click="copy(autoDarkModeTabContent)"
+          class="relative z-20 bg-gray-200 float-right rounded border-1 text-blue-600 border-blue-600 px-5 py-4 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 hover:text-white duration-300 uppercase text-sm font-bold tracking-wide"
+        >
+          <i :class="['fa fa-fw mr-3', copyText ? 'fa-check' : 'fa-clone']"></i
+          >{{ copyText ? 'Copied!' : 'Copy' }}
+        </button>
+        <pre class="relative z-10">{{ autoDarkModeTabContent }}</pre>
+      </div>
+      <div class="mt-4 text-sm text-gray-500 leading-relaxed">
+        <p><strong>How to use:</strong></p>
+        <ol class="mt-2 list-decimal list-inside space-y-1 pl-4">
+          <li>Copy the CSS Variables code and paste it into your main CSS file</li>
+          <li>Copy the Tailwind Config code and merge it with your tailwind.config.js</li>
+          <li>Use color classes like <code class="bg-gray-200 px-1 rounded">text-neutral-600</code> or <code class="bg-gray-200 px-1 rounded">bg-primary-200</code></li>
+          <li>Colors will automatically flip to their opposite values in dark mode</li>
+          <li>Use the <code class="bg-gray-200 px-1 rounded">unset-dark-mode</code> class to prevent auto-flipping on specific elements</li>
+        </ol>
       </div>
     </section>
     <section class="mt-9 text-center leading-7">
@@ -690,6 +753,7 @@ export default {
       cssType: 'rgb',
       updateUrlTimeout: 0,
       textOverlay: false,
+      autoDarkModeTab: 'css',
     };
   },
 
@@ -970,6 +1034,168 @@ export default {
       }, '');
       return css;
     },
+
+    autoDarkModeCss() {
+      let colors = this.cssColors;
+      let css = `@tailwind base;\n@tailwind components;\n@tailwind utilities;\n\n@layer utilities {\n`;
+      css += `  /* Grayscale Design palette: ${window.location.href} */\n`;
+      css += `  :root {\n`;
+      
+      // Generate all color variables in RGB format for Tailwind compatibility
+      css += Object.keys(colors).reduce((str, name) => {
+        str += `\n`;
+        let swatchCount = Object.keys(colors[name].swatches).length;
+        Object.keys(colors[name].swatches).forEach((i) => {
+          let swatch = colors[name].swatches[i];
+          let label = this.getValueLabel(i, swatchCount);
+          let value = swatch.rgb?.join(' ');
+          if (value) {
+            str += `    --${name}-${label}: ${value};\n`;
+          }
+        });
+        return str;
+      }, '');
+
+      // Add black and white variables
+      css += `\n    --black: 0 0 0;\n`;
+      css += `    --white: 255 255 255;\n\n`;
+
+      // Add abstract color mappings based on grayscale
+      if (colors.grayscale && colors.grayscale.swatches) {
+        css += `    /* Set abstract colors */\n`;
+        css += `    --dark: var(--black);\n`;
+        css += `    --light: var(--white);\n\n`;
+
+        let grayscaleSwatches = colors.grayscale.swatches;
+        let swatchKeys = Object.keys(grayscaleSwatches).sort((a, b) => parseInt(a) - parseInt(b));
+        let swatchCount = swatchKeys.length;
+        
+        swatchKeys.forEach((i) => {
+          let label = this.getValueLabel(i, swatchCount);
+          css += `    --neutral-${label}: var(--grayscale-${label});\n`;
+        });
+      }
+
+      css += `  }\n\n`;
+
+      // Add dark mode section that flips the values
+      css += `  @media (prefers-color-scheme: dark) {\n`;
+      css += `    /* Flip the values for dark mode */\n`;
+      css += `    :root {\n`;
+      css += `      --dark: var(--white);\n`;
+      css += `      --light: var(--black);\n\n`;
+
+      // Flip grayscale/neutral values if they exist
+      if (colors.grayscale && colors.grayscale.swatches) {
+        let grayscaleSwatches = colors.grayscale.swatches;
+        let swatchKeys = Object.keys(grayscaleSwatches).sort((a, b) => parseInt(a) - parseInt(b));
+        let swatchCount = swatchKeys.length;
+        
+        swatchKeys.forEach((i) => {
+          let label = this.getValueLabel(i, swatchCount);
+          let reverseIndex = swatchCount - 1 - parseInt(i);
+          let reverseLabel = this.getValueLabel(reverseIndex, swatchCount);
+          css += `      --neutral-${label}: var(--grayscale-${reverseLabel});\n`;
+        });
+      }
+
+      // Flip all other color palettes
+      Object.keys(colors).forEach(name => {
+        if (name !== 'grayscale') {
+          css += `\n`;
+          let swatchCount = Object.keys(colors[name].swatches).length;
+          let swatchKeys = Object.keys(colors[name].swatches).sort((a, b) => parseInt(a) - parseInt(b));
+          
+          swatchKeys.forEach((i) => {
+            let label = this.getValueLabel(i, swatchCount);
+            let reverseIndex = swatchCount - 1 - parseInt(i);
+            let reverseLabel = this.getValueLabel(reverseIndex, swatchCount);
+            css += `      --${name}-${label}: var(--${name}-${reverseLabel});\n`;
+          });
+        }
+      });
+
+      css += `    }\n\n`;
+      css += `\n    /* with this utility class you can do something like <div class="text-primary-400 dark:unset-dark-mode"> and it (and all it's child elements) will not automatically switch in darkmode. */\n`;
+      css += `    .unset-dark-mode {\n`;
+      
+      // Reset all colors to their original values in the unset class
+      css += Object.keys(colors).reduce((str, name) => {
+        let swatchCount = Object.keys(colors[name].swatches).length;
+        Object.keys(colors[name].swatches).forEach((i) => {
+          let label = this.getValueLabel(i, swatchCount);
+          str += `      --${name}-${label}: var(--${name}-${label});\n`;
+        });
+        str += `\n`;
+        return str;
+      }, '');
+
+      if (colors.grayscale && colors.grayscale.swatches) {
+        let grayscaleSwatches = colors.grayscale.swatches;
+        let swatchKeys = Object.keys(grayscaleSwatches).sort((a, b) => parseInt(a) - parseInt(b));
+        let swatchCount = swatchKeys.length;
+        
+        swatchKeys.forEach((i) => {
+          let label = this.getValueLabel(i, swatchCount);
+          css += `      --neutral-${label}: var(--grayscale-${label});\n`;
+        });
+      }
+
+      css += `    }\n`;
+      css += `  }\n`;
+      css += `}`;
+      
+      return css;
+    },
+
+    autoDarkModeTailwindConfig() {
+      let colors = this.cssColors;
+      let config = `function setAsCssVariable(colorName) {\n`;
+      config += `  let augmentedPalette = {};\n`;
+      config += `  const values = [`;
+      
+      // Get the values from grayscale to determine the scale
+      if (colors.grayscale && colors.grayscale.swatches) {
+        let swatchKeys = Object.keys(colors.grayscale.swatches).sort((a, b) => parseInt(a) - parseInt(b));
+        let labels = swatchKeys.map(i => this.getValueLabel(i, swatchKeys.length));
+        config += labels.join(', ');
+      } else {
+        config += '50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100';
+      }
+      
+      config += `];\n`;
+      config += `  values.forEach((value) => {\n`;
+      config += `    augmentedPalette[value] = \`rgb(var(--\${colorName}-\${value}) / <alpha-value>)\`;\n`;
+      config += `  });\n`;
+      config += `  return augmentedPalette;\n`;
+      config += `}\n\n`;
+      config += `module.exports = {\n`;
+      config += `  theme: {\n`;
+      config += `    colors: {\n`;
+      config += `      current: 'currentColor',\n`;
+      config += `      transparent: 'transparent',\n`;
+      config += `      black: 'rgb(var(--black) / <alpha-value>)',\n`;
+      config += `      white: 'rgb(var(--white) / <alpha-value>)',\n`;
+      config += `      light: 'rgb(var(--light) / <alpha-value>)',\n`;
+      config += `      dark: 'rgb(var(--dark) / <alpha-value>)',\n`;
+      
+      // Add all color palettes
+      Object.keys(colors).forEach(name => {
+        config += `      ${name}: setAsCssVariable('${name}'),\n`;
+      });
+
+      config += `      neutral: setAsCssVariable('neutral'),\n`;
+      config += `    },\n`;
+      config += `  },\n`;
+      config += `};\n`;
+      
+      return config;
+    },
+
+    autoDarkModeTabContent() {
+      if (this.autoDarkModeTab === 'css') return this.autoDarkModeCss;
+      if (this.autoDarkModeTab === 'config') return this.autoDarkModeTailwindConfig;
+    },
   },
 
   watch: {
@@ -1161,6 +1387,65 @@ export default {
   },
 
   methods: {
+    onPaste(evt) {
+      const target = evt.target;
+      const txt = evt?.clipboardData?.getData('text/plain')
+      if (!txt) {
+        return true;
+      }
+      evt.preventDefault();
+      
+      let hexValue = '';
+      const input = txt.trim();
+      
+      // Check if it's already a hex value (with or without #)
+      const hexMatch = input.match(/^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/);
+      if (hexMatch) {
+        hexValue = `#${hexMatch[1]}`;
+        // Expand 3-char hex to 6-char
+        if (hexValue.length === 4) {
+          hexValue = '#' + [...hexValue.slice(1)].map(c => c + c).join('');
+        }
+      } 
+      // Check for RGB/HSL values in various formats
+      else {
+        // Check for HSL values (looking for % on 2nd or 3rd value, or 'hsl' keyword)
+        // HSL format: hue (0-360), saturation (0-100%), lightness (0-100%)
+        const hslMatch = input.match(/(\d+)\s*[,\s]\s*(\d+)(%?)\s*[,\s]\s*(\d+)(%?)/);
+        if (hslMatch && (hslMatch[3] === '%' || hslMatch[5] === '%' || input.toLowerCase().includes('hsl'))) {
+          const h = parseInt(hslMatch[1]);
+          const s = parseInt(hslMatch[2]);
+          const l = parseInt(hslMatch[4]);
+          const rgb = Color.HSLtoRGB(h, s, l);
+          hexValue = Color.RGBToHex(Math.round(rgb.r), Math.round(rgb.g), Math.round(rgb.b));
+        }
+        // Otherwise treat as RGB values (including RGBA with alpha that might have %)
+        else if (hslMatch) {
+          // It matched the pattern but no % signs, so treat as RGB
+          const r = Math.min(255, Math.max(0, parseInt(hslMatch[1])));
+          const g = Math.min(255, Math.max(0, parseInt(hslMatch[2])));
+          const b = Math.min(255, Math.max(0, parseInt(hslMatch[4])));
+          hexValue = Color.RGBToHex(r, g, b);
+        }
+        // If nothing matched, try to use it as hex anyway
+        else {
+          // Remove any non-hex characters and take first 6 valid hex chars
+          const cleaned = input.replace(/[^0-9A-Fa-f]/g, '').slice(0, 6);
+          if (cleaned.length >= 3) {
+            hexValue = `#${cleaned}`;
+          } else {
+            // Default to black if we can't parse it
+            hexValue = '#000000';
+          }
+        }
+      }
+      
+      target.value = hexValue;
+      // Trigger input event to update v-model
+      target.dispatchEvent(new Event('input', { bubbles: true }));
+      return false;
+    },
+
     getValueLabel(i, count) {
       if (this.cssTab == 'radix') return parseInt(i, 10) + 1;
       if (count == 11 && i == 10) return '950';
