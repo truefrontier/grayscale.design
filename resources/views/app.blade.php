@@ -8,8 +8,8 @@
         <title>grayscale design | Luminance-based color palette generator for Tailwind CSS</title>
         <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
         <link rel="canonical" href="{{ url()->current() }}" />
-        <script src="https://kit.fontawesome.com/41590b8d21.js" crossorigin="anonymous"></script>
-    @if (env('APP_ENV') === 'production')
+        <link rel="stylesheet" href="https://fa.truefrontierapps.com/v5/css/all.min.css" />
+@if (env('APP_ENV') === 'production')
         <!-- Fathom - beautiful, simple website analytics -->
         <script src="https://cdn.usefathom.com/script.js" data-site="QBCMJQGI" defer></script>
         <!-- / Fathom -->
