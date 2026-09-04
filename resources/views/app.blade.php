@@ -9,6 +9,7 @@
         <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
         <link rel="canonical" href="{{ url()->current() }}" />
         <link rel="stylesheet" href="https://fa.truefrontierapps.com/v5/css/all.min.css" />
+        <link rel="stylesheet" href="https://fa.truefrontierapps.com/custom/grayscale.css" />
 @if (env('APP_ENV') === 'production')
         <!-- Fathom - beautiful, simple website analytics -->
         <script src="https://cdn.usefathom.com/script.js" data-site="QBCMJQGI" defer></script>
