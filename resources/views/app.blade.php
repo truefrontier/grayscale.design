@@ -8,6 +8,35 @@
         <title>grayscale design | Luminance-based color palette generator for Tailwind CSS</title>
         <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
         <link rel="canonical" href="{{ url()->current() }}" />
+@if (url()->current() === 'https://grayscale.design' || url()->current() === 'https://grayscale.design/')
+        <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "name": "Grayscale Design",
+      "alternateName": ["grayscale.design", "grayscale design"],
+      "url": "https://grayscale.design/",
+      "description": "Luminance-based color palette generator for Tailwind CSS — a color value-first approach for accessible contrast."
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Grayscale Design",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Web",
+      "url": "https://grayscale.design/",
+      "description": "Generate luminance-based color palettes for Tailwind CSS with a color value-first workflow for better contrast and accessibility.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+  ]
+}
+        </script>
+@endif
         <link rel="stylesheet" href="https://fa.truefrontierapps.com/v5/css/all.min.css" />
         <link rel="stylesheet" href="https://fa.truefrontierapps.com/custom/grayscale.css" />
 @if (env('APP_ENV') === 'production')
