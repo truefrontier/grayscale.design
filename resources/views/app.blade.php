@@ -8,6 +8,31 @@
         <title>grayscale design | Luminance-based color palette generator for Tailwind CSS</title>
         <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
         <link rel="canonical" href="{{ url()->current() }}" />
+@php
+    $isApp = in_array(url()->current(), ['https://grayscale.design/app', 'http://grayscale.design/app'], true)
+        || request()->is('app');
+@endphp
+@if ($isApp)
+        <meta name="description" content="Generate a Tailwind CSS color palette by luminance. Pick a base color and get shades that match grayscale values for predictable contrast.">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Grayscale Design">
+        <meta property="og:url" content="https://grayscale.design/app">
+        <meta property="og:title" content="grayscale design | Luminance-based color palette generator for Tailwind CSS">
+        <meta property="og:description" content="Generate a Tailwind CSS color palette by luminance. Pick a base color and get shades that match grayscale values for predictable contrast.">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="grayscale design | Luminance-based color palette generator for Tailwind CSS">
+        <meta name="twitter:description" content="Generate a Tailwind CSS color palette by luminance. Pick a base color and get shades that match grayscale values for predictable contrast.">
+@else
+        <meta name="description" content="Grayscale Design is a free luminance-based color palette generator for Tailwind CSS. Design in grayscale first, then swap in colors with the same color value for accessible contrast.">
+        <meta property="og:type" content="website">
+        <meta property="og:site_name" content="Grayscale Design">
+        <meta property="og:url" content="https://grayscale.design/">
+        <meta property="og:title" content="grayscale design | Luminance-based color palette generator for Tailwind CSS">
+        <meta property="og:description" content="Free luminance-based color palette generator for Tailwind CSS. Get contrast right in grayscale, then add color.">
+        <meta name="twitter:card" content="summary">
+        <meta name="twitter:title" content="grayscale design | Luminance-based color palette generator for Tailwind CSS">
+        <meta name="twitter:description" content="Free luminance-based color palette generator for Tailwind CSS. Get contrast right in grayscale, then add color.">
+@endif
 @if (url()->current() === 'https://grayscale.design' || url()->current() === 'https://grayscale.design/')
         <script type="application/ld+json">
 {
