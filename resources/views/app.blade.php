@@ -5,13 +5,13 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>grayscale design | Luminance-based color palette generator for Tailwind CSS</title>
-        <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
-        <link rel="canonical" href="{{ url()->current() }}" />
 @php
     $isApp = in_array(url()->current(), ['https://grayscale.design/app', 'http://grayscale.design/app'], true)
         || request()->is('app');
 @endphp
+        <title>{{ $isApp ? 'Tailwind CSS Color Palette Generator | grayscale design' : 'grayscale design | Luminance-based color palette generator for Tailwind CSS' }}</title>
+        <link rel="stylesheet" href="{{ mix('css/tailwind.css') }}" />
+        <link rel="canonical" href="{{ request()->is('/') ? url('/') . '/' : url()->current() }}" />
 @if ($isApp)
         <meta name="description" content="Generate a Tailwind CSS color palette by luminance. Pick a base color and get shades that match grayscale values for predictable contrast.">
         <meta property="og:type" content="website">
@@ -71,7 +71,10 @@
     @endif
     </head>
     <body>
-        @inertia
+        {{-- Same markup as @inertia, plus an h1 for the server HTML; Vue replaces #app (and this h1) on mount. --}}
+        <div id="app" data-page="{{ json_encode($page) }}">
+            <h1 class="sr-only">{{ data_get($statamic, 'cms.title') }}</h1>
+        </div>
         @routes
         <script>window.Statamic = @json($statamic)</script>
         <script src="{{ mix('/js/site.js') }}"></script>

@@ -2,3 +2,5 @@ User-agent: *
 Disallow:
 
 Sitemap: https://grayscale.design/sitemap.xml
+
+# llms.txt: https://grayscale.design/llms.txt
