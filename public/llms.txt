@@ -1,0 +1,10 @@
+# Grayscale Design
+
+> Grayscale Design is a free, luminance-based color palette generator for Tailwind CSS. It takes a color value-first approach: get the contrast right in grayscale, then swap in colors that have the same luminance.
+
+Grayscale Design is for web designers and developers who want enough contrast between backgrounds and content without fiddling with a color picker. HSL "Lightness" is not the same as color value: two colors with the same HSL lightness can have very different color values. Text on backgrounds with the same luminance appears to have the same contrast.
+
+## Pages
+
+- [What is Grayscale Design?](https://grayscale.design/): Explains the color value-first approach, why HSL lightness falls short, and how luminance-based colors keep contrast consistent.
+- [Luminance-Based Color Palette Generator](https://grayscale.design/app): Set a luminance-based grayscale, add your colors, and export them as SVGs or as code for Tailwind CSS, Radix UI, CSS variables, Stylus, SCSS, or LESS. Also generates CSS and Tailwind config for automatic dark mode.

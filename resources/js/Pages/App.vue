@@ -1,10 +1,11 @@
 <template>
   <div class="App" @click="showPicker = null">
+    <h1 class="sr-only">{{ cms.title }}</h1>
     <section class="mt-6">
       <div class="md:flex justify-between">
-        <h1 class="mb-6 mr-5 font-bold uppercase tracking-wide">
+        <h2 class="mb-6 mr-5 font-bold uppercase tracking-wide">
           1.&nbsp;&nbsp;Set Your Luminance-Based Grayscale
-        </h1>
+        </h2>
         <a
           class="leading-7 h-7 box-content whitespace-nowrap text-blue-600 hover:bg-white duration-300 inline-block pl-4 pr-5 rounded-full border-1 border-blue-500 bg-blue-200 uppercase text-sm font-bold tracking-wide"
           href="https://www.loom.com/share/3da3164377e84cbe87c7d0281c823e5e"
@@ -204,7 +205,7 @@
       </div>
     </section>
     <section class="mt-10">
-      <h1 class="font-bold uppercase tracking-wide">2.&nbsp;&nbsp;Set your colors</h1>
+      <h2 class="font-bold uppercase tracking-wide">2.&nbsp;&nbsp;Set your colors</h2>
       <div class="mt-6 inline-block space-x-4">
         <button
           @click="addPalette"
@@ -359,7 +360,7 @@
       </div>
     </section>
     <section class="mt-10">
-      <h1 class="font-bold uppercase tracking-wide">3.&nbsp;&nbsp;Export Your Colors</h1>
+      <h2 class="font-bold uppercase tracking-wide">3.&nbsp;&nbsp;Export Your Colors</h2>
       <form action="/export-svgs" target="_blank" method="POST">
         <input type="text" name="palettes" class="hidden" v-model="exportConfig" />
         <input type="hidden" name="_token" v-model="csrf" />
@@ -499,7 +500,7 @@
     </section>
     <section class="mt-10">
       <div class="flex justify-between">
-        <h1 class="font-bold uppercase tracking-wide leading-7">4.&nbsp;&nbsp;Tailwind Auto-Dark Mode</h1>
+        <h2 class="font-bold uppercase tracking-wide leading-7">4.&nbsp;&nbsp;Tailwind Auto-Dark Mode</h2>
         <a
           class="leading-7 h-7 box-content whitespace-nowrap text-blue-600 hover:bg-white duration-300 inline-block pl-4 pr-5 rounded-full border-1 border-blue-500 bg-blue-200 uppercase text-sm font-bold tracking-wide"
           href="https://www.loom.com/share/4b52f02f07264137b70c7864f8928c77"
