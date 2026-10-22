@@ -26,6 +26,11 @@
       >. &copy; Copyright
       {{ new Date().getFullYear() === 2020 ? 2020 : `2020-${new Date().getFullYear()}` }}. All
       rights reserved.
+      <a
+        href="https://github.com/truefrontier/grayscale.design"
+        class="transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-50"
+        >Source on GitHub</a
+      >
       <p class="mt-3 text-sm opacity-75">
         <i class="fa fa-bullhorn" data-fa-transform="flip-h rotate-30"></i> With help from
         <a
