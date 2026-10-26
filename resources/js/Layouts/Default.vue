@@ -17,6 +17,7 @@
       </div>
     </div>
     <slot></slot>
+    <McpCallout />
     <footer class="mt-8 py-7 text-gray-800">
       A design-friendly dev project from
       <a
@@ -54,8 +55,11 @@
 </template>
 
 <script>
+import McpCallout from '../components/McpCallout.vue';
+
 export default {
   name: 'DefaultLayout',
+  components: { McpCallout },
 };
 </script>
 
