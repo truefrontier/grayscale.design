@@ -6,19 +6,29 @@
         Our free MCP server lets Claude, Cursor and other agents build and export these palettes.
       </span>
     </p>
-    <button
-      type="button"
-      @click="copyInstructions"
-      class="mt-4 sm:mt-0 whitespace-no-wrap bg-gray-200 rounded border-1 text-blue-600 border-blue-600 px-5 py-4 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 hover:text-white duration-300 uppercase text-sm font-bold tracking-wide"
-    >
-      <i :class="['fa fa-fw mr-3', copied ? 'fa-check' : 'fa-clone']"></i
-      >{{ copied ? 'Copied!' : 'Copy instructions' }}
-    </button>
+    <div class="mt-4 sm:mt-0 flex items-center whitespace-no-wrap">
+      <button
+        type="button"
+        @click="copyInstructions"
+        class="whitespace-no-wrap bg-gray-200 rounded border-1 text-blue-600 border-blue-600 px-5 py-4 transition-all hover:shadow hover:border-blue-800 hover:bg-blue-800 hover:text-white duration-300 uppercase text-sm font-bold tracking-wide"
+      >
+        <i :class="['fa fa-fw mr-3', copied ? 'fa-check' : 'fa-clone']"></i
+        >{{ copied ? 'Copied!' : 'Copy instructions' }}
+      </button>
+      <a
+        :href="TERMS_URL"
+        target="_blank"
+        rel="noopener"
+        class="ml-3 text-sm text-gray-700 transition-all duration-200 border-b border-gray-500 inline-block hover:opacity-50"
+        >Terms</a
+      >
+    </div>
   </section>
 </template>
 
 <script>
-const MCP_URL = 'https://grayscale-mcp.fly.dev/mcp';
+const MCP_URL = 'https://mcp.grayscale.design/mcp';
+const TERMS_URL = 'https://github.com/truefrontier/grayscale-mcp#hosted-service';
 
 export const MCP_INSTRUCTIONS = `Install the grayscale.design MCP server so you can generate luminance-based color palettes and export them (Tailwind, CSS variables, SCSS, LESS, Stylus, Radix, auto dark mode, SVG).
 
@@ -44,7 +54,7 @@ export default {
   name: 'McpCallout',
 
   data() {
-    return { copied: false };
+    return { copied: false, TERMS_URL };
   },
 
   methods: {
