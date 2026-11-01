@@ -21,9 +21,15 @@
         <meta property="og:url" content="https://grayscale.design/app">
         <meta property="og:title" content="{{ $appTitle }}">
         <meta property="og:description" content="{{ $appDescription }}">
-        <meta name="twitter:card" content="summary">
+        <meta property="og:image" content="https://grayscale.design/og/app.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="Luminance-Based Color Palette Generator">
+        <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="{{ $appTitle }}">
         <meta name="twitter:description" content="{{ $appDescription }}">
+        <meta name="twitter:image" content="https://grayscale.design/og/app.png">
+        <meta name="twitter:image:alt" content="Luminance-Based Color Palette Generator">
 @else
         <meta name="description" content="Grayscale Design is a free luminance-based color palette generator for Tailwind CSS. Design in grayscale first, then swap in colors with the same color value for accessible contrast.">
         <meta property="og:type" content="website">
@@ -31,9 +37,15 @@
         <meta property="og:url" content="https://grayscale.design/">
         <meta property="og:title" content="grayscale design | Luminance-based color palette generator for Tailwind CSS">
         <meta property="og:description" content="Free luminance-based color palette generator for Tailwind CSS. Get contrast right in grayscale, then add color.">
-        <meta name="twitter:card" content="summary">
+        <meta property="og:image" content="https://grayscale.design/og/home.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:image:alt" content="What is Grayscale Design?">
+        <meta name="twitter:card" content="summary_large_image">
         <meta name="twitter:title" content="grayscale design | Luminance-based color palette generator for Tailwind CSS">
         <meta name="twitter:description" content="Free luminance-based color palette generator for Tailwind CSS. Get contrast right in grayscale, then add color.">
+        <meta name="twitter:image" content="https://grayscale.design/og/home.png">
+        <meta name="twitter:image:alt" content="What is Grayscale Design?">
 @endif
 @if (url()->current() === 'https://grayscale.design' || url()->current() === 'https://grayscale.design/')
         <script type="application/ld+json">
