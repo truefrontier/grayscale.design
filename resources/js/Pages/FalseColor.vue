@@ -9,7 +9,7 @@
 			<div class="mt-7">
 				<div class="flex items-center justify-between">
 					<div class="font-bold">Luminance</div>
-					<input ref="grayscaleLumInput" @input="setGrayscaleValue($event.target.value)" placeholder="Luminance" class="text-right font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none" type="number">
+					<input ref="grayscaleLumInput" @input="setGrayscaleValue($event.target.value)" placeholder="Luminance" class="text-right font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600" type="number">
 				</div>
 				<input type="range" min="0" max="255" v-model="grayscaleValue" @input="setGrayscaleLum($event.target.value)" class="w-full" />
 				<div class="p-5 border relative mt-5">
@@ -30,12 +30,12 @@
 			<div class="mt-7">
 				<div class="flex items-center justify-between">
 					<div class="font-bold">Hue</div>
-					<input ref="hueLumInput" v-model="hueValue" placeholder="Hue" class="text-right font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none" type="number">
+					<input ref="hueLumInput" v-model="hueValue" placeholder="Hue" class="text-right font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600" type="number">
 				</div>
 				<input type="range" min="0" max="359" v-model="hueValue" @input="" class="w-full" />
 				<div class="flex items-center justify-between">
 					<div class="font-bold">Saturation</div>
-					<input ref="satLumInput" v-model="satValue" placeholder="Saturation" class="text-right font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none" type="number">
+					<input ref="satLumInput" v-model="satValue" placeholder="Saturation" class="text-right font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600" type="number">
 				</div>
 				<input type="range" min="0" max="100" v-model="satValue" class="w-full" />
 				<div class="p-5 border relative mt-5">
