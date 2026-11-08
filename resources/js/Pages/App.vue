@@ -590,6 +590,7 @@
 <script>
 import 'vanilla-colorful';
 import { jsonToFormData } from '../utils/forms';
+import { uploadErrorMessage } from '../utils/upload-error';
 import { makeQuery, getQuery } from '../utils/url';
 import * as Color from '../utils/color';
 import { clone } from '../utils/object';
@@ -1802,7 +1803,7 @@ export default {
       })
         .then((file) => {
           let formData = jsonToFormData({ file });
-          axios.post('/palette-uploads', formData).then(({ data }) => {
+          return axios.post('/palette-uploads', formData).then(({ data }) => {
             if (data.url) {
               this.uploadFileUrl = data.url;
               this.uploadFilePath = data.path;
@@ -1812,7 +1813,7 @@ export default {
             }
           });
         })
-        .catch(alert)
+        .catch((error) => alert(uploadErrorMessage(error)))
         .finally(() => {
           this.isUploading = false;
           if (this.$refs?.upload) {
