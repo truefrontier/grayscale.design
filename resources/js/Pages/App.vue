@@ -217,13 +217,14 @@
         >
           Add A Color
         </button>
-        <a
+        <button
           v-if="palettes.length"
-          href="#"
-          class="border-b border-red-500 text-red-600 hover:text-red-700 transition-all duration-200"
+          type="button"
+          class="text-red-600 hover:text-red-700 transition-all duration-200"
           @click="removeAll"
-          >Remove All</a
         >
+          <span class="border-b border-red-500">Remove All</span>
+        </button>
       </div>
       <div class="space-x-4">
         <button
@@ -254,27 +255,27 @@
                 v-if="shownPaletteMenu == index"
                 class="absolute z-40 right-0 top-100 mr-4 -mt-3 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
               >
-                <a
-                  href="#"
-                  @click.prevent="
+                <button
+                  type="button"
+                  @click="
                     toggleFilters(index);
                     togglePaletteMenu(index);
                   "
-                  class="block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75"
+                  class="block w-full text-left py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75"
                 >
                   <i class="far fa-fw fa-sliders-h mr-4"></i>Tweak Hue/Sat
-                </a>
+                </button>
                 <hr class="my-3 border-gray-600 opacity-75" />
-                <a
-                  href="#"
-                  @click.prevent="
+                <button
+                  type="button"
+                  @click="
                     removePalette(index);
                     togglePaletteMenu(index);
                   "
-                  class="block py-half-4 px-5 whitespace-no-wrap text-red-800 hover:bg-gray-400 hover:bg-opacity-75"
+                  class="block w-full text-left py-half-4 px-5 whitespace-no-wrap text-red-800 hover:bg-gray-400 hover:bg-opacity-75"
                 >
                   <i class="far fa-fw fa-times mr-4"></i>Remove
-                </a>
+                </button>
               </div>
             </div>
             <div class="h-8 leading-8 mr-8 relative">
@@ -317,7 +318,7 @@
                 :ref="`paletteHex${index}`"
                 placeholder="#000000"
                 aria-label="Hex color"
-                class="font-mono leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none relative z-30"
+                class="font-mono leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 relative z-30"
                 @focus="$event.target.select()"
                 @paste="onPaste"
               />
@@ -327,7 +328,7 @@
                 :ref="`paletteName${index}`"
                 placeholder="Add label"
                 aria-label="Color label"
-                class="font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
+                class="font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600"
               />
             </div>
 
@@ -593,6 +594,7 @@ import { jsonToFormData } from '../utils/forms';
 import { uploadErrorMessage } from '../utils/upload-error';
 import { makeQuery, getQuery } from '../utils/url';
 import * as Color from '../utils/color';
+import { parseColor } from '../utils/parse-color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
 import GrayscaleRow from '../components/GrayscaleRow';
@@ -1411,52 +1413,13 @@ export default {
         return true;
       }
       evt.preventDefault();
-      
-      let hexValue = '';
-      const input = txt.trim();
-      
-      // Check if it's already a hex value (with or without #)
-      const hexMatch = input.match(/^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/);
-      if (hexMatch) {
-        hexValue = `#${hexMatch[1]}`;
-        // Expand 3-char hex to 6-char
-        if (hexValue.length === 4) {
-          hexValue = '#' + [...hexValue.slice(1)].map(c => c + c).join('');
-        }
-      } 
-      // Check for RGB/HSL values in various formats
-      else {
-        // Check for HSL values (looking for % on 2nd or 3rd value, or 'hsl' keyword)
-        // HSL format: hue (0-360), saturation (0-100%), lightness (0-100%)
-        const hslMatch = input.match(/(\d+)\s*[,\s]\s*(\d+)(%?)\s*[,\s]\s*(\d+)(%?)/);
-        if (hslMatch && (hslMatch[3] === '%' || hslMatch[5] === '%' || input.toLowerCase().includes('hsl'))) {
-          const h = parseInt(hslMatch[1]);
-          const s = parseInt(hslMatch[2]);
-          const l = parseInt(hslMatch[4]);
-          const rgb = Color.HSLtoRGB(h, s, l);
-          hexValue = Color.RGBToHex(Math.round(rgb.r), Math.round(rgb.g), Math.round(rgb.b));
-        }
-        // Otherwise treat as RGB values (including RGBA with alpha that might have %)
-        else if (hslMatch) {
-          // It matched the pattern but no % signs, so treat as RGB
-          const r = Math.min(255, Math.max(0, parseInt(hslMatch[1])));
-          const g = Math.min(255, Math.max(0, parseInt(hslMatch[2])));
-          const b = Math.min(255, Math.max(0, parseInt(hslMatch[4])));
-          hexValue = Color.RGBToHex(r, g, b);
-        }
-        // If nothing matched, try to use it as hex anyway
-        else {
-          // Remove any non-hex characters and take first 6 valid hex chars
-          const cleaned = input.replace(/[^0-9A-Fa-f]/g, '').slice(0, 6);
-          if (cleaned.length >= 3) {
-            hexValue = `#${cleaned}`;
-          } else {
-            // Default to black if we can't parse it
-            hexValue = '#000000';
-          }
-        }
+
+      const hexValue = parseColor(txt);
+      if (!hexValue) {
+        alert(`Could not read "${txt.trim()}" as a color. Use hex (#3b82f6, 3b82f6, #38f), rgb(59, 130, 246) or hsl(217, 91%, 60%).`);
+        return false;
       }
-      
+
       target.value = hexValue;
       // Trigger input event to update v-model
       target.dispatchEvent(new Event('input', { bubbles: true }));
