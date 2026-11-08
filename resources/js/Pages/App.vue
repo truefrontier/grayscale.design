@@ -24,8 +24,10 @@
           <button
             @click="showLumsMenu = !showLumsMenu"
             class="text-center h-7 leading-7 px-4 rounded text-xl text-blue-600 hover:opacity-75 focus:text-blue-900"
+            aria-label="Grayscale options"
+            :aria-expanded="showLumsMenu ? 'true' : 'false'"
           >
-            <i class="far fa-lg fa-ellipsis-h"></i>
+            <i class="far fa-lg fa-ellipsis-h" aria-hidden="true"></i>
           </button>
           <div
             v-if="showLumsMenu"
@@ -136,15 +138,17 @@
           <button
             @click="setLumsCount(lumsCount - 1)"
             class="relative inline-block mt-7 border-1 border-gray-500 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+            aria-label="Remove a grayscale value"
           >
-            <i class="far fa-lg fa-minus"></i>
+            <i class="far fa-lg fa-minus" aria-hidden="true"></i>
           </button>
-          <span class="px-4 opacity-50">{{ lumsCount }} values</span>
+          <span class="px-4 opacity-50" aria-live="polite">{{ lumsCount }} values</span>
           <button
             @click="setLumsCount(lumsCount + 1)"
             class="relative inline-block mt-7 border-1 border-gray-500 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+            aria-label="Add a grayscale value"
           >
-            <i class="far fa-lg fa-plus"></i>
+            <i class="far fa-lg fa-plus" aria-hidden="true"></i>
           </button>
         </div>
         <div class="md:text-right">
@@ -194,7 +198,7 @@
           <img
             class="rounded-lg absolute inset-0 z-10 opacity-100 hover:opacity-0 transition-opacity duration-200"
             :src="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
-            alt=""
+            :alt="`Your image in ${lumsCount} shades of gray`"
           />
         </a>
         <p class="mt-2 text-xs mx-auto opacity-50 max-w-2xl">
@@ -241,8 +245,10 @@
               <button
                 @click="togglePaletteMenu(index)"
                 class="text-center h-7 my-half-6 rounded text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900"
+                :aria-label="`Options for ${palette.name || palette.hex}`"
+                :aria-expanded="shownPaletteMenu == index ? 'true' : 'false'"
               >
-                <i class="far fa-lg fa-ellipsis-h"></i>
+                <i class="far fa-lg fa-ellipsis-h" aria-hidden="true"></i>
               </button>
               <div
                 v-if="shownPaletteMenu == index"
@@ -274,11 +280,14 @@
             <div class="h-8 leading-8 mr-8 relative">
               <button
                 @click="toggleLocked(palette.hex)"
-                class="absolute right-full top-0 px-4 opacity-25 hover:opacity-100 focus:outline-none focus:shadow-none"
+                class="absolute right-full top-0 px-4 opacity-25 hover:opacity-100 focus:opacity-100"
                 title="Adjusts grayscale to match this color"
+                :aria-label="`Match grayscale to ${palette.name || palette.hex}`"
+                :aria-pressed="isLockedHex(palette.hex) ? 'true' : 'false'"
               >
                 <i
                   :class="['fa-fw', isLockedHex(palette.hex) ? 'fa fa-lock' : 'far fa-unlock']"
+                  aria-hidden="true"
                 ></i>
               </button>
               <hex-color-picker
@@ -292,6 +301,8 @@
                 @click.stop="showPicker = showPicker === index ? null : index"
                 class="h-half-8 w-half-8 mr-4 inline-block align-middle shadow-inner"
                 :style="{ background: palette.hex }"
+                :aria-label="`Pick color for ${palette.name || palette.hex}`"
+                :aria-expanded="showPicker === index ? 'true' : 'false'"
               ></button>
               <!-- <input
                 type="color"
@@ -305,6 +316,7 @@
                 v-model="palette.hex"
                 :ref="`paletteHex${index}`"
                 placeholder="#000000"
+                aria-label="Hex color"
                 class="font-mono leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none relative z-30"
                 @focus="$event.target.select()"
                 @paste="onPaste"
@@ -314,6 +326,7 @@
                 v-model="palette.name"
                 :ref="`paletteName${index}`"
                 placeholder="Add label"
+                aria-label="Color label"
                 class="font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
               />
             </div>
@@ -328,6 +341,7 @@
                 <input
                   type="range"
                   min="-50"
+                  aria-label="Hue shift"
                   v-model="palette.filters.hue"
                   step="0.1"
                   max="50"
@@ -341,6 +355,7 @@
                 <input
                   type="range"
                   min="-30"
+                  aria-label="Saturation shift"
                   v-model="palette.filters.sat"
                   step="0.1"
                   max="30"
