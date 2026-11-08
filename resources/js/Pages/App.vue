@@ -226,7 +226,7 @@
         <button
           v-for="color in suggestedColors"
           @click="addSuggestedColor(color)"
-          class="mt-4 transition-all hover:shadow border-1 duration-300 h-half-8 w-half-8 shadow-inner text-white text-opacity-50 hover:opacity-75"
+          class="mt-4 transition-all hover:shadow border-1 duration-300 h-half-8 w-half-8 shadow-inner focus:shadow-outline text-white text-opacity-50 hover:opacity-75"
           :style="{
             'background-color': color,
             'border-color': color,
@@ -291,7 +291,7 @@
               ></hex-color-picker>
               <button
                 @click.stop="showPicker = showPicker === index ? null : index"
-                class="h-half-8 w-half-8 mr-4 inline-block align-middle shadow-inner"
+                class="h-half-8 w-half-8 mr-4 inline-block align-middle shadow-inner focus:shadow-outline"
                 :style="{ background: palette.hex }"
               ></button>
               <!-- <input
