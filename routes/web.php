@@ -14,7 +14,7 @@
 use Statamic\Facades\Collection;
 
 Route::post('/export-svgs', 'ExportController@svgs');
-Route::post('/palette-uploads', 'UploadController@upload');
+Route::post('/palette-uploads', 'UploadController@upload')->middleware('throttle:20,1');
 
 Collection::all()->each(function ($collection) {
     $collection->queryEntries()->get()->each(function ($entry) {
