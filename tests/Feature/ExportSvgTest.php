@@ -39,6 +39,39 @@ class ExportSvgTest extends TestCase
         }
     }
 
+    // $count palettes of $swatches swatches each.
+    private function many(int $count, int $swatches): string
+    {
+        $swatch = ['hex' => '#000000', 'rgb' => [0, 0, 0], 'hsl' => [0, 0, 0], 'lum' => 0];
+        $palettes = [];
+        for ($i = 0; $i < $count; $i++) {
+            $palettes["p$i"] = ['swatches' => array_fill(0, $swatches, $swatch)];
+        }
+
+        return json_encode($palettes);
+    }
+
+    public function testTheBiggestAllowedExportStillWorks()
+    {
+        $this->post('/export-svgs', ['palettes' => $this->many(50, 30)])->assertOk();
+    }
+
+    public function testTooManyPalettesOrSwatchesIsA422()
+    {
+        // Unbounded, a 2 MB post came back as a 30 MB SVG, and a 3.4 MB one ran PHP out of memory.
+        $this->post('/export-svgs', ['palettes' => $this->many(51, 1)])->assertStatus(422);
+        $this->post('/export-svgs', ['palettes' => $this->many(1, 31)])->assertStatus(422);
+    }
+
+    public function testExportIsThrottled()
+    {
+        for ($i = 0; $i < 20; $i++) {
+            $this->post('/export-svgs', ['palettes' => $this->palettes('red')])->assertOk();
+        }
+
+        $this->post('/export-svgs', ['palettes' => $this->palettes('red')])->assertStatus(429);
+    }
+
     public function testAnOrdinaryPaletteIsUnchanged()
     {
         $response = $this->post('/export-svgs', ['palettes' => $this->palettes('red')]);
