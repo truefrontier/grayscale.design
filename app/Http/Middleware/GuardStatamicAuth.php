@@ -29,13 +29,19 @@ class GuardStatamicAuth
             abort(404);
         }
 
-        // Logout and a finished reset go to whatever `redirect` the request names, so a link to
-        // grayscale.design/!/auth/logout?redirect=https://evil.example sent visitors anywhere.
-        // An off-site value is dropped, and Statamic falls back to the home page.
-        if ($request->is("$action/auth/logout", "$cp/auth/logout", "$action/auth/password/reset")
-            && $request->has('redirect') && $this->leavesSite($request->input('redirect'), $request)) {
-            $request->query->remove('redirect');
-            $request->request->remove('redirect');
+        // Logout and a finished reset or activation go to whatever `redirect` the request names, so a link
+        // to grayscale.design/!/auth/logout?redirect=https://evil.example sent visitors anywhere. Statamic
+        // reads the query first in one place and the body first in others, so both are checked, and an
+        // off-site value in either drops both. Statamic then falls back to the home page.
+        if ($request->is("$action/auth/logout", "$cp/auth/logout", "$action/auth/password/reset", "$action/auth/activate")) {
+            $bags = [$request->query, $request->request];
+            foreach ($bags as $bag) {
+                if ($bag->has('redirect') && $this->leavesSite($bag->all()['redirect'], $request)) {
+                    foreach ($bags as $each) {
+                        $each->remove('redirect');
+                    }
+                }
+            }
         }
 
         return $next($request);
@@ -45,6 +51,11 @@ class GuardStatamicAuth
     {
         // Backslashes, @ and control characters are where PHP's URL parsing and browsers disagree.
         if (! is_string($to) || preg_match('/[\\\\@\x00-\x20\x7f]/', $to)) {
+            return true;
+        }
+
+        $scheme = parse_url($to, PHP_URL_SCHEME);
+        if ($scheme !== null && ! in_array(strtolower((string) $scheme), ['http', 'https'], true)) {
             return true;
         }
 

@@ -142,6 +142,8 @@ class StatamicAuthTest extends TestCase
             'scheme-relative' => ['//evil.example/login'],
             // PHP reads the host as localhost; browsers treat the backslash as a slash and go to evil.example.
             'backslash before @' => ['https://evil.example\\@localhost/login'],
+            // Browsers don't run a javascript: Location, but nothing but http(s) or a path belongs here.
+            'javascript scheme' => ['javascript://localhost/%0aalert(1)'],
         ];
     }
 
@@ -149,6 +151,27 @@ class StatamicAuthTest extends TestCase
     {
         $this->get('/!/auth/logout?redirect=/app')->assertRedirect('http://localhost/app');
         $this->get('/cp/auth/logout?redirect=' . rawurlencode('http://localhost/cp'))->assertRedirect('http://localhost/cp');
+    }
+
+    public function testSiteLogoutChecksTheQueryAndTheBodyAlike()
+    {
+        // A cross-site form can POST with _method=GET: Statamic's logout reads the query's redirect
+        // first, and Laravel's input() reads the body's.
+        $this->post('/!/auth/logout?redirect=' . rawurlencode('https://evil.example/login'), [
+            '_method' => 'GET',
+            'redirect' => '/',
+        ])->assertRedirect('http://localhost');
+    }
+
+    public function testFinishedActivationWontRedirectOffSite()
+    {
+        $this->post('/!/auth/activate', [
+            'token' => Password::broker()->createToken($this->user),
+            'email' => 'owner@example.test',
+            'password' => 'a-new-password',
+            'password_confirmation' => 'a-new-password',
+            'redirect' => 'https://evil.example/login',
+        ])->assertRedirect('http://localhost');
     }
 
     public function testFinishedResetWontRedirectOffSite()
@@ -182,6 +205,18 @@ class StatamicAuthTest extends TestCase
         $mail = $this->sentMail();
         $this->assertCount(1, $mail);
         $this->assertStringContainsString('https://grayscale.design/!/auth/password/reset/', $mail[0]);
+    }
+
+    public function testOtherSubdomainsAreNotTrusted()
+    {
+        $this->actAsProduction();
+
+        // mcp.grayscale.design is a separate service. A reset link built on it would hand it the token.
+        $this->post('https://mcp.grayscale.design/!/auth/password/email', ['email' => 'owner@example.test'])->assertNotFound();
+        $this->assertSame([], $this->sentMail());
+
+        $this->post('https://www.grayscale.design/!/auth/password/email', ['email' => 'owner@example.test'])->assertRedirect();
+        $this->assertStringContainsString('https://www.grayscale.design/!/auth/password/reset/', $this->sentMail()[0]);
     }
 
     /** TrustHosts stands aside in unit tests, and CSRF checks come back outside them. */

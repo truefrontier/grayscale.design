@@ -63,6 +63,19 @@ class ExportSvgTest extends TestCase
         $this->post('/export-svgs', ['palettes' => $this->many(1, 31)])->assertStatus(422);
     }
 
+    public function testALongNameIsA422()
+    {
+        // The name goes into every swatch's id, so a 2 MB name ran PHP out of memory under the caps above.
+        $this->post('/export-svgs', ['palettes' => $this->palettes(str_repeat('n', 101))])->assertStatus(422);
+        $this->post('/export-svgs', ['palettes' => $this->palettes(str_repeat('n', 100))])->assertOk();
+    }
+
+    public function testAnOversizedPostIsA413()
+    {
+        // 50 palettes of 20 swatches, as the page sends them, come to about 180 KB.
+        $this->post('/export-svgs', ['palettes' => $this->palettes('red', str_repeat('#', 512 * 1024))])->assertStatus(413);
+    }
+
     public function testExportIsThrottled()
     {
         for ($i = 0; $i < 20; $i++) {
@@ -70,6 +83,16 @@ class ExportSvgTest extends TestCase
         }
 
         $this->post('/export-svgs', ['palettes' => $this->palettes('red')])->assertStatus(429);
+    }
+
+    public function testUploadsDontUseUpTheExportLimit()
+    {
+        // Laravel 7 keys `throttle` by domain and IP, not route, so both routes shared one count of 20.
+        for ($i = 0; $i < 20; $i++) {
+            $this->postJson('/palette-uploads')->assertStatus(422);
+        }
+
+        $this->post('/export-svgs', ['palettes' => $this->palettes('red')])->assertOk();
     }
 
     public function testAnOrdinaryPaletteIsUnchanged()
