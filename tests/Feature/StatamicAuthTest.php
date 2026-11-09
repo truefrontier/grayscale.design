@@ -192,6 +192,18 @@ class StatamicAuthTest extends TestCase
         $this->assertStringContainsString('https://grayscale.design/!/auth/password/reset/', $mail[0]);
     }
 
+    public function testOtherSubdomainsAreNotTrusted()
+    {
+        $this->actAsProduction();
+
+        // mcp.grayscale.design is a separate service. A reset link built on it would hand it the token.
+        $this->post('https://mcp.grayscale.design/!/auth/password/email', ['email' => 'owner@example.test'])->assertNotFound();
+        $this->assertSame([], $this->sentMail());
+
+        $this->post('https://www.grayscale.design/!/auth/password/email', ['email' => 'owner@example.test'])->assertRedirect();
+        $this->assertStringContainsString('https://www.grayscale.design/!/auth/password/reset/', $this->sentMail()[0]);
+    }
+
     /** TrustHosts stands aside in unit tests, and CSRF checks come back outside them. */
     private function actAsProduction()
     {
