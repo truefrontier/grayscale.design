@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 use Statamic\Auth\Passwords\PasswordReset as ResetLink;
@@ -41,6 +43,7 @@ class StatamicAuthTest extends TestCase
 
     protected function tearDown(): void
     {
+        Request::setTrustedHosts([]);
         ResetLink::resetFormUrl(null);
         ResetLink::redirectAfterReset(null);
         Stache::store('users')->directory($this->originalUsersDir);
@@ -76,6 +79,35 @@ class StatamicAuthTest extends TestCase
         $mail = $this->sentMail();
         $this->assertCount(1, $mail);
         $this->assertStringContainsString('http://localhost/!/auth/password/reset/', $mail[0]);
+    }
+
+    public function testResetAskedForUnderAnotherHostIsRefused()
+    {
+        $this->actAsProduction();
+
+        // The reset link is built from the request's host. If the web server hands this app a
+        // request for any host, the mailed link would point wherever the Host header says.
+        $this->post('http://evil.example/!/auth/password/email', ['email' => 'owner@example.test'])->assertNotFound();
+
+        $this->assertSame([], $this->sentMail());
+    }
+
+    public function testTheLiveHostIsTrustedWhateverAppUrlSays()
+    {
+        $this->actAsProduction();
+
+        $this->post('https://grayscale.design/!/auth/password/email', ['email' => 'owner@example.test'])->assertRedirect();
+
+        $mail = $this->sentMail();
+        $this->assertCount(1, $mail);
+        $this->assertStringContainsString('https://grayscale.design/!/auth/password/reset/', $mail[0]);
+    }
+
+    /** TrustHosts stands aside in unit tests, and CSRF checks come back outside them. */
+    private function actAsProduction()
+    {
+        $this->app['env'] = 'production';
+        $this->withoutMiddleware(VerifyCsrfToken::class);
     }
 
     /** Bodies of the messages the array mailer (phpunit.xml) has sent. */

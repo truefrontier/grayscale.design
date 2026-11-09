@@ -15,6 +15,8 @@ class TrustHosts extends Middleware
     {
         return [
             $this->allSubdomainsOfApplicationUrl(),
+            // The live site by name too, so an APP_URL there that names another host can't 404 every page.
+            '^(.+\.)?grayscale\.design$',
         ];
     }
 }
