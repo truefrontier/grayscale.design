@@ -85,6 +85,16 @@ class ExportSvgTest extends TestCase
         $this->post('/export-svgs', ['palettes' => $this->palettes('red')])->assertStatus(429);
     }
 
+    public function testUploadsDontUseUpTheExportLimit()
+    {
+        // Laravel 7 keys `throttle` by domain and IP, not route, so both routes shared one count of 20.
+        for ($i = 0; $i < 20; $i++) {
+            $this->postJson('/palette-uploads')->assertStatus(422);
+        }
+
+        $this->post('/export-svgs', ['palettes' => $this->palettes('red')])->assertOk();
+    }
+
     public function testAnOrdinaryPaletteIsUnchanged()
     {
         $response = $this->post('/export-svgs', ['palettes' => $this->palettes('red')]);
