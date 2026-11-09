@@ -24,8 +24,10 @@
           <button
             @click="showLumsMenu = !showLumsMenu"
             class="text-center h-7 leading-7 px-4 rounded text-xl text-blue-600 hover:opacity-75 focus:text-blue-900"
+            aria-label="Grayscale options"
+            :aria-expanded="showLumsMenu ? 'true' : 'false'"
           >
-            <i class="far fa-lg fa-ellipsis-h"></i>
+            <i class="far fa-lg fa-ellipsis-h" aria-hidden="true"></i>
           </button>
           <div
             v-if="showLumsMenu"
@@ -136,15 +138,17 @@
           <button
             @click="setLumsCount(lumsCount - 1)"
             class="relative inline-block mt-7 border-1 border-gray-500 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+            aria-label="Remove a grayscale value"
           >
-            <i class="far fa-lg fa-minus"></i>
+            <i class="far fa-lg fa-minus" aria-hidden="true"></i>
           </button>
-          <span class="px-4 opacity-50">{{ lumsCount }} values</span>
+          <span class="px-4 opacity-50" aria-live="polite">{{ lumsCount }} values</span>
           <button
             @click="setLumsCount(lumsCount + 1)"
             class="relative inline-block mt-7 border-1 border-gray-500 transition-all hover:shadow hover:border-gray-800 hover:bg-gray-800 duration-300 rounded py-4 px-5 text-gray-600 hover:text-white uppercase text-sm font-bold tracking-wide"
+            aria-label="Add a grayscale value"
           >
-            <i class="far fa-lg fa-plus"></i>
+            <i class="far fa-lg fa-plus" aria-hidden="true"></i>
           </button>
         </div>
         <div class="md:text-right">
@@ -194,7 +198,7 @@
           <img
             class="rounded-lg absolute inset-0 z-10 opacity-100 hover:opacity-0 transition-opacity duration-200"
             :src="getUploadFileUrl(`?sat=-100&colorquant=${lumsCount}`)"
-            alt=""
+            :alt="`Your image in ${lumsCount} shades of gray`"
           />
         </a>
         <p class="mt-2 text-xs mx-auto opacity-50 max-w-2xl">
@@ -213,19 +217,20 @@
         >
           Add A Color
         </button>
-        <a
+        <button
           v-if="palettes.length"
-          href="#"
-          class="border-b border-red-500 text-red-600 hover:text-red-700 transition-all duration-200"
+          type="button"
+          class="text-red-600 hover:text-red-700 transition-all duration-200"
           @click="removeAll"
-          >Remove All</a
         >
+          <span class="border-b border-red-500">Remove All</span>
+        </button>
       </div>
       <div class="space-x-4">
         <button
           v-for="color in suggestedColors"
           @click="addSuggestedColor(color)"
-          class="mt-4 transition-all hover:shadow border-1 duration-300 h-half-8 w-half-8 shadow-inner text-white text-opacity-50 hover:opacity-75"
+          class="mt-4 transition-all hover:shadow border-1 duration-300 h-half-8 w-half-8 shadow-inner focus:shadow-outline text-white text-opacity-50 hover:opacity-75"
           :style="{
             'background-color': color,
             'border-color': color,
@@ -241,44 +246,49 @@
               <button
                 @click="togglePaletteMenu(index)"
                 class="text-center h-7 my-half-6 rounded text-xl text-blue-600 p-4 hover:opacity-75 focus:text-blue-900"
+                :aria-label="`Options for ${palette.name || palette.hex}`"
+                :aria-expanded="shownPaletteMenu == index ? 'true' : 'false'"
               >
-                <i class="far fa-lg fa-ellipsis-h"></i>
+                <i class="far fa-lg fa-ellipsis-h" aria-hidden="true"></i>
               </button>
               <div
                 v-if="shownPaletteMenu == index"
                 class="absolute z-40 right-0 top-100 mr-4 -mt-3 text-left shadow-lg bg-gray-500 py-4 min-w-9 rounded-b-lg rounded-tl-lg z-10"
               >
-                <a
-                  href="#"
-                  @click.prevent="
+                <button
+                  type="button"
+                  @click="
                     toggleFilters(index);
                     togglePaletteMenu(index);
                   "
-                  class="block py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75"
+                  class="block w-full text-left py-half-4 px-5 whitespace-no-wrap text-gray-800 hover:bg-gray-400 hover:bg-opacity-75"
                 >
                   <i class="far fa-fw fa-sliders-h mr-4"></i>Tweak Hue/Sat
-                </a>
+                </button>
                 <hr class="my-3 border-gray-600 opacity-75" />
-                <a
-                  href="#"
-                  @click.prevent="
+                <button
+                  type="button"
+                  @click="
                     removePalette(index);
                     togglePaletteMenu(index);
                   "
-                  class="block py-half-4 px-5 whitespace-no-wrap text-red-800 hover:bg-gray-400 hover:bg-opacity-75"
+                  class="block w-full text-left py-half-4 px-5 whitespace-no-wrap text-red-800 hover:bg-gray-400 hover:bg-opacity-75"
                 >
                   <i class="far fa-fw fa-times mr-4"></i>Remove
-                </a>
+                </button>
               </div>
             </div>
             <div class="h-8 leading-8 mr-8 relative">
               <button
                 @click="toggleLocked(palette.hex)"
-                class="absolute right-full top-0 px-4 opacity-25 hover:opacity-100 focus:outline-none focus:shadow-none"
+                class="absolute right-full top-0 px-4 opacity-25 hover:opacity-100 focus:opacity-100"
                 title="Adjusts grayscale to match this color"
+                :aria-label="`Match grayscale to ${palette.name || palette.hex}`"
+                :aria-pressed="isLockedHex(palette.hex) ? 'true' : 'false'"
               >
                 <i
                   :class="['fa-fw', isLockedHex(palette.hex) ? 'fa fa-lock' : 'far fa-unlock']"
+                  aria-hidden="true"
                 ></i>
               </button>
               <hex-color-picker
@@ -290,8 +300,10 @@
               ></hex-color-picker>
               <button
                 @click.stop="showPicker = showPicker === index ? null : index"
-                class="h-half-8 w-half-8 mr-4 inline-block align-middle shadow-inner"
+                class="h-half-8 w-half-8 mr-4 inline-block align-middle shadow-inner focus:shadow-outline"
                 :style="{ background: palette.hex }"
+                :aria-label="`Pick color for ${palette.name || palette.hex}`"
+                :aria-expanded="showPicker === index ? 'true' : 'false'"
               ></button>
               <!-- <input
                 type="color"
@@ -305,7 +317,8 @@
                 v-model="palette.hex"
                 :ref="`paletteHex${index}`"
                 placeholder="#000000"
-                class="font-mono leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none relative z-30"
+                aria-label="Hex color"
+                class="font-mono leading-6 inline-block align-middle w-9 mr-5 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 relative z-30"
                 @focus="$event.target.select()"
                 @paste="onPaste"
               />
@@ -314,7 +327,8 @@
                 v-model="palette.name"
                 :ref="`paletteName${index}`"
                 placeholder="Add label"
-                class="font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600 focus:shadow-none"
+                aria-label="Color label"
+                class="font-mono leading-6 inline-block align-middle w-10 text-gray-600 hover:text-gray-800 py-3 px-0 text-lg border-b border-gray-400 border-dashed hover:border-gray-600 focus:border-gray-600"
               />
             </div>
 
@@ -328,6 +342,7 @@
                 <input
                   type="range"
                   min="-50"
+                  aria-label="Hue shift"
                   v-model="palette.filters.hue"
                   step="0.1"
                   max="50"
@@ -341,6 +356,7 @@
                 <input
                   type="range"
                   min="-30"
+                  aria-label="Saturation shift"
                   v-model="palette.filters.sat"
                   step="0.1"
                   max="30"
@@ -575,8 +591,10 @@
 <script>
 import 'vanilla-colorful';
 import { jsonToFormData } from '../utils/forms';
+import { uploadErrorMessage } from '../utils/upload-error';
 import { makeQuery, getQuery } from '../utils/url';
 import * as Color from '../utils/color';
+import { parseColor } from '../utils/parse-color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
 import GrayscaleRow from '../components/GrayscaleRow';
@@ -1395,52 +1413,13 @@ export default {
         return true;
       }
       evt.preventDefault();
-      
-      let hexValue = '';
-      const input = txt.trim();
-      
-      // Check if it's already a hex value (with or without #)
-      const hexMatch = input.match(/^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/);
-      if (hexMatch) {
-        hexValue = `#${hexMatch[1]}`;
-        // Expand 3-char hex to 6-char
-        if (hexValue.length === 4) {
-          hexValue = '#' + [...hexValue.slice(1)].map(c => c + c).join('');
-        }
-      } 
-      // Check for RGB/HSL values in various formats
-      else {
-        // Check for HSL values (looking for % on 2nd or 3rd value, or 'hsl' keyword)
-        // HSL format: hue (0-360), saturation (0-100%), lightness (0-100%)
-        const hslMatch = input.match(/(\d+)\s*[,\s]\s*(\d+)(%?)\s*[,\s]\s*(\d+)(%?)/);
-        if (hslMatch && (hslMatch[3] === '%' || hslMatch[5] === '%' || input.toLowerCase().includes('hsl'))) {
-          const h = parseInt(hslMatch[1]);
-          const s = parseInt(hslMatch[2]);
-          const l = parseInt(hslMatch[4]);
-          const rgb = Color.HSLtoRGB(h, s, l);
-          hexValue = Color.RGBToHex(Math.round(rgb.r), Math.round(rgb.g), Math.round(rgb.b));
-        }
-        // Otherwise treat as RGB values (including RGBA with alpha that might have %)
-        else if (hslMatch) {
-          // It matched the pattern but no % signs, so treat as RGB
-          const r = Math.min(255, Math.max(0, parseInt(hslMatch[1])));
-          const g = Math.min(255, Math.max(0, parseInt(hslMatch[2])));
-          const b = Math.min(255, Math.max(0, parseInt(hslMatch[4])));
-          hexValue = Color.RGBToHex(r, g, b);
-        }
-        // If nothing matched, try to use it as hex anyway
-        else {
-          // Remove any non-hex characters and take first 6 valid hex chars
-          const cleaned = input.replace(/[^0-9A-Fa-f]/g, '').slice(0, 6);
-          if (cleaned.length >= 3) {
-            hexValue = `#${cleaned}`;
-          } else {
-            // Default to black if we can't parse it
-            hexValue = '#000000';
-          }
-        }
+
+      const hexValue = parseColor(txt);
+      if (!hexValue) {
+        alert(`Could not read "${txt.trim()}" as a color. Use hex (#3b82f6, 3b82f6, #38f), rgb(59, 130, 246) or hsl(217, 91%, 60%).`);
+        return false;
       }
-      
+
       target.value = hexValue;
       // Trigger input event to update v-model
       target.dispatchEvent(new Event('input', { bubbles: true }));
@@ -1787,7 +1766,7 @@ export default {
       })
         .then((file) => {
           let formData = jsonToFormData({ file });
-          axios.post('/palette-uploads', formData).then(({ data }) => {
+          return axios.post('/palette-uploads', formData).then(({ data }) => {
             if (data.url) {
               this.uploadFileUrl = data.url;
               this.uploadFilePath = data.path;
@@ -1797,7 +1776,7 @@ export default {
             }
           });
         })
-        .catch(alert)
+        .catch((error) => alert(uploadErrorMessage(error)))
         .finally(() => {
           this.isUploading = false;
           if (this.$refs?.upload) {
