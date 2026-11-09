@@ -41,3 +41,10 @@ export function radixClash(names) {
 export function jsKey(name) {
   return /^[A-Za-z_$][\w$]*$/.test(name) ? name : `'${name}'`;
 }
+
+// The CSS Variables and auto-dark exports write the page URL into a /* */ comment. A share link can carry
+// "*/" in names or labels, which would end the comment and turn the rest of the link into CSS. %2A still
+// reads as * when the link is opened, so the link keeps working.
+export function commentSafeUrl(url) {
+  return url.replace(/\*/g, '%2A');
+}

@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { safeName, jsIdent, jsKey, radixClash } from '../../resources/js/utils/palette-name.js';
+import { safeName, jsIdent, jsKey, radixClash, commentSafeUrl } from '../../resources/js/utils/palette-name.js';
 
 test('keeps plain names', () => {
   for (const name of ['primary', 'brand-blue', 'Brand_Blue2', 'a', 'x'.repeat(32)]) assert.equal(safeName(name), name);
@@ -52,4 +52,14 @@ test('Radix names two palettes that would become the same const, and passes ever
   for (const ok of [['grayscale'], ['grayscale', 'grayscale-alt', 'brand-blue', 'blue', 'class', 'Class']]) {
     assert.equal(radixClash(ok), '', ok.join(', '));
   }
+});
+
+test('a share link cannot end the CSS comment its URL is written into', () => {
+  const url = 'https://grayscale.design/app?palettes=%23ef4444&names=*/body{display:none}/*&labels=*/a{}/*';
+  const header = `/* Grayscale Design palette: ${commentSafeUrl(url)} */`;
+  // The only */ left is the one that closes the comment.
+  assert.equal(header.indexOf('*/'), header.length - 2);
+  // %2A reads back as *, so the link still opens the same palette.
+  assert.equal(new URL(commentSafeUrl(url)).searchParams.get('names'), '*/body{display:none}/*');
+  assert.equal(commentSafeUrl('https://grayscale.design/app?names=red'), 'https://grayscale.design/app?names=red');
 });
