@@ -599,7 +599,7 @@ import { parseColor } from '../utils/parse-color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
 import GrayscaleRow from '../components/GrayscaleRow';
-import { safeName, jsIdent, jsKey, radixClash } from '../utils/palette-name';
+import { safeName, jsIdent, jsKey, radixClash, commentSafeUrl } from '../utils/palette-name';
 
 export default {
   name: 'App',
@@ -1002,7 +1002,7 @@ export default {
 
     cssVars() {
       let colors = this.cssColors;
-      let css = `/* Grayscale Design palette: ${window.location.href} */\n:root {`;
+      let css = `/* Grayscale Design palette: ${commentSafeUrl(window.location.href)} */\n:root {`;
       css += Object.keys(colors).reduce((str, name) => {
         str += '\n';
         let swatchCount = Object.keys(colors[name].swatches).length;
@@ -1068,7 +1068,7 @@ export default {
     autoDarkModeCss() {
       let colors = this.cssColors;
       let css = `@tailwind base;\n@tailwind components;\n@tailwind utilities;\n\n@layer utilities {\n`;
-      css += `  /* Grayscale Design palette: ${window.location.href} */\n`;
+      css += `  /* Grayscale Design palette: ${commentSafeUrl(window.location.href)} */\n`;
       css += `  :root {\n`;
       
       // Generate all color variables in RGB format for Tailwind compatibility
