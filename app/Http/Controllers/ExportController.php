@@ -42,6 +42,7 @@ class ExportController extends Controller {
             $file .= '<text transform="translate(' . ($leftPadding - 20) . ' ' . ($y + $swatchH + 50) . ')" style="font-size: 5px;fill: #b4bed5;font-family: Courier, monospace;font-weight: 700">val:</text>';
             $j = 0;
             foreach ($color->swatches as $index => $swatch) {
+                abort_unless(is_numeric($index) && $this->printable($swatch), 422);
                 $swatchCount = count((array) $color->swatches);
                 $label = $swatchCount >= 10 ? ($index == 0 ? '50' : $index . '00') : ($index + 1) . '00';
                 $x = $j * $swatchW + $leftPadding;
@@ -68,5 +69,22 @@ class ExportController extends Controller {
             'Content-Type' => 'image/svg+xml',
             'Content-Disposition' => "attachment; filename=$filename",
         ]);
+    }
+
+    // A swatch the loop above can print. Anything else was a 500, or a blank in the SVG. Only the shape is checked:
+    // a word or a null where a number goes prints as before, because the page can send null for NaN.
+    private function printable($swatch) {
+        $plain = function ($value) {
+            return ! is_array($value) && ! is_object($value);
+        };
+
+        return is_object($swatch)
+            && property_exists($swatch, 'hex') && $plain($swatch->hex)
+            && property_exists($swatch, 'lum') && $plain($swatch->lum)
+            && isset($swatch->rgb) && is_array($swatch->rgb)
+            && count(array_filter($swatch->rgb, $plain)) === count($swatch->rgb)
+            && isset($swatch->hsl) && is_array($swatch->hsl)
+            && array_key_exists(0, $swatch->hsl) && array_key_exists(1, $swatch->hsl) && array_key_exists(2, $swatch->hsl)
+            && $plain($swatch->hsl[0]) && $plain($swatch->hsl[1]) && $plain($swatch->hsl[2]);
     }
 }
