@@ -230,13 +230,14 @@
         <button
           v-for="color in suggestedColors"
           @click="addSuggestedColor(color)"
+          :aria-label="`Add suggested color ${color}`"
           class="mt-4 transition-all hover:shadow border-1 duration-300 h-half-8 w-half-8 shadow-inner focus:shadow-outline text-white text-opacity-50 hover:opacity-75"
           :style="{
             'background-color': color,
             'border-color': color,
           }"
         >
-          <i class="fal fa-plus fa-sm"></i>
+          <i class="fal fa-plus fa-sm" aria-hidden="true"></i>
         </button>
       </div>
       <div class="mt-8">
