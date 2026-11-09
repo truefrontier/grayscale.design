@@ -29,6 +29,25 @@ class GuardStatamicAuth
             abort(404);
         }
 
+        // Logout and a finished reset go to whatever `redirect` the request names, so a link to
+        // grayscale.design/!/auth/logout?redirect=https://evil.example sent visitors anywhere.
+        // An off-site value is dropped, and Statamic falls back to the home page.
+        if ($request->is("$action/auth/logout", "$cp/auth/logout", "$action/auth/password/reset")
+            && $request->has('redirect') && $this->leavesSite($request->input('redirect'), $request)) {
+            $request->query->remove('redirect');
+            $request->request->remove('redirect');
+        }
+
         return $next($request);
+    }
+
+    private function leavesSite($to, Request $request)
+    {
+        // Backslashes, @ and control characters are where PHP's URL parsing and browsers disagree.
+        if (! is_string($to) || preg_match('/[\\\\@\x00-\x20\x7f]/', $to)) {
+            return true;
+        }
+
+        return ! in_array(parse_url($to, PHP_URL_HOST), [null, $request->getHost()], true);
     }
 }

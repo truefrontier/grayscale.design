@@ -6,6 +6,7 @@ use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Password;
 use Statamic\Auth\Passwords\PasswordReset as ResetLink;
 use Statamic\Facades\Stache;
 use Statamic\Facades\User;
@@ -107,6 +108,43 @@ class StatamicAuthTest extends TestCase
         $this->post('/cp/auth/login', ['email' => 'owner@example.test', 'password' => 'secret-password'])->assertRedirect();
 
         $this->assertAuthenticated();
+    }
+
+    /**
+     * @dataProvider offSiteRedirects
+     */
+    public function testLogoutWontRedirectOffSite($to)
+    {
+        foreach (['/!/auth/logout', '/cp/auth/logout'] as $logout) {
+            $this->get($logout . '?redirect=' . rawurlencode($to))->assertRedirect('http://localhost');
+        }
+    }
+
+    public function offSiteRedirects()
+    {
+        return [
+            'absolute' => ['https://evil.example/login'],
+            'scheme-relative' => ['//evil.example/login'],
+            // PHP reads the host as localhost; browsers treat the backslash as a slash and go to evil.example.
+            'backslash before @' => ['https://evil.example\\@localhost/login'],
+        ];
+    }
+
+    public function testLogoutStillRedirectsWithinTheSite()
+    {
+        $this->get('/!/auth/logout?redirect=/app')->assertRedirect('http://localhost/app');
+        $this->get('/cp/auth/logout?redirect=' . rawurlencode('http://localhost/cp'))->assertRedirect('http://localhost/cp');
+    }
+
+    public function testFinishedResetWontRedirectOffSite()
+    {
+        $this->post('/!/auth/password/reset', [
+            'token' => Password::broker()->createToken($this->user),
+            'email' => 'owner@example.test',
+            'password' => 'a-new-password',
+            'password_confirmation' => 'a-new-password',
+            'redirect' => 'https://evil.example/login',
+        ])->assertRedirect('http://localhost');
     }
 
     public function testResetAskedForUnderAnotherHostIsRefused()
