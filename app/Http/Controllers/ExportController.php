@@ -8,11 +8,13 @@ class ExportController extends Controller {
     public function svgs(Request $request) {
         $palettes = $request->get('palettes');
         abort_unless($palettes, 419);
+        // 50 palettes of 20 swatches, as the page sends them, come to about 180 KB.
+        abort_if(strlen($palettes) > 512 * 1024, 413);
 
         $colors = json_decode($palettes);
         // The site posts {name: {swatches: {...}}}. Anything else is a bad request, not a 500 further down.
         abort_unless(is_object($colors), 422);
-        // The scales here have 10 to 12 swatches. A cap keeps one post from asking for a huge SVG.
+        // The page allows 3 to 20 swatches a palette. Caps keep one post from asking for a huge SVG.
         abort_if(count((array) $colors) > 50, 422);
 
         // return response()->json($colors);
@@ -32,6 +34,8 @@ class ExportController extends Controller {
         foreach ($colors as $name => $color) {
             abort_unless(is_object($color) && isset($color->swatches) && (is_object($color->swatches) || is_array($color->swatches)), 422);
             abort_if(count((array) $color->swatches) > 30, 422);
+            // The name is repeated in every swatch's id, so its length multiplies too.
+            abort_if(mb_strlen($name) > 100, 422);
             $y = $i * ($swatchH + 50 + $topPadding) + $topPadding;
             // Labels
             $file .= '<text transform="translate(' . $leftPadding . ' ' . ($y - 10) . ')" style="font-size: 12px;fill: #232834;font-family: Courier, monospace;font-weight: 700">' . e($name) . '</text>';
