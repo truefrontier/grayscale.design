@@ -926,7 +926,13 @@ export default {
       }, {});
 
       let config = JSON.stringify(colors, null, '  ');
-      localStorage.setItem(new Date(), config);
+      // This adds a key per second of edits and nothing reads it back. Once the quota is full (or storage
+      // is blocked), setItem throws, which used to blank the Tailwind export box.
+      try {
+        localStorage.setItem(new Date(), config);
+      } catch (e) {
+        //
+      }
       return `// Grayscale Design palette: ${window.location.href}\nconst grayscale = ` + config;
     },
 
