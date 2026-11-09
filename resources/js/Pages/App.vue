@@ -599,7 +599,7 @@ import { parseColor } from '../utils/parse-color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
 import GrayscaleRow from '../components/GrayscaleRow';
-import { safeName, jsIdent, jsKey } from '../utils/palette-name';
+import { safeName, jsIdent, jsKey, radixClash } from '../utils/palette-name';
 
 export default {
   name: 'App',
@@ -958,6 +958,9 @@ export default {
     cssRadix() {
       let colors = this.cssColors;
       let js = `// Grayscale Design palette: ${window.location.href}\n`;
+      // Show why instead of code that won't load. This sits outside the try below, which swallows errors.
+      let clash = radixClash(Object.keys(colors));
+      if (clash) return `${js}\n// ${clash}\n`;
       try {
         js += Object.keys(colors).reduce((str, name) => {
           str += `\nconst ${jsIdent(name)} = {\n`;

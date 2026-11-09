@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
-import { safeName, jsIdent, jsKey } from '../../resources/js/utils/palette-name.js';
+import { safeName, jsIdent, jsKey, radixClash } from '../../resources/js/utils/palette-name.js';
 
 test('keeps plain names', () => {
   for (const name of ['primary', 'brand-blue', 'Brand_Blue2', 'a', 'x'.repeat(32)]) assert.equal(safeName(name), name);
@@ -29,4 +29,27 @@ test('the Radix variable and the auto-dark key stay valid JavaScript for hyphena
   assert.equal(jsIdent('grayscale-alt'), 'grayscaleAlt');
   assert.equal(jsKey('blue'), 'blue'); // plain names stay unquoted, as before
   assert.equal(jsKey('brand-blue'), "'brand-blue'");
+});
+
+test('a reserved word as a name still gives Radix consts that parse', () => {
+  for (const name of ['class', 'default', 'new', 'delete', 'null', 'true', 'let', 'yield', 'enum', 'static']) {
+    assert.doesNotThrow(() => new vm.Script(`'use strict';\nconst ${jsIdent(name)} = {};\nconst ${jsIdent(name)}Dark = {};`), name);
+  }
+  // A leading _ can't clash with another palette: names start with a letter.
+  assert.equal(jsIdent('class'), '_class');
+  assert.equal(jsIdent('new'), '_new');
+  assert.equal(jsIdent('classic'), 'classic');
+});
+
+test('Radix names two palettes that would become the same const, and passes every other set', () => {
+  assert.equal(
+    radixClash(['grayscale', 'brand-blue', 'brandBlue']),
+    'Radix writes each palette as a JavaScript const, but "brand-blue" and "brandBlue" would both be const brandBlue. Rename one of them.',
+  );
+  // foo-dark's const is foo's dark scale.
+  assert.match(radixClash(['grayscale', 'foo', 'foo-dark']), /"foo" \(its dark scale\) and "foo-dark" would both be const fooDark/);
+  assert.match(radixClash(['grayscale', 'grayscale-dark']), /const grayscaleDark/);
+  for (const ok of [['grayscale'], ['grayscale', 'grayscale-alt', 'brand-blue', 'blue', 'class', 'Class']]) {
+    assert.equal(radixClash(ok), '', ok.join(', '));
+  }
 });
