@@ -1766,45 +1766,30 @@ export default {
       // });
     },
 
-    onFileUpload() {
-      return new Promise(async (resolve, reject) => {
-        this.isUploading = true;
+    async onFileUpload() {
+      this.isUploading = true;
+      try {
         const filePicker = this.$refs.upload;
-
-        if (!filePicker || !filePicker.files || filePicker.files.length <= 0) {
-          reject('No file selected.');
-          return;
-        }
+        if (!filePicker || !filePicker.files || filePicker.files.length <= 0) throw 'No file selected.';
 
         this.uploadFile = filePicker.files[0];
-        if (this.uploadFile.size > 10485760 / 2) {
-          reject('Image is too big (max. 5 Mb)');
-          return;
-        }
+        if (this.uploadFile.size > 10485760 / 2) throw 'Image is too big (max. 5 Mb)';
 
         this.base64File = await this.toBase64(this.uploadFile);
 
-        return resolve(this.uploadFile);
-      })
-        .then((file) => {
-          let formData = jsonToFormData({ file });
-          return axios.post('/palette-uploads', formData).then(({ data }) => {
-            if (data.url) {
-              this.uploadFileUrl = data.url;
-              this.uploadFilePath = data.path;
-              this.setFromUploadFile();
-            } else {
-              alert('Sorry! Please try again.');
-            }
-          });
-        })
-        .catch((error) => alert(uploadErrorMessage(error)))
-        .finally(() => {
-          this.isUploading = false;
-          if (this.$refs?.upload) {
-            this.$refs.upload.value = null;
-          }
-        });
+        const { data } = await axios.post('/palette-uploads', jsonToFormData({ file: this.uploadFile }));
+        if (!data.url) throw 'Sorry! Please try again.';
+        this.uploadFileUrl = data.url;
+        this.uploadFilePath = data.path;
+        await this.setFromUploadFile();
+      } catch (error) {
+        alert(uploadErrorMessage(error));
+      } finally {
+        this.isUploading = false;
+        if (this.$refs?.upload) {
+          this.$refs.upload.value = null;
+        }
+      }
     },
 
     toBase64(uploadFile) {
@@ -1856,9 +1841,10 @@ export default {
       }
     },
 
+    // Returns the imgix requests' promise so the upload can catch a failed fetch.
     setFromUploadFile(addPalette = true) {
       let grayscaleUrl = `${this.uploadFileUrl}?sat=-100&colorquant=${this.lumsCount}&palette=json&colors=${this.lumsCount}`;
-      axios
+      return axios
         .get(grayscaleUrl)
         .then(({ data }) => {
           this.grayscaleJson = data;
@@ -1866,7 +1852,7 @@ export default {
         .then(() => {
           if (addPalette) {
             let paletteUrl = `${this.uploadFileUrl}?palette=json&colors=3`;
-            axios.get(paletteUrl).then(({ data }) => {
+            return axios.get(paletteUrl).then(({ data }) => {
               this.paletteJson = data;
             });
           }
