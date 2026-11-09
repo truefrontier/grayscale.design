@@ -580,7 +580,7 @@ import * as Color from '../utils/color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
 import GrayscaleRow from '../components/GrayscaleRow';
-import { safeName } from '../utils/palette-name';
+import { safeName, jsIdent, jsKey } from '../utils/palette-name';
 
 export default {
   name: 'App',
@@ -935,7 +935,7 @@ export default {
       let js = `// Grayscale Design palette: ${window.location.href}\n`;
       try {
         js += Object.keys(colors).reduce((str, name) => {
-          str += `\nconst ${name} = {\n`;
+          str += `\nconst ${jsIdent(name)} = {\n`;
           Object.keys(colors[name].swatches).forEach((i) => {
             let swatch = colors[name].swatches[i];
             let label = parseInt(i, 10) + 1;
@@ -944,7 +944,7 @@ export default {
           str += '};\n';
 
           // Dark Colors
-          str += `\nconst ${name}Dark = {\n`;
+          str += `\nconst ${jsIdent(name)}Dark = {\n`;
           Object.keys(colors[name].swatches).forEach((i) => {
             let swatch = colors[name].swatches[i];
             let lum = 100 - swatch.lum;
@@ -1183,7 +1183,7 @@ export default {
       
       // Add all color palettes
       Object.keys(colors).forEach(name => {
-        config += `      ${name}: setAsCssVariable('${name}'),\n`;
+        config += `      ${jsKey(name)}: setAsCssVariable('${name}'),\n`;
       });
 
       config += `      neutral: setAsCssVariable('neutral'),\n`;
