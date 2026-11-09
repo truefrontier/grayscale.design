@@ -10,6 +10,8 @@ class ExportController extends Controller {
         abort_unless($palettes, 419);
 
         $colors = json_decode($palettes);
+        // The site posts {name: {swatches: {...}}}. Anything else is a bad request, not a 500 further down.
+        abort_unless(is_object($colors), 422);
 
         // return response()->json($colors);
 
@@ -26,6 +28,7 @@ class ExportController extends Controller {
         // Names and values come from the posted JSON (and a palette name from a share link), so
         // everything that isn't a number we computed is escaped before it goes into the SVG.
         foreach ($colors as $name => $color) {
+            abort_unless(is_object($color) && isset($color->swatches) && (is_object($color->swatches) || is_array($color->swatches)), 422);
             $y = $i * ($swatchH + 50 + $topPadding) + $topPadding;
             // Labels
             $file .= '<text transform="translate(' . $leftPadding . ' ' . ($y - 10) . ')" style="font-size: 12px;fill: #232834;font-family: Courier, monospace;font-weight: 700">' . e($name) . '</text>';

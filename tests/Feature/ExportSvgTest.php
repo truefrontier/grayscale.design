@@ -32,6 +32,13 @@ class ExportSvgTest extends TestCase
         $this->assertStringContainsString('style="fill: #fff&quot; onload=&quot;alert(2)"', $svg);
     }
 
+    public function testMalformedPalettesAreA422NotA500()
+    {
+        foreach (['not json', '"a string"', '[1, 2]', '{"red": {}}', '{"red": {"swatches": 5}}'] as $palettes) {
+            $this->post('/export-svgs', ['palettes' => $palettes])->assertStatus(422);
+        }
+    }
+
     public function testAnOrdinaryPaletteIsUnchanged()
     {
         $response = $this->post('/export-svgs', ['palettes' => $this->palettes('red')]);
