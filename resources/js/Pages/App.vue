@@ -598,7 +598,7 @@ import { parseColor } from '../utils/parse-color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
 import GrayscaleRow from '../components/GrayscaleRow';
-import { safeName } from '../utils/palette-name';
+import { safeName, jsIdent, jsKey } from '../utils/palette-name';
 
 export default {
   name: 'App',
@@ -944,7 +944,13 @@ export default {
       }, {});
 
       let config = JSON.stringify(colors, null, '  ');
-      localStorage.setItem(new Date(), config);
+      // This adds a key per second of edits and nothing reads it back. Once the quota is full (or storage
+      // is blocked), setItem throws, which used to blank the Tailwind export box.
+      try {
+        localStorage.setItem(new Date(), config);
+      } catch (e) {
+        //
+      }
       return `// Grayscale Design palette: ${window.location.href}\nconst grayscale = ` + config;
     },
 
@@ -953,7 +959,7 @@ export default {
       let js = `// Grayscale Design palette: ${window.location.href}\n`;
       try {
         js += Object.keys(colors).reduce((str, name) => {
-          str += `\nconst ${name} = {\n`;
+          str += `\nconst ${jsIdent(name)} = {\n`;
           Object.keys(colors[name].swatches).forEach((i) => {
             let swatch = colors[name].swatches[i];
             let label = parseInt(i, 10) + 1;
@@ -962,7 +968,7 @@ export default {
           str += '};\n';
 
           // Dark Colors
-          str += `\nconst ${name}Dark = {\n`;
+          str += `\nconst ${jsIdent(name)}Dark = {\n`;
           Object.keys(colors[name].swatches).forEach((i) => {
             let swatch = colors[name].swatches[i];
             let lum = 100 - swatch.lum;
@@ -1201,7 +1207,7 @@ export default {
       
       // Add all color palettes
       Object.keys(colors).forEach(name => {
-        config += `      ${name}: setAsCssVariable('${name}'),\n`;
+        config += `      ${jsKey(name)}: setAsCssVariable('${name}'),\n`;
       });
 
       config += `      neutral: setAsCssVariable('neutral'),\n`;
