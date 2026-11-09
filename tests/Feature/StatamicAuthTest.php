@@ -103,6 +103,21 @@ class StatamicAuthTest extends TestCase
         $this->assertCount(1, File::files($this->usersDir));
     }
 
+    public function testResetAndInviteFormsStillOpen()
+    {
+        // The control panel's reset and invite emails link to these, so the guard must leave them be.
+        $this->get('/!/auth/password/reset/some-token')->assertOk();
+        $this->get('/!/auth/activate/some-token')->assertOk();
+    }
+
+    public function testImageTransformsNeedASignature()
+    {
+        // Glide can fetch remote images. Only signed URLs (config/statamic/assets.php `secure`) stop
+        // anyone using that to make this server fetch any URL.
+        $this->get('/img/http/' . base64_encode('http://127.0.0.1:9/private') . '/x.jpg')->assertStatus(400);
+        $this->get('/img/asset/assets/x.jpg?w=10')->assertStatus(400);
+    }
+
     public function testControlPanelSignInStillWorks()
     {
         $this->post('/cp/auth/login', ['email' => 'owner@example.test', 'password' => 'secret-password'])->assertRedirect();
