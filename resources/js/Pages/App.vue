@@ -598,6 +598,7 @@ import { parseColor } from '../utils/parse-color';
 import { clone } from '../utils/object';
 import PaletteRow from '../components/PaletteRow';
 import GrayscaleRow from '../components/GrayscaleRow';
+import { safeName } from '../utils/palette-name';
 
 export default {
   name: 'App',
@@ -903,7 +904,7 @@ export default {
       };
 
       this.palettes.forEach((palette, i) => {
-        let name = palette.name;
+        let name = safeName(palette.name);
         if (!name) {
           let closestToMid = Color.closestLum(this.lumsValues, 50);
           let [midIndex] = Object.keys(closestToMid) || Math.floor(this.lumsCount / 2);
