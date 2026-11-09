@@ -18,7 +18,7 @@ class ClearPaletteUploads extends Command {
      *
      * @var string
      */
-    protected $description = 'Remove the /public/uploads/palettes/ directory';
+    protected $description = 'Remove palette uploads older than an hour from /public/uploads/palettes/';
 
     /**
      * Create a new command instance.
@@ -35,6 +35,13 @@ class ClearPaletteUploads extends Command {
      * @return int
      */
     public function handle() {
-        return Storage::disk('public_uploads')->deleteDir('palettes');
+        // Only files over an hour old: a palette uploaded just before the run is still being read by imgix.
+        $disk = Storage::disk('public_uploads');
+        $cutoff = now()->subHour()->getTimestamp();
+        $disk->delete(array_filter($disk->files('palettes'), function ($path) use ($disk, $cutoff) {
+            return $disk->lastModified($path) < $cutoff;
+        }));
+
+        return 0;
     }
 }
