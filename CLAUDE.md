@@ -37,9 +37,11 @@ php artisan view:clear           # Clear compiled views
 
 ### Testing Commands
 ```bash
-vendor/bin/phpunit              # Run PHP tests
+npm test                        # JS tests (node --test); needs Node 20.19+, not .nvmrc's 18
+vendor/bin/phpunit              # Run PHP tests (PHP 7.4, Composer dev deps; no .env needed)
 vendor/bin/phpunit --filter TestName    # Run specific test
 ```
+Versions, the `public/` rebuild and running the app without `.env`: `docs/testing-and-builds.md`.
 
 ## Architecture Overview
 
