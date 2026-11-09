@@ -11,19 +11,21 @@
 | `POST /!/auth/password/email`, `POST /cp/auth/password/email` | Mails the reset link to any `reset_url` in the request | 422 if the request has `reset_url` | Anyone could have a real user mailed a link that sends the token to their server (GHSA-jxq9-79vj-rgvw, fixed upstream in 5.73.10) |
 | `POST /!/auth/register` | Creates a user file and signs the visitor in | 404 | No page offers sign-up, and each request wrote a file |
 | `POST /!/auth/login` | Signs in any user, with no lockout | 404 | The control panel's sign-in locks out after 5 misses; this one didn't |
-| `GET /!/auth/logout`, `GET /cp/auth/logout`, `POST /!/auth/password/reset` | Redirect to any `redirect` value | Drops a `redirect` that names another host, or has a backslash, `@` or a control character | A grayscale.design link could land on another site |
+| `GET /!/auth/logout`, `GET /cp/auth/logout`, `POST /!/auth/password/reset`, `POST /!/auth/activate` | Redirect to any `redirect` value | Drops a `redirect` that names another host, has a scheme other than http(s), or has a backslash, `@` or a control character. It checks the query and the body, because Statamic reads them in different orders | A grayscale.design link could land on another site |
 
 **Leave these alone:** `/!/auth/password/reset/{token}` and `/!/auth/activate/{token}`. The control panel's reset and invite emails link to them. `StatamicAuthTest::testResetAndInviteFormsStillOpen` fails if the guard blocks them.
 
 ## Hostnames
 
-`TrustHosts` (in `app/Http/Kernel.php`) accepts `APP_URL`'s host, `grayscale.design`, and their subdomains. Any other `Host` gets a 404. Without it, a reset requested with a forged `Host` header mailed a link to that host. It does nothing when `APP_ENV=local`.
+`TrustHosts` (in `app/Http/Kernel.php`) accepts exactly `APP_URL`'s host, `grayscale.design` and `www.grayscale.design`. Any other `Host` gets a 404, other subdomains included: `mcp.grayscale.design` is a separate service. Without it, a reset requested with a forged `Host` header mailed a link to that host.
+
+It does nothing when `APP_ENV=local`, so production must not run as `local`.
 
 If something calls the server by IP address or by another name (a load balancer health check, an uptime monitor), add that host to `app/Http/Middleware/TrustHosts.php`.
 
 ## Rate limits and caps
 
-- `POST /export-svgs`: 20 a minute per IP address. Over 50 palettes, or over 30 swatches in a palette, is a 422.
+- `POST /export-svgs`: 20 a minute per IP address, counted apart from uploads (the `export` throttle prefix). A post over 512 KB is a 413. Over 50 palettes, over 30 swatches in a palette, or a palette name over 100 characters is a 422. The page allows 3 to 20 swatches.
 - `POST /palette-uploads`: 20 a minute per IP address, PNG, GIF or JPEG only, 5 MB at most.
 - `TrustProxies` trusts no proxy. If the site moves behind a load balancer or CDN, set `$proxies` in `app/Http/Middleware/TrustProxies.php`, or every visitor shares one limit.
 
