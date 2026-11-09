@@ -75,7 +75,7 @@ jobs:
           use_sticky_comment: true
           allowed_bots: 'claude[bot]'
           claude_args: |
-            --allowedTools "Bash(gh:*),Read,mcp__github_comment__create_comment,mcp__github_comment__update_claude_comment"
+            --allowedTools "Bash(gh issue edit:*),Read,mcp__github_comment__create_comment,mcp__github_comment__update_claude_comment"
             --max-turns 3
             --model claude-3-5-haiku-20241022
           prompt: |

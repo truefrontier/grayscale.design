@@ -41,8 +41,17 @@ jobs:
               per_page: 10
             });
 
-            // Filter out deleted/empty comments and get non-bot comments
-            const validComments = comments.data.filter(comment => 
+            // This repo is public, so anyone can open an issue or comment on one. Only text from
+            // people with write access, plus this pipeline's own claude[bot] output (earlier stages'
+            // triage, spec and architecture), reaches the prompt. GitHub logins cannot contain
+            // brackets, so no person can sign up as claude[bot].
+            const TRUSTED = ['OWNER', 'MEMBER', 'COLLABORATOR'];
+            const isTrusted = (item) =>
+              TRUSTED.includes(item.author_association) || item.user?.login === 'claude[bot]';
+
+            // Filter out deleted/empty comments and comments from people without write access
+            const validComments = comments.data.filter(comment =>
+              isTrusted(comment) &&
               comment.body && 
               comment.body.trim() !== '' && 
               !comment.body.includes('[DELETED]')
@@ -69,7 +78,9 @@ jobs:
               CREATED_AT: issue.created_at,
               UPDATED_AT: issue.updated_at,
             }));
-            core.setOutput('issue_description', issue.body || '');
+            core.setOutput('issue_description', isTrusted(issue)
+              ? issue.body || ''
+              : '(Issue body left out: it was written by someone without write access to this repo. Work from the comments by maintainers.)');
             core.setOutput('recent_comments', JSON.stringify(validComments));
             core.setOutput('last_human_user', lastHumanUser);
 
@@ -80,7 +91,7 @@ jobs:
           use_sticky_comment: true
           allowed_bots: 'claude[bot]'
           claude_args: |
-            --allowedTools "Bash(gh:*),Bash(git:*),Read,Glob,Grep,mcp__github_comment__create_comment,mcp__github_comment__update_claude_comment"
+            --allowedTools "Bash(gh issue edit:*),Read,Glob,Grep,mcp__github_comment__create_comment,mcp__github_comment__update_claude_comment"
           prompt: |
             You are conducting triage analysis for a software development issue.
 
