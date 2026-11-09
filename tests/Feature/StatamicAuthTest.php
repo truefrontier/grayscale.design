@@ -81,6 +81,34 @@ class StatamicAuthTest extends TestCase
         $this->assertStringContainsString('http://localhost/!/auth/password/reset/', $mail[0]);
     }
 
+    public function testSiteSignInIsOff()
+    {
+        // The control panel's sign-in locks an address out after five misses. This one never did.
+        $this->post('/!/auth/login', ['email' => 'owner@example.test', 'password' => 'secret-password'])->assertNotFound();
+
+        $this->assertGuest();
+    }
+
+    public function testSiteSignUpIsOff()
+    {
+        $this->post('/!/auth/register', [
+            'email' => 'stranger@example.test',
+            'password' => 'stranger-password',
+            'password_confirmation' => 'stranger-password',
+        ])->assertNotFound();
+
+        $this->assertGuest();
+        $this->assertNull(User::findByEmail('stranger@example.test'));
+        $this->assertCount(1, File::files($this->usersDir));
+    }
+
+    public function testControlPanelSignInStillWorks()
+    {
+        $this->post('/cp/auth/login', ['email' => 'owner@example.test', 'password' => 'secret-password'])->assertRedirect();
+
+        $this->assertAuthenticated();
+    }
+
     public function testResetAskedForUnderAnotherHostIsRefused()
     {
         $this->actAsProduction();

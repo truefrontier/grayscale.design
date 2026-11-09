@@ -23,6 +23,12 @@ class GuardStatamicAuth
             abort(422);
         }
 
+        // Site sign-up and sign-in: no page here offers either. Sign-up writes a user file per
+        // request, and sign-in has none of the control panel login's lockout after five misses.
+        if ($request->is("$action/auth/register", "$action/auth/login")) {
+            abort(404);
+        }
+
         return $next($request);
     }
 }
