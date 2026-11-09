@@ -192,8 +192,7 @@ export default {
           let swatch = this.paletteClone.swatches[i];
           let diffIndex = Math.abs(closestIndex - i);
           let newH = baseHSL.h + parseFloat(this.paletteClone.filters.hue) * diffIndex;
-          if (newH < 0) newH = 360 - newH;
-          if (newH > 360) newH = newH - 360;
+          if (newH < 0 || newH >= 360) newH = ((newH % 360) + 360) % 360;
           let newS = baseHSL.s + parseFloat(this.paletteClone.filters.sat) * diffIndex;
           if (newS < 0) newS = Math.max(newS, 0);
           if (newS > 100) newS = Math.min(newS, 100);
